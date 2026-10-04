@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Andreas Mitschke — Growth &amp; Product Innovation</title>
+<meta name="description" content="Andreas Mitschke helps companies make better calls on what to build and how to grow it: strategy first, a clear business goal, and experiments to validate it. Author of Known Before Built.">
+<meta property="og:title" content="Andreas Mitschke — Stop approving. Start proving.">
+<meta property="og:description" content="Growth &amp; product innovation, advisor, author of Known Before Built.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://[YOUR-DOMAIN]/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Stop approving. Start proving. Andreas Mitschke, growth and product innovation.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://[YOUR-DOMAIN]/assets/og.png">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#EEEBE5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400;1,6..96,500&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<style>
+html,body{overflow-x:clip}
+
+.menu-btn{display:none}
+.mnav{display:none}
+@media (max-width:760px){
+  .site-head{position:sticky;top:0;z-index:40;background:#EEEBE5}
+  .site-head nav{padding-top:14px !important;padding-bottom:14px !important;flex-wrap:nowrap !important}
+  .site-head nav > a:first-child{font-size:21px !important}
+  .nav-links{display:none !important}
+  .menu-btn{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 4px 0 14px;border:0;border-radius:999px;background:transparent;color:#121212;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+  .mb-icon{position:relative;width:36px;height:36px;border-radius:50%;background:#121212;display:inline-block}
+  .mb-icon i{position:absolute;left:11px;right:11px;height:2px;border-radius:2px;background:#EEEBE5;transition:transform .45s cubic-bezier(.65,0,.35,1),top .45s cubic-bezier(.65,0,.35,1)}
+  .mb-icon i:first-child{top:14px}.mb-icon i:last-child{top:20px}
+  body.menu-open .mb-icon{background:#F2600C}
+  body.menu-open .mb-icon i:first-child{top:17px;transform:rotate(45deg)}
+  body.menu-open .mb-icon i:last-child{top:17px;transform:rotate(-45deg)}
+  .mnav{display:flex;flex-direction:column;justify-content:space-between;position:fixed;inset:0;z-index:35;background:#121212;color:#EEEBE5;padding:96px 16px 28px;box-sizing:border-box;clip-path:inset(0 0 100% 0);transition:clip-path .6s cubic-bezier(.65,0,.35,1);visibility:hidden}
+  body.menu-open .mnav{clip-path:inset(0 0 0 0);visibility:visible}
+  body.menu-open{overflow:hidden}
+  body.menu-open .site-head{background:transparent;border-color:transparent !important}
+  body.menu-open .site-head nav > a:first-child,body.menu-open .menu-btn{color:#EEEBE5}
+  .mnav-inner{display:flex;flex-direction:column}
+  .mnav-inner a{display:flex;align-items:baseline;gap:14px;padding:14px 0;border-bottom:1px solid #3A3733;color:#EEEBE5;text-decoration:none;font-family:Archivo,sans-serif;font-weight:900;font-stretch:68%;text-transform:uppercase;font-size:44px;line-height:.95;opacity:0;transform:translateY(18px);transition:opacity .4s ease,transform .5s cubic-bezier(.22,1,.36,1)}
+  .mnav-inner a .mi{font:500 12px/1 'IBM Plex Mono',monospace;color:#B9B3AB;letter-spacing:.06em}
+  .mnav-inner a.mnav-cta{color:#F2600C}
+  body.menu-open .mnav-inner a{opacity:1;transform:none}
+  body.menu-open .mnav-inner a:nth-child(1){transition-delay:.18s}body.menu-open .mnav-inner a:nth-child(2){transition-delay:.23s}body.menu-open .mnav-inner a:nth-child(3){transition-delay:.28s}body.menu-open .mnav-inner a:nth-child(4){transition-delay:.33s}body.menu-open .mnav-inner a:nth-child(5){transition-delay:.38s}
+  .mnav-foot{margin:0;font:500 12px/1.4 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#B9B3AB}
+
+  /* hero */
+  #top{padding-top:28px !important;padding-bottom:64px !important;gap:24px !important}
+  .kick-row{padding-right:118px !important;font-size:11px !important;gap:6px 16px !important;min-height:100px;flex-direction:column;align-items:flex-start}
+  .kick-re{display:none}
+  .stamp-track{top:20px !important;width:108px !important}
+  .stamp-pos{position:static !important}
+  .stampsvg{width:108px !important;height:108px !important}
+  .hl{font-size:17.2vw !important;margin-top:-6px}
+  .mnote{position:static !important;transform:none !important;width:auto !important;margin-top:20px;padding-left:14px;border-left:2px solid #D9D3CB}
+  #top p{font-size:18px !important}
+  .pbtn{min-height:52px;font-size:14px;padding-left:22px}
+
+  /* sections */
+  section > div[style*="padding: 96px"],section > div[style*="padding: 104px"]{padding-top:64px !important;padding-bottom:64px !important}
+  #releases > div,#beliefs > div,#talks > div{padding-top:64px !important;padding-bottom:64px !important}
+  #path > div[style*="padding: 24px"]{padding-bottom:64px !important}
+  h2{font-size:clamp(44px,13vw,64px) !important}
+  .pgrp{gap:14px !important;padding-top:28px !important;padding-bottom:28px !important}
+  .pgrp > div:first-child{flex-basis:100% !important}
+  .pgrp > div:first-child span:last-child{font-size:30px !important}
+  .prow p{font-size:16px !important}
+  #beliefs .reveal{grid-template-columns:36px minmax(0,1fr) !important;gap:0 12px !important}
+  #beliefs .reveal p:first-child{font-size:29px !important}
+  .kbstage{--w:236px;--h:378px;--t:32px}
+  #releases div[style*="height: 600px"]{height:auto !important;width:100% !important;padding-top:20px !important;padding-bottom:88px !important}
+  .kbhint{bottom:-56px}
+  .rrow{gap:6px 16px !important}
+  .rrow > span:first-child{flex-basis:100% !important}
+  #talks .rrow > span:first-child{flex-basis:40px !important}
+  #contact{min-height:0 !important}
+  #contact > div{padding-top:72px !important;padding-bottom:40px !important;gap:28px !important}
+  #contact h2{font-size:clamp(40px,11.5vw,56px) !important}
+  #contact a[data-fx="big"]{font-size:clamp(48px,15vw,84px) !important;padding:22px 4px !important;flex-wrap:nowrap !important}
+}
+
+body{margin:0;background:#EEEBE5;color:#121212;font-family:'Archivo','Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#121212;text-decoration-color:#F2600C;text-decoration-thickness:2px;text-underline-offset:5px}
+a:hover{color:#000000;text-decoration-thickness:4px}
+del{text-decoration:none;position:relative;white-space:nowrap}
+del::after{content:"";position:absolute;left:-2%;right:-2%;top:52%;height:.13em;background:#F2600C;transform:rotate(-2.2deg);border-radius:999px}
+.mk{background:linear-gradient(transparent 58%, #F2600C66 58%, #F2600C66 92%, transparent 92%)}
+.spin{animation:gspin 1.4s steps(12) infinite}
+@keyframes gspin{to{transform:rotate(360deg)}}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.rise{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
+.d1{animation-delay:.05s}.d2{animation-delay:.18s}.d3{animation-delay:.32s}.d4{animation-delay:.5s}
+@keyframes strike{from{transform:rotate(-2.2deg) scaleX(0)}to{transform:rotate(-2.2deg) scaleX(1)}}
+del.draw::after{transform-origin:left center;animation:strike .55s cubic-bezier(.7,0,.2,1) .7s both}
+del.ink::after{background:#121212;height:.09em}
+@keyframes stampin{0%{opacity:0;transform:rotate(30deg) scale(1.9)}55%{opacity:1;transform:rotate(9deg) scale(.93)}100%{opacity:1;transform:rotate(12deg) scale(1)}}
+.stamp-in{animation:stampin .6s cubic-bezier(.3,1.4,.5,1) 1.3s both}
+.stamp{transition:transform .6s cubic-bezier(.3,1.6,.5,1)}
+.stamp:hover{transform:scale(1.04)}
+.fxb{position:absolute;left:0;top:0;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;pointer-events:none;z-index:-1;transform:scale(0)}
+.fxs{position:absolute;top:-20%;bottom:-20%;left:0;width:36%;pointer-events:none;z-index:1;opacity:0;background:linear-gradient(100deg,rgba(255,255,255,0) 0,rgba(255,255,255,.38) 50%,rgba(255,255,255,0) 100%);transform:translateX(-120%) skewX(-18deg)}
+.fxl{position:absolute;left:-6px;right:-6px;bottom:-7px;height:1.5px;background:#121212;transform:scaleX(0);transform-origin:50% 50%;border-radius:1px;pointer-events:none}
+[data-fx="link"] .fxl{left:0;right:0;bottom:-3px;height:2px;background:#F2600C;transform-origin:0 50%}
+.fxl0{position:absolute;left:0;right:0;bottom:-3px;height:1px;background:rgba(18,18,18,.35);pointer-events:none}
+.rrow{transition:background .3s cubic-bezier(.22,1,.36,1),padding .3s cubic-bezier(.22,1,.36,1)}
+.rrow:hover{background:rgba(255,255,255,.6);padding-left:14px;padding-right:14px}
+@supports (animation-timeline: view()){
+.reveal{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+}
+.hdel{text-decoration:none;position:relative;white-space:nowrap;display:inline-block}
+.hdel::after{content:"";position:absolute;left:-1.5%;right:-1.5%;top:50%;height:.115em;background:#F2600C;border-radius:999px;transform-origin:left center;transform:rotate(-2.2deg) scaleX(0);transition:transform .28s cubic-bezier(.7,0,.2,1)}
+.hdel.on::after{transform:rotate(-2.2deg) scaleX(1);transition:transform .6s cubic-bezier(.7,0,.2,1)}
+.gl{color:#F2600C;font-family:'Bodoni Moda',Georgia,serif;font-style:italic;font-weight:400;text-transform:none;opacity:.9}
+.stampsvg{display:block;width:180px;height:180px}
+.ringrot{transform-box:view-box;transform-origin:100px 100px;transform:rotate(var(--srot,0deg))}
+.mnote{position:absolute;right:0;top:2.15em;width:300px;transform:translateY(-50%)}
+@media (max-width:760px){.stampsvg{width:108px;height:108px}.stamp-pos{top:-12px}.mnote{position:static;transform:none;width:auto;margin-top:18px}}
+.pbtn{position:relative;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;gap:16px;min-height:56px;padding:0 8px 0 26px;box-sizing:border-box;border-radius:999px;text-decoration:none;font-weight:700;font-stretch:85%;text-transform:uppercase;letter-spacing:.06em;font-size:15px;transition:color .5s cubic-bezier(.22,1,.36,1),translate .9s cubic-bezier(.22,1,.36,1)}
+.pb-label{position:relative}
+.pb-fill{position:absolute;right:8px;top:50%;width:40px;height:40px;margin-top:-20px;border-radius:50%;z-index:-1;transform:scale(1);transition:transform .75s cubic-bezier(.22,1,.36,1)}
+.pbtn:hover .pb-fill,.pbtn:focus-visible .pb-fill{transform:scale(18)}
+.pb-dot{position:relative;width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.pb-arr{position:relative;width:18px;height:20px;overflow:hidden;display:inline-block;font-size:17px}
+.pb-arr i{position:absolute;left:0;top:0;font-style:normal;line-height:20px;transition:transform .55s cubic-bezier(.65,0,.35,1)}
+.pb-arr i:last-child{transform:translateX(-150%)}
+.pbtn:hover .pb-arr i:first-child,.pbtn:focus-visible .pb-arr i:first-child{transform:translateX(150%)}
+.pbtn:hover .pb-arr i:last-child,.pbtn:focus-visible .pb-arr i:last-child{transform:translateX(0)}
+.pb-ink{background:#121212;color:#EEEBE5}.pb-ink .pb-fill{background:#F2600C}.pb-ink .pb-dot{color:#121212}.pb-ink:hover,.pb-ink:focus-visible{color:#121212}
+.pb-orange{background:#F2600C;color:#121212}.pb-orange .pb-fill{background:#121212}.pb-orange .pb-dot{color:#EEEBE5}.pb-orange:hover,.pb-orange:focus-visible{color:#EEEBE5}
+.pb-outline{box-shadow:inset 0 0 0 1.5px #121212;color:#121212}.pb-outline .pb-fill{background:#121212}.pb-outline .pb-dot{color:#EEEBE5}.pb-outline:hover,.pb-outline:focus-visible{color:#EEEBE5}
+.railbar{transform:scaleY(var(--p)) !important}
+.hdel::after{content:none}
+.brush{position:absolute;left:-3%;width:106%;top:30%;height:.3em;overflow:visible;pointer-events:none;clip-path:inset(0 100% 0 0);transition:clip-path .3s cubic-bezier(.7,0,.2,1)}
+.hdel.on .brush{clip-path:inset(-20% 0 -20% 0);transition:clip-path .7s cubic-bezier(.7,0,.2,1)}
+.bdel{position:relative;text-decoration:none;white-space:nowrap}
+.bdel::after{content:none}
+.nl1,.nl2{position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;transform:scaleX(0);transform-origin:right center;pointer-events:none}
+.nl1{background:#121212;transition:transform .5s cubic-bezier(.65,0,.35,1) .14s}
+.nl2{background:#F2600C;transition:transform .5s cubic-bezier(.65,0,.35,1) 0s}
+.nl:hover .nl1,.nl:focus-visible .nl1{transform:scaleX(1);transform-origin:left center;transition-delay:0s}
+.nl:hover .nl2,.nl:focus-visible .nl2{transform:scaleX(1);transform-origin:left center;transition-delay:.18s}
+.cring{position:absolute;left:0;top:0;width:58px;height:58px;margin:-29px 0 0 -29px;pointer-events:none;z-index:20;opacity:0;transition:opacity .35s ease;will-change:transform}
+.cring.show{opacity:1}
+.cfill{stroke-dashoffset:calc(169.6px * (1 - var(--p)))}
+.prow{transition:opacity .5s cubic-bezier(.22,1,.36,1)}
+.prow .dot{transition:background .4s ease,transform .5s cubic-bezier(.3,1.6,.5,1)}
+.prow > *{transition:opacity .5s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
+.pgrp{opacity:var(--go,1);transition:opacity .25s linear}
+.prow .dot{background:rgba(242,96,12,var(--rf,0)) !important;transform:scale(calc(.7 + .65 * var(--rc,0))) !important;transition:transform .18s linear,background .18s linear !important}
+.prow > div{transform:translateX(calc(7px * var(--rc,0))) !important;transition:transform .18s linear !important}
+.prow > *{opacity:1 !important}
+.bdel .brush{clip-path:inset(-20% 100% -20% 0);transition:clip-path .9s cubic-bezier(.7,0,.2,1) .2s}
+.bdel.on .brush{clip-path:inset(-20% 0 -20% 0)}
+@media (max-width:899px){.rail{display:none}}
+@media (hover:none){.cring{display:none}}
+@media (prefers-reduced-motion:reduce){*,*::after{animation:none !important;transition:none !important}}
+.kbstage{--w:300px;--h:480px;--t:41px;width:var(--w);height:var(--h);perspective:1400px;cursor:grab;touch-action:pan-y;-webkit-user-select:none;user-select:none}
+.kbstage img{-webkit-user-drag:none;pointer-events:none}
+.kbstage.dragging{cursor:grabbing}
+.kbbook{--ry:26deg;--rx:4deg;--lift:0px;--sheen:30%;position:absolute;inset:0;transform-style:preserve-3d;transform:translateZ(var(--lift)) rotateX(var(--rx)) rotateY(var(--ry));will-change:transform}
+.kbbook:focus{outline:none}
+.kbbook:focus-visible .kbfront{outline:2px solid #111111;outline-offset:6px}
+.kbface{position:absolute;backface-visibility:hidden}
+.kbface>.kbshade{position:absolute;inset:0;pointer-events:none;background:rgb(24,14,6);opacity:var(--sh,0);border-radius:inherit}
+.kbfront>.kbshade{--sh:var(--sh-front)}
+.kbback>.kbshade{--sh:var(--sh-back)}
+.kbfore>.kbshade{--sh:var(--sh-fore)}
+.kbtop>.kbshade{--sh:.06}
+.kbbottom>.kbshade{--sh:.22}
+.kbfront{inset:0;transform:translateZ(calc(var(--t)/2))}
+.kbfront img{width:100%;height:100%;object-fit:cover;border-radius:1px 3px 3px 1px;display:block}
+.kbfront::after{content:"";position:absolute;inset:0;border-radius:1px 3px 3px 1px;pointer-events:none;background:linear-gradient(105deg,rgba(255,255,255,0) calc(var(--sheen) - 18%),rgba(255,255,255,.28) var(--sheen),rgba(255,255,255,0) calc(var(--sheen) + 18%)),linear-gradient(90deg,rgba(0,0,0,.14) 0,rgba(0,0,0,0) 3.5%);mix-blend-mode:soft-light}
+.kbback{inset:0;background:#F57106;overflow:hidden;transform:rotateY(180deg) translateZ(calc(var(--t)/2));border-radius:3px 1px 1px 3px;box-shadow:-18px 26px 54px -14px rgba(46,33,24,.30),-6px 10px 22px -8px rgba(46,33,24,.22),-40px 60px 90px -30px rgba(46,33,24,.18)}
+.kbfore{top:2px;left:calc(50% - var(--t)/2);width:var(--t);height:calc(100% - 4px);transform:rotateY(90deg) translateZ(calc(var(--w)/2 - 1.5px));background:linear-gradient(90deg,rgba(70,48,26,.30) 0,rgba(70,48,26,.06) 14%,rgba(70,48,26,0) 30%,rgba(70,48,26,0) 70%,rgba(70,48,26,.08) 86%,rgba(70,48,26,.32) 100%),repeating-linear-gradient(90deg,rgba(255,255,255,.55) 0 1px,rgba(0,0,0,0) 1px 7px),repeating-linear-gradient(90deg,#f7f2e7 0 1px,#dcd2bd 1px 2px,#efe8d9 2px 3px),#ebe3d2;box-shadow:inset 1.5px 0 0 #e8e4de,inset -1.5px 0 0 #F57106}
+.kbtop,.kbbottom{left:2px;width:calc(100% - 4px);height:var(--t);top:calc(50% - var(--t)/2);background:linear-gradient(0deg,rgba(70,48,26,.28) 0,rgba(70,48,26,0) 22%,rgba(70,48,26,0) 78%,rgba(70,48,26,.28) 100%),repeating-linear-gradient(0deg,#f7f2e7 0 1px,#dcd2bd 1px 2px,#efe8d9 2px 3px),#ebe3d2}
+.kbtop{transform:rotateX(90deg) translateZ(calc(var(--h)/2 - 1.5px))}
+.kbbottom{transform:rotateX(-90deg) translateZ(calc(var(--h)/2 - 1.5px))}
+.kbshadow{position:absolute;left:8%;right:-4%;bottom:-36px;height:48px;border-radius:50%;background:radial-gradient(closest-side,rgba(46,33,24,.34),rgba(46,33,24,0));filter:blur(14px);transform:translateX(var(--sx,0px)) scale(var(--ss,1));opacity:var(--so,.85);pointer-events:none}
+.kbhint{position:absolute;left:0;right:0;bottom:-72px;margin:0;text-align:center;font:italic 400 15px/1 'Bodoni Moda',serif;color:#5E5954;opacity:.85;transition:opacity .6s}
+.kbstage.touched .kbhint{opacity:0}
+.kbspine>.kbshade{--sh:var(--sh-spine)}
+.kbspine{top:0;left:calc(50% - var(--t)/2);width:var(--t);height:100%;transform:rotateY(-90deg) translateZ(calc(var(--w)/2))}
+.kbspine img,.kbback img{width:100%;height:100%;object-fit:cover;display:block}
+.kbspine::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.18),rgba(0,0,0,0) 40%,rgba(255,255,255,.08) 70%,rgba(0,0,0,.12))}
+.kbhint{opacity:.85}
+.kbstage.touched .kbhint{opacity:0}
+</style>
+</head>
+<body>
+<div style="display: flex; flex-direction: column; background: #EEEBE5">
+  <header class="site-head" style="border-bottom: 2px solid #121212">
+    <nav style="max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 20px clamp(16px, 4vw, 48px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+      <a href="#top" style="text-decoration: none; font-weight: 900; font-stretch: 72%; font-size: 26px; text-transform: uppercase">Andreas Mitschke</a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mnav"><span class="mb-label">Menu</span><span class="mb-icon" aria-hidden="true"><i></i><i></i></span></button>
+      <div class="nav-links" style="display: flex; flex-wrap: wrap; gap: 28px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; text-transform: uppercase; letter-spacing: .06em">
+        <a href="#path" class="nl" style="position: relative; display: inline-block; text-decoration: none; padding-bottom: 6px;">How I got here<span class="nl1" aria-hidden="true"></span><span class="nl2" aria-hidden="true"></span></a><a href="#beliefs" class="nl" style="position: relative; display: inline-block; text-decoration: none; padding-bottom: 6px;">Principles<span class="nl1" aria-hidden="true"></span><span class="nl2" aria-hidden="true"></span></a><a href="#releases" class="nl" style="position: relative; display: inline-block; text-decoration: none; padding-bottom: 6px;">Releases<span class="nl1" aria-hidden="true"></span><span class="nl2" aria-hidden="true"></span></a><a href="#talks" class="nl" style="position: relative; display: inline-block; text-decoration: none; padding-bottom: 6px;">Talks<span class="nl1" aria-hidden="true"></span><span class="nl2" aria-hidden="true"></span></a><a href="#contact" class="nl" style="position: relative; display: inline-block; text-decoration: none; padding-bottom: 6px; font-weight: 600;">Work with me →<span class="nl1" aria-hidden="true"></span><span class="nl2" aria-hidden="true"></span></a>
+      </div>
+    </nav>
+  </header>
+  <div id="mnav" class="mnav" aria-hidden="true">
+    <nav class="mnav-inner" aria-label="Mobile">
+      <a href="#path"><span class="mi">01</span>How I got here</a>
+      <a href="#beliefs"><span class="mi">02</span>Principles</a>
+      <a href="#releases"><span class="mi">03</span>Releases</a>
+      <a href="#talks"><span class="mi">04</span>Talks</a>
+      <a href="#contact" class="mnav-cta"><span class="mi">05</span>Work with me <span aria-hidden="true">→</span></a>
+    </nav>
+    <p class="mnav-foot">Mannheim · Boston</p>
+  </div>
+
+  <section id="top" data-ref="setTop" style="max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; position: relative; padding: 64px clamp(16px, 4vw, 48px) 96px; display: flex; flex-direction: column; gap: 40px">
+    <div class="stamp-track" style="position: absolute; top: 88px; bottom: 24px; right: clamp(16px, 4vw, 48px); width: 180px; z-index: 3; pointer-events: none">
+      <div class="stamp-pos" style="position: sticky; top: 28px; pointer-events: auto">
+        <div class="stamp-in">
+          <a href="#talks" data-ref="fxRef" data-fx="magfar" class="stamp" style="display: block; text-decoration: none; line-height: 0">
+            <svg class="stampsvg" viewBox="0 0 200 200" role="img" aria-label="Open for talks: keynotes, panels, workshops">
+              <defs>
+                <path id="amStampRing" d="M100,100 m-71,0 a71,71 0 1,1 142,0 a71,71 0 1,1 -142,0"></path>
+                <filter id="amStampInk" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"></feDisplacementMap></filter>
+              </defs>
+              <g filter="url(#amStampInk)">
+                <circle cx="100" cy="100" r="95" fill="none" stroke="#F2600C" stroke-width="4.5"></circle>
+                <circle cx="100" cy="100" r="88.5" fill="none" stroke="#F2600C" stroke-width="1.4"></circle>
+                <circle cx="100" cy="100" r="55" fill="none" stroke="#F2600C" stroke-width="1.4" stroke-dasharray="1.5 4"></circle>
+                <circle cx="100" cy="100" r="50" fill="none" stroke="#F2600C" stroke-width="3"></circle>
+                <g class="ringrot"><text fill="#F2600C" style="font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 11.5px; letter-spacing: 2.2px"><textPath href="#amStampRing" textLength="440" lengthAdjust="spacing">NOW BOOKING ✦ KEYNOTES ✦ PANELS ✦ WORKSHOPS ✦</textPath></text></g>
+                <text x="100" y="91" text-anchor="middle" fill="#121212" textLength="62" lengthAdjust="spacingAndGlyphs" style="font-family: Archivo, sans-serif; font-weight: 800; font-size: 11.5px">OPEN FOR</text>
+                <text x="100" y="121" text-anchor="middle" fill="#121212" textLength="66" lengthAdjust="spacingAndGlyphs" style="font-family: Archivo, sans-serif; font-weight: 900; font-size: 28px">TALKS</text>
+              </g>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="rise d1 kick-row" style="display: flex; flex-wrap: wrap; gap: 10px 28px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #4A4744; padding-right: 210px">
+      <span>Memo №&nbsp;001</span><span class="kick-re">Re: how your company decides what to build and how it grows</span><span>Status: <del class="ink draw">pending sign-off</del> <span style="color: #121212; font-weight: 600; white-space: nowrap">field-tested</span></span>
+    </div>
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true"><defs><linearGradient id="amBrushFill" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F2600C" stop-opacity=".92"></stop><stop offset=".18" stop-color="#F2600C"></stop><stop offset=".85" stop-color="#F2600C"></stop><stop offset="1" stop-color="#F2600C" stop-opacity=".88"></stop></linearGradient><filter id="amBrushEdge" x="-2%" y="-30%" width="104%" height="160%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.22" numOctaves="1" seed="4" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="2.2"></feDisplacementMap></filter></defs></svg>
+    <div class="hl" style="position: relative; font-size: clamp(56px, 15vw, 232px)">
+      <h1 aria-label="Stop approving. Start proving." style="margin: 0; font-size: 1em; font-weight: 900; font-stretch: 68%; text-transform: uppercase; line-height: .86">
+        <span class="rise d2" aria-hidden="true" style="display: block">Stop</span>
+        <span class="rise d2" aria-hidden="true" style="display: block; white-space: nowrap"><del class="hdel" data-hl="del"><span data-hl="c1">approving.</span><svg class="brush" viewBox="0 0 400 48" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#amBrushEdge)"><path fill="url(#amBrushFill)" d="M6 30 C 50 24, 120 20, 200 17.5 C 280 15, 340 12.5, 391 10.5 C 397 10.3, 399 13, 396 15.5 C 360 19.5, 300 23, 220 27 C 150 30.5, 80 34.5, 22 37 C 10 37.5, 3 35.5, 3 33 C 3 31.5, 4 30.4, 6 30 Z"></path><path d="M40 33.5 C 140 27, 260 20.5, 370 14.5" stroke="#FFFFFF" stroke-opacity=".18" stroke-width="1.1" fill="none"></path></g></svg></del></span>
+        <span class="rise d3" aria-hidden="true" style="display: block">Start</span>
+        <span class="rise d3" aria-hidden="true" style="display: block; white-space: nowrap"><span data-hl="c2">proving.</span></span>
+      </h1>
+      <div class="mnote">
+        <div class="rise d4" style="display: flex; flex-direction: column; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; color: #4A4744">
+          <span><span style="color: #B33D00">↳</span> margin note:</span>
+          <span>Everything I do comes back to revenue. Find out what is worth building — then grow it, iteratively, on the product and the marketing side.</span>
+        </div>
+      </div>
+    </div>
+    <div class="rise d4" style="max-width: 660px; display: flex; flex-direction: column; gap: 24px">
+      <p style="margin: 0; font-size: clamp(19px, 1.8vw, 23px); line-height: 1.45; text-wrap: pretty">I help companies make better calls on what to build and how to grow it: strategy first, a clear business goal, and experiments to validate it. Systems thinking on top, over 15 years of hands-on growth and product underneath. Two exits, author of <em>Known Before Built</em>.</p>
+      <div style="display: flex"><a href="#contact" data-ref="fxRef" data-fx="mag" class="pbtn pb-ink"><span class="pb-fill" aria-hidden="true"></span><span class="pb-label">Start a conversation</span><span class="pb-dot" aria-hidden="true"><span class="pb-arr"><i>→</i><i>→</i></span></span></a></div>
+    </div>
+  </section>
+
+  <section id="path" data-ref="setPath" style="position: relative; background: #F7F5F1; border-top: 2px solid #121212; --p: 0">
+    <div data-ref="setCur" class="cring" aria-hidden="true">
+      <svg width="58" height="58" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="27" fill="none" stroke="rgba(18,18,18,.16)" stroke-width="2"></circle>
+        <circle class="cfill" cx="32" cy="32" r="27" fill="none" stroke="#F2600C" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="169.6" transform="rotate(-90 32 32)"></circle>
+      </svg>
+    </div>
+    <div class="rail" aria-hidden="true" style="position: absolute; top: 96px; bottom: 96px; left: max(4px, calc(50% - 694px)); width: 48px">
+      <div style="position: sticky; top: 280px; display: flex; flex-direction: column; align-items: center; gap: 14px">
+
+        <span class="railline" style="display: block; width: 2px; height: 220px; background: #D9D3CB; position: relative; overflow: hidden"><span class="railbar" style="position: absolute; inset: 0; background: #121212; transform-origin: top; transform: scaleY(0)"></span></span>
+      </div>
+    </div>
+    <div style="max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 96px clamp(16px, 4vw, 48px) 56px; display: flex; flex-direction: column; gap: 24px">
+      <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 16px">
+        <h2 style="margin: 0; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(48px, 7vw, 96px); line-height: .9">How I got <span style="font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; text-transform: none">here</span></h2>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Range, with depth · all about finding and growing revenue</span>
+      </div>
+      <div class="pgrp" style="display: flex; flex-wrap: wrap; gap: 16px 56px; padding: 40px 0; border-top: 1px solid #CFC9C1">
+        <div style="flex: 0 1 280px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #B33D00">Build it</span>
+          <span style="font-size: clamp(30px, 3vw, 40px); line-height: 1.1; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">Where it started</span>
+        </div>
+        <div style="flex: 1 1 520px; display: flex; flex-direction: column; gap: 30px; min-width: 0">
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">UX design &amp; Research</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">Since my teens: designing interfaces for perceived ease of use and task flows that actually work. Research always came first — the market the interface lives in and the person using it. Twenty years on, the principle hasn’t changed.</p>
+            </div>
+          </div>
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">Founder</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">First company at 15: web design services, then a travel-experience platform. Two exits since.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pgrp" style="display: flex; flex-wrap: wrap; gap: 16px 56px; padding: 40px 0; border-top: 1px solid #CFC9C1">
+        <div style="flex: 0 1 280px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #B33D00">Grow it</span>
+          <span style="font-size: clamp(30px, 3vw, 40px); line-height: 1.1; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">The growth years</span>
+        </div>
+        <div style="flex: 1 1 520px; display: flex; flex-direction: column; gap: 30px; min-width: 0">
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">Growth, product &amp; marketing</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">Into growth through SEO in 2008, then CRO, performance marketing and product experimentation. Later head of marketing at an entrepreneurship centre.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pgrp" style="display: flex; flex-wrap: wrap; gap: 16px 56px; padding: 40px 0; border-top: 1px solid #CFC9C1">
+        <div style="flex: 0 1 280px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #B33D00">Apply it</span>
+          <span style="font-size: clamp(30px, 3vw, 40px); line-height: 1.1; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">The practice</span>
+        </div>
+        <div style="flex: 1 1 520px; display: flex; flex-direction: column; gap: 30px; min-width: 0">
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">Business &amp; growth consultant</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">Discovery, validation and growth for robotics, industrial, professional-services and deep-tech organisations. Started in B2C, tech and SaaS.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pgrp" style="display: flex; flex-wrap: wrap; gap: 16px 56px; padding: 40px 0; border-top: 1px solid #CFC9C1">
+        <div style="flex: 0 1 280px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #B33D00">Back it</span>
+          <span style="font-size: clamp(30px, 3vw, 40px); line-height: 1.1; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">The investor side</span>
+        </div>
+        <div style="flex: 1 1 520px; display: flex; flex-direction: column; gap: 30px; min-width: 0">
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">Venture</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">VC fellowship in New York. About two years of venture scouting and deal brokering for four funds in Europe, New York and Silicon Valley. Accepted to VC Lab, 2023.</p>
+            </div>
+          </div>
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">Advisor</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">Growth and product advisor to startups through 500 Global and Loyal VC. Around half a dozen advisory seats.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pgrp" style="display: flex; flex-wrap: wrap; gap: 16px 56px; padding: 40px 0; border-top: 1px solid #CFC9C1">
+        <div style="flex: 0 1 280px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #B33D00">Teach it</span>
+          <span style="font-size: clamp(30px, 3vw, 40px); line-height: 1.1; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">The teaching side</span>
+        </div>
+        <div style="flex: 1 1 520px; display: flex; flex-direction: column; gap: 30px; min-width: 0">
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">Startup coach</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">Coached founders at the Mannheim founder centre. Lean Startup, Design Sprint and Design Thinking workshops — none of which work until you get out and test in the field.</p>
+            </div>
+          </div>
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">University lecturer</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">Taught entrepreneurship and product discovery at universities in Mannheim; guest lectures on growth in Heidelberg and Karlsruhe.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pgrp" style="display: flex; flex-wrap: wrap; gap: 16px 56px; padding: 40px 0; border-top: 1px solid #CFC9C1">
+        <div style="flex: 0 1 280px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #B33D00">Share it</span>
+          <span style="font-size: clamp(30px, 3vw, 40px); line-height: 1.1; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">The writing side</span>
+        </div>
+        <div style="flex: 1 1 520px; display: flex; flex-direction: column; gap: 30px; min-width: 0">
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">Researcher</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px">Independent research on why German entrepreneurship education is structured not to create entrepreneurs. The same habit I bring to every market: go deep before you decide.</p>
+            </div>
+          </div>
+          <div class="prow reveal" style="display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 0 18px">
+            <span class="dot" style="width: 14px; height: 14px; border-radius: 50%; border: 3px solid #F2600C; box-sizing: border-box; margin-top: 7px"></span>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <div style="display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px">
+                <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">Author</span>
+              </div>
+              <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px"><em>Known Before Built</em>. Written, designed and typeset end to end; published under my own imprint, Grant &amp; Bear.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 24px clamp(16px, 4vw, 48px) 96px; display: flex; flex-direction: column; gap: 32px">
+      <div class="pgrp" style="display: flex; flex-wrap: wrap; gap: 16px 56px; padding-top: 40px; border-top: 2px solid #121212">
+        <div style="flex: 0 1 280px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #B33D00">Start it</span>
+          <span style="font-size: clamp(30px, 3vw, 40px); line-height: 1.1; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">Side quests</span>
+        </div>
+        <div style="flex: 1 1 520px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 32px; min-width: 0">
+        <div class="side reveal" style="border-top: 3px solid #121212; padding-top: 18px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-weight: 900; font-stretch: 78%; font-size: 24px; line-height: 1.05; text-transform: uppercase">Deep Tech Hub</span>
+          <span style="font-size: 16px; line-height: 1.55; color: #3E3B38">Helped build Germany’s largest academic deep-tech programme, together with KIT.</span>
+        </div>
+        <div class="side reveal" style="border-top: 3px solid #121212; padding-top: 18px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-weight: 900; font-stretch: 78%; font-size: 24px; line-height: 1.05; text-transform: uppercase">Social Media Marketing Club Mannheim &amp; Twittwoch Frankfurt</span>
+          <span style="font-size: 16px; line-height: 1.55; color: #3E3B38">Co-created both — recurring meet-ups for people figuring out social media before it had a playbook.</span>
+        </div>
+        <div class="side reveal" style="border-top: 3px solid #121212; padding-top: 18px; display: flex; flex-direction: column; gap: 10px">
+          <span style="font-weight: 900; font-stretch: 78%; font-size: 24px; line-height: 1.05; text-transform: uppercase">Personal fitness trainer</span>
+          <span style="font-size: 16px; line-height: 1.55; color: #3E3B38">Before the boardrooms, other people’s habits. Same lesson: what people do beats what they plan.</span>
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="beliefs" data-ref="setBelief" style="border-top: 2px solid #121212">
+    <div style="max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 96px clamp(16px, 4vw, 48px); display: flex; flex-wrap: wrap; gap: 32px 56px">
+      <div style="flex: 0 1 340px; display: flex; flex-direction: column; gap: 18px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Principles</span>
+        <span style="font-size: clamp(38px, 4vw, 56px); line-height: 1.05; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">What I keep repeating.</span>
+        <svg class="spin" width="48" height="48" viewBox="0 0 24 24" aria-hidden="true"><line x1="18.00" y1="12.00" x2="22.00" y2="12.00" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.25"></line><line x1="17.20" y1="15.00" x2="20.66" y2="17.00" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.32"></line><line x1="15.00" y1="17.20" x2="17.00" y2="20.66" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.39"></line><line x1="12.00" y1="18.00" x2="12.00" y2="22.00" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.45"></line><line x1="9.00" y1="17.20" x2="7.00" y2="20.66" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.52"></line><line x1="6.80" y1="15.00" x2="3.34" y2="17.00" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.59"></line><line x1="6.00" y1="12.00" x2="2.00" y2="12.00" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.66"></line><line x1="6.80" y1="9.00" x2="3.34" y2="7.00" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.73"></line><line x1="9.00" y1="6.80" x2="7.00" y2="3.34" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.80"></line><line x1="12.00" y1="6.00" x2="12.00" y2="2.00" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.86"></line><line x1="15.00" y1="6.80" x2="17.00" y2="3.34" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="0.93"></line><line x1="17.20" y1="9.00" x2="20.66" y2="7.00" stroke="#F2600C" stroke-width="2" stroke-linecap="round" opacity="1.00"></line></svg>
+      </div>
+      <div style="flex: 1 1 560px; display: flex; flex-direction: column; border-bottom: 1px solid #CFC9C1; min-width: 0">
+          <div class="reveal" style="display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 0 20px; padding: 22px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+            <span style="font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 40px; line-height: 1; color: #F2600C">1</span>
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <p style="margin: 0; font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(30px, 3.4vw, 48px); line-height: 1">Don’t ask for <del class='bdel'>opinions.<svg class='brush' viewBox='0 0 400 48' preserveAspectRatio='none' aria-hidden='true'><g filter='url(#amBrushEdge)'><path fill='url(#amBrushFill)' d='M6 30 C 50 24, 120 20, 200 17.5 C 280 15, 340 12.5, 391 10.5 C 397 10.3, 399 13, 396 15.5 C 360 19.5, 300 23, 220 27 C 150 30.5, 80 34.5, 22 37 C 10 37.5, 3 35.5, 3 33 C 3 31.5, 4 30.4, 6 30 Z'></path><path d='M40 33.5 C 140 27, 260 20.5, 370 14.5' stroke='#FFFFFF' stroke-opacity='.18' stroke-width='1.1' fill='none'></path></g></svg></del> Ask for behaviour.</p>
+              <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #3E3B38; max-width: 620px">Opinions describe what people believe they would do. Behaviour shows what they did. Reported behaviour beats opinion, and observed behaviour beats both.</p>
+            </div>
+          </div>
+          <div class="reveal" style="display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 0 20px; padding: 22px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+            <span style="font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 40px; line-height: 1; color: #F2600C">2</span>
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <p style="margin: 0; font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(30px, 3.4vw, 48px); line-height: 1">They are the rock stars. You are their fan.</p>
+              <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #3E3B38; max-width: 620px">Customers, buyers and users are the experts on their own problems. Your job is to listen and observe to understand their reality.</p>
+            </div>
+          </div>
+          <div class="reveal" style="display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 0 20px; padding: 22px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+            <span style="font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 40px; line-height: 1; color: #F2600C">3</span>
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <p style="margin: 0; font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(30px, 3.4vw, 48px); line-height: 1">Research is the foundation of everything.</p>
+              <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #3E3B38; max-width: 620px">Know the market, the customers, the buyers and the users in depth. That is how you find the right product and how you find the channels to grow it.</p>
+            </div>
+          </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="releases" style="background: #F7F5F1; border-top: 2px solid #121212">
+   <div style="max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 104px clamp(16px, 4vw, 48px); display: flex; flex-direction: column; gap: 40px">
+    <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px">
+      <h2 style="margin: 0; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(48px, 7vw, 96px); line-height: .9">Releases</h2>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Filed, published, shipped</span>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 48px 72px; align-items: center">
+      <div style="flex: 0 0 auto; width: 340px; max-width: 100%; height: 600px; display: flex; justify-content: center; align-items: flex-start; padding-top: 40px; box-sizing: border-box">
+        <div data-ref="setStage" class="kbstage" data-on-pointerdown="bDown" data-on-pointermove="bMove" data-on-pointerup="bUp" data-on-pointercancel="bUp" style="position: relative">
+          <div data-ref="setBook3" class="kbbook" role="img" aria-label="Known Before Built by Andreas Mitschke. Drag, or use the arrow keys, to turn the book." tabindex="0" data-on-keydown="bKey">
+            <div class="kbface kbfront"><img src="assets/kbb-front.jpg" width="760" height="1216" alt="" draggable="false"><i class="kbshade"></i></div>
+            <div class="kbface kbback"><img src="assets/kbb-back.jpg" width="760" height="1216" alt="" draggable="false"><i class="kbshade"></i></div>
+            <div class="kbface kbspine"><img src="assets/kbb-spine.jpg" width="104" height="1216" alt="" draggable="false"><i class="kbshade"></i></div>
+            <div class="kbface kbfore"><i class="kbshade"></i></div>
+            <div class="kbface kbtop"><i class="kbshade"></i></div>
+            <div class="kbface kbbottom"><i class="kbshade"></i></div>
+          </div>
+          <div data-ref="setBShadow" class="kbshadow"></div>
+          <p class="kbhint" aria-hidden="true">Drag to turn the book</p>
+        </div>
+      </div>
+      <div style="flex: 1 1 460px; display: flex; flex-direction: column; gap: 22px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Latest · Book · paperback · Grant &amp; Bear</span>
+        <span style="font-weight: 900; text-transform: uppercase; font-size: clamp(44px, 5vw, 72px); line-height: .92; letter-spacing: -.015em">Known <span style="font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: 0">before</span> Built</span>
+        <p style="margin: 0; font-size: 19px; line-height: 1.55; max-width: 600px">From Discovery to Decision for Enterprises in Transformation. It ends at the investment decision — and gives you a number for the next time someone asks “Why can’t we just ship it?”</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 14px"><a href="#" data-ref="fxRef" data-fx="mag" class="pbtn pb-orange"><span class="pb-fill" aria-hidden="true"></span><span class="pb-label">Get the book</span><span class="pb-dot" aria-hidden="true"><span class="pb-arr"><i>→</i><i>→</i></span></span></a><a href="#" data-ref="fxRef" data-fx="mag" class="pbtn pb-outline"><span class="pb-fill" aria-hidden="true"></span><span class="pb-label">knownbeforebuilt.com</span><span class="pb-dot" aria-hidden="true"><span class="pb-arr"><i>→</i><i>→</i></span></span></a></div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column">
+      <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+        <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Paper · preprint, SSRN</span>
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">Why Entrepreneurship Education Cannot Close the Intention-Behavior Gap</span>
+          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">Implementation intentions, programme design and venture outcomes. A PRISMA systematic review.</span>
+        </div>
+        <span style="flex: 0 0 auto; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 18px; color: #B33D00">Under review</span>
+        <a href="#" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Read the preprint <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
+      </div>
+      <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+        <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Paper · preprint, SSRN</span>
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">Structured not to create Entrepreneurs</span>
+          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">The legitimation function, institutional decoupling and the data privacy wall in German entrepreneurship education.</span>
+        </div>
+        <span style="flex: 0 0 auto; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 18px; color: #B33D00">Under review</span>
+        <a href="#" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Read the preprint <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
+      </div>
+      <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+        <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Tool · free, no sign-up</span>
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">Signal</span>
+          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">Score an idea before anyone puts it on a roadmap.</span>
+        </div>
+        <span style="flex: 0 0 auto; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 18px; color: #B33D00">Coming soon</span>
+        <a href="#" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Get notified <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
+      </div>
+      <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+        <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Template · free, Notion</span>
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">The Ultimate Data Room</span>
+          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">A ready-made data room for startups going into due diligence.</span>
+        </div>
+        <span style="flex: 0 0 auto; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 18px; color: #B33D00">Free</span>
+        <a href="#" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Duplicate it <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; border-bottom: 1px solid #CFC9C1; align-items: baseline">
+        <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Off the record</span>
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">More on request</span>
+          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">Teaching notes, templates, talks and working papers.</span>
+        </div>
+        <a href="#contact" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Ask <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
+      </div>
+    </div>
+   </div>
+  </section>
+
+  <section id="talks" style="border-top: 2px solid #121212">
+    <div style="max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 96px clamp(16px, 4vw, 48px); display: flex; flex-wrap: wrap; gap: 40px 56px">
+      <div style="flex: 0 1 340px; display: flex; flex-direction: column; gap: 18px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #B33D00">Talks</span>
+        <span style="font-size: clamp(38px, 4vw, 56px); line-height: 1.05; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">Put me on your stage.</span>
+        <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #3E3B38">Keynotes, panels, workshops, guest lectures and podcasts — in English or German. I co-created event series long before I spoke at them, so I know what organisers need.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 14px"><a href="mailto:[EMAIL]?subject=Talk" data-ref="fxRef" data-fx="magfar" class="pbtn pb-orange"><span class="pb-fill" aria-hidden="true"></span><span class="pb-label">Book a talk</span><span class="pb-dot" aria-hidden="true"><span class="pb-arr"><i>→</i><i>→</i></span></span></a></div>
+      </div>
+      <div style="flex: 1 1 560px; display: flex; flex-direction: column; border-bottom: 1px solid #CFC9C1; min-width: 0">
+        <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 24px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+          <span style="flex: 0 0 56px; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 34px; line-height: 1; color: #F2600C">1</span>
+          <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+            <span style="font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(26px, 2.8vw, 38px); line-height: 1">Known before built</span>
+            <span style="font-size: 17px; line-height: 1.5; color: #3E3B38">How enterprises decide what is worth building — before the budget is spent.</span>
+          </div>
+        </div>
+        <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 24px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+          <span style="flex: 0 0 56px; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 34px; line-height: 1; color: #F2600C">2</span>
+          <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+            <span style="font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(26px, 2.8vw, 38px); line-height: 1">The AI productivity fallacy</span>
+            <span style="font-size: 17px; line-height: 1.5; color: #3E3B38">Why engineering speed was never the bottleneck, and what is.</span>
+          </div>
+        </div>
+        <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 24px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+          <span style="flex: 0 0 56px; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 34px; line-height: 1; color: #F2600C">3</span>
+          <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+            <span style="font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(26px, 2.8vw, 38px); line-height: 1">Don’t ask for opinions</span>
+            <span style="font-size: 17px; line-height: 1.5; color: #3E3B38">Customer research that predicts what people will actually do.</span>
+          </div>
+        </div>
+        <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 24px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
+          <span style="flex: 0 0 56px; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 34px; line-height: 1; color: #F2600C">4</span>
+          <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+            <span style="font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(26px, 2.8vw, 38px); line-height: 1">Growth is one system</span>
+            <span style="font-size: 17px; line-height: 1.5; color: #3E3B38">Experimentation across marketing and product, aimed at revenue.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="background: #121212; color: #EEEBE5; flex-grow: 1; min-height: 807px; box-sizing: border-box">
+    <div style="max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 104px clamp(16px, 4vw, 48px) 56px; display: flex; flex-direction: column; gap: 44px">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px 28px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; font-size: 14px; color: #B9B3AB"><span>Strategic roles in growth, product &amp; innovation</span><span>Advisory</span><span>Consulting</span><span>Talks</span></div>
+      <h2 style="margin: 0; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(44px, 6vw, 92px); line-height: .9; max-width: 1100px">Where does your next revenue come from?</h2>
+      <p style="margin: -16px 0 0; font-size: clamp(20px, 2vw, 26px); line-height: 1.4; max-width: 760px; color: #D6D1CA">A new channel, a new vertical, a new product or feature. Let’s find it — then grow it.</p>
+      <a href="mailto:[EMAIL]" data-ref="fxRef" data-fx="big" style="position: relative; overflow: hidden; isolation: isolate; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 32px; padding: 28px 20px; border-top: 2px solid #EEEBE5; border-bottom: 2px solid #EEEBE5; text-decoration: none; color: #EEEBE5; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(64px, 11vw, 176px); line-height: .86">
+        <span class="fxb" aria-hidden="true"></span>
+        <span style="position: relative">Let’s talk</span><span data-fx-arrow="right" aria-hidden="true" style="position: relative; color: #F2600C">→</span>
+      </a>
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #B9B3AB">
+        <span>[EMAIL] · Mannheim · Boston</span><div style="display: flex; gap: 24px"><a href="#" style="color: #EEEBE5">LinkedIn</a><a href="#" style="color: #EEEBE5">SSRN</a><a href="#" style="color: #EEEBE5">knownbeforebuilt.com</a></div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+class DCLogic {
+  constructor(props) { this.props = props || {}; this.state = {}; }
+  setState(patch) { Object.assign(this.state, typeof patch === 'function' ? patch(this.state) : patch); if (this.__mounted) this.__render(); }
+  forceUpdate() { if (this.__mounted) this.__render(); }
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    if (!window.__amAnchor) { window.__amAnchor = true;
+      document.addEventListener('click', (e) => {
+        const a = e.target && e.target.closest ? e.target.closest('a[href^="#"]') : null; if (!a) return;
+        const id = a.getAttribute('href').slice(1); if (!id) return; const el = document.getElementById(id); if (!el) return;
+        e.preventDefault();
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const y0 = window.scrollY || document.documentElement.scrollTop; const hd = document.querySelector('.site-head'); const off = hd && getComputedStyle(hd).position === 'sticky' ? hd.offsetHeight : 0; const y1 = y0 + el.getBoundingClientRect().top - off;
+        const dist = Math.abs(y1 - y0); if (reduce || dist < 2) { window.scrollTo(0, y1); return; }
+        const D = Math.min(2000, 900 + dist * 0.3); const t0 = performance.now();
+        const ease = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+        let stop = false; const cancel = () => { stop = true; };
+        window.addEventListener('wheel', cancel, { once: true, passive: true }); window.addEventListener('touchstart', cancel, { once: true, passive: true });
+        const step = (n) => { if (stop) return; const k = Math.min(1, (n - t0) / D); window.scrollTo(0, y0 + (y1 - y0) * ease(k)); if (k < 1) requestAnimationFrame(step); else { try { history.replaceState(null, '', '#' + id); } catch (_) {} try { el.focus({ preventScroll: true }); } catch (_) {} } };
+        requestAnimationFrame(step);
+      });
+    }
+    this.pairs = [['meeting.', 'testing.'], ['discussing.', 'building.'], ['debating.', 'shipping.'], ['approving.', 'proving.']];
+    this.pool = '∑∫∂πΔ≈±×÷√∞λσμθ≠≤≥01·−';
+    const k0 = this.fxStill() ? 3 : 0;
+    this.state = { k: k0, c1: this.plain(this.pairs[k0][0]), c2: this.plain(this.pairs[k0][1]), struck: k0 === 3 };
+    this.hlT = 0; this.hlRaf = 0; this.hlRunning = false; this.HOLD = 2600;
+    this.replay = () => { if (this.fxStill() || this.hlRunning || this.state.k !== 3) return; this.hlRunning = true; this.setState({ struck: false }); this.hlT = setTimeout(() => this.morph(0, () => this.cycle()), 300); };
+    this.pathEl = null; this.setPath = (el) => { this.pathEl = el; this.railUpdate(); };
+    this.cur = { el: null, x: -100, y: -100, tx: -100, ty: -100, raf: 0, inside: false };
+    this.setCur = (el) => { this.cur.el = el; };
+    this.topEl = null; this.setTop = (el) => { this.topEl = el; };
+    this.belEl = null; this.setBelief = (el) => { this.belEl = el; };
+    this.onPtr = (e) => { if (e.pointerType && e.pointerType !== 'mouse') return; const C = this.cur; C.tx = e.clientX; C.ty = e.clientY; this.curCheck(); this.fxPtr = { x: e.clientX, y: e.clientY }; if (this.fxFar && this.fxFar.length && !this.fxPF) this.fxPF = requestAnimationFrame(() => this.fxFrame()); };
+    this.onScroll = () => { if (!this.railRaf) this.railRaf = requestAnimationFrame(() => { this.railRaf = 0; this.railUpdate(); }); };
+    this.fxRef = (el) => this.fxAttach(el);
+    this.bk = { cur: { ry: 26, rx: 4, lift: 0 }, tgt: { ry: 26, rx: 4, lift: 0 }, turn: 0, mode: 'idle', vel: 0, drag: null, raf: 0, rt: 0 };
+    this.setStage = (el) => { this.bk.stage = el; }; this.setBook3 = (el) => { this.bk.book = el; if (el) this.bRender(); }; this.setBShadow = (el) => { this.bk.shadow = el; };
+    this.bDown = (e) => { const B = this.bk; if (e.button !== undefined && e.button !== 0) return; if (e.pointerType === 'mouse') e.preventDefault();
+      clearTimeout(B.rt); B.mode = 'drag'; B.vel = 0; B.drag = { x: e.clientX, y: e.clientY, t: performance.now(), id: e.pointerId, type: e.pointerType };
+      try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {}
+      if (B.stage) { B.stage.classList.add('dragging'); B.stage.classList.add('touched'); } B.tgt.lift = 18; this.bKick(); };
+    this.bMove = (e) => { const B = this.bk; if (B.mode !== 'drag' || !B.drag || e.pointerId !== B.drag.id) return;
+      const now = performance.now(), dx = e.clientX - B.drag.x, dy = e.clientY - B.drag.y, dt = Math.max(1, now - B.drag.t);
+      B.tgt.ry += dx * 0.55; if (B.drag.type !== 'touch') B.tgt.rx = Math.max(-28, Math.min(28, B.tgt.rx - dy * 0.3));
+      B.vel = B.vel * 0.5 + (dx * 0.55) / dt * 16 * 0.5; B.drag.x = e.clientX; B.drag.y = e.clientY; B.drag.t = now; this.bKick(); };
+    this.bUp = (e) => { const B = this.bk; if (B.mode !== 'drag' || !B.drag || (e && e.pointerId !== B.drag.id)) return;
+      if (B.stage) B.stage.classList.remove('dragging'); B.drag = null; B.tgt.lift = 0;
+      if (!this.fxStill() && Math.abs(B.vel) > 0.3) B.mode = 'inertia'; else { B.mode = 'rest'; this.bReturn(); } this.bKick(); };
+    this.bKey = (e) => { const B = this.bk; const step = { ArrowLeft: -20, ArrowRight: 20 }[e.key]; if (step === undefined) return;
+      e.preventDefault(); clearTimeout(B.rt); B.mode = 'rest'; B.tgt.ry += step; this.bKick(); this.bReturn(); };
+    this.bNear = (e) => { const B = this.bk; if (B.mode !== 'idle' || !B.stage || this.fxStill()) return;
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      const r = B.stage.getBoundingClientRect(); if (!r.width) return; const sc = r.width / 300 || 1; const R = 520 * sc;
+      const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2), d = Math.hypot(dx, dy);
+      let p = Math.max(0, 1 - d / R); p = p * p * (3 - 2 * p);
+      const nx = Math.max(-1, Math.min(1, dx / R)), ny = Math.max(-1, Math.min(1, dy / R));
+      B.tgt.ry = B.turn + 26 - p * 20 + nx * 16 * p; B.tgt.rx = 4 - ny * 10 * p; B.tgt.lift = p * 28; this.bKick(); };
+  }
+  componentDidMount() {
+    document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true });
+    window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
+    this.railUpdate();
+    if (!this.fxStill()) { this.hlRunning = true; this.hlT = setTimeout(() => { this.setState({ struck: true }); this.hlT = setTimeout(() => this.cycle(), 700 + this.HOLD); }, 1150); }
+  }
+  componentWillUnmount() { document.removeEventListener('pointermove', this.bNear); document.removeEventListener('pointermove', this.onPtr); window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); clearTimeout(this.hlT); cancelAnimationFrame(this.hlRaf); }
+  plain(w) { return Array.from(w).map((t) => ({ t, cls: '' })); }
+  glyph() { return this.pool[Math.floor(Math.random() * this.pool.length)]; }
+  cycle() {
+    const k = this.state.k; if (k >= 3) { this.hlRunning = false; return; }
+    this.morph(k + 1, () => { if (k + 1 < 3) this.hlT = setTimeout(() => this.cycle(), this.HOLD); else this.hlRunning = false; });
+  }
+  morph(to, done) {
+    const [o1, o2] = this.pairs[this.state.k], [n1, n2] = this.pairs[to];
+    this.setState({ struck: false });
+    const OUT = 55 * Math.max(o1.length, o2.length), IN = 100 * Math.max(n1.length, n2.length);
+    const t0 = performance.now() + 320; let last = 0;
+    const mk = (o, n, t) => {
+      if (t < OUT) { const L = o.length, k = Math.ceil(L * t / OUT);
+        return Array.from(o).map((ch, i) => i >= L - k ? { t: this.glyph(), cls: 'gl' } : { t: ch, cls: '' }); }
+      const L = n.length, per = IN / L, keep = Math.floor((t - OUT) / per);
+      return Array.from(n).map((ch, i) => i < keep ? { t: ch, cls: '' } : { t: this.glyph(), cls: 'gl' });
+    };
+    const step = (now) => {
+      const t = now - t0;
+      if (t < 0) { this.hlRaf = requestAnimationFrame(step); return; }
+      if (t >= OUT + IN) { this.setState({ k: to, c1: this.plain(n1), c2: this.plain(n2) });
+        this.hlT = setTimeout(() => { this.setState({ struck: true }); this.hlT = setTimeout(done, 700); }, 160); return; }
+      if (now - last >= 66) { last = now; this.setState({ c1: mk(o1, n1, t), c2: mk(o2, n2, t) }); }
+      this.hlRaf = requestAnimationFrame(step);
+    };
+    this.hlRaf = requestAnimationFrame(step);
+  }
+  railUpdate() {
+    if (this.belEl) { const vh0 = window.innerHeight || 800; this.belEl.querySelectorAll('.bdel').forEach((d) => { const b = d.getBoundingClientRect(); if (b.top < vh0 * 0.78 && b.bottom > 0) d.classList.add('on'); else if (b.top > vh0) d.classList.remove('on'); }); } if (this.topEl) this.topEl.style.setProperty('--srot', ((window.scrollY || 0) * 0.12).toFixed(1) + 'deg'); const el = this.pathEl; if (!el) return; const r = el.getBoundingClientRect(); const vh = window.innerHeight || 800;
+    const p = Math.max(0, Math.min(1, (vh * 0.45 - r.top) / Math.max(1, r.height - vh * 0.35)));
+    el.style.setProperty('--p', p.toFixed(4));
+    const inView = r.top < vh * 0.6 && r.bottom > vh * 0.4; el.classList.toggle('tracking', inView);
+    const focus = vh * 0.45, span = vh * 0.32;
+    el.querySelectorAll('.pgrp').forEach((g) => { const b = g.getBoundingClientRect();
+      const d = b.top <= focus && b.bottom >= focus ? 0 : Math.min(Math.abs(b.top - focus), Math.abs(b.bottom - focus));
+      const floor = b.bottom < focus ? 0.68 : 0.4; const k = Math.min(1, d / span); const e = k * k * (3 - 2 * k);
+      g.style.setProperty('--go', inView ? (1 - (1 - floor) * e).toFixed(3) : '1'); });
+    const near = vh * 0.2;
+    el.querySelectorAll('.prow').forEach((row) => { const b = row.getBoundingClientRect(); const c = b.top + b.height / 2; const d = Math.abs(c - focus);
+      let k = Math.max(0, 1 - d / near); k = k * k * (3 - 2 * k);
+      const fill = c < focus ? 1 : k;
+      row.style.setProperty('--rc', (inView || r.top < focus ? k : 0).toFixed(3)); row.style.setProperty('--rf', (r.top < focus ? fill : 0).toFixed(3)); });
+    this.curCheck(); }
+  curCheck() { const C = this.cur, el = this.pathEl; if (!C.el || !el) return;
+    const r = el.getBoundingClientRect(); const inside = !this.fxStill() && C.tx >= r.left && C.tx <= r.right && C.ty >= r.top && C.ty <= r.bottom;
+    if (inside !== C.inside) { C.inside = inside; C.el.classList.toggle('show', inside); if (inside) C.snap = true; }
+    if (!C.raf) C.raf = requestAnimationFrame(() => this.curTick()); }
+  curTick() { const C = this.cur, el = this.pathEl; C.raf = 0; if (!C.el || !el) return;
+    const r = el.getBoundingClientRect(); const sc = (el.offsetWidth ? r.width / el.offsetWidth : 1) || 1;
+    const lx = (C.tx - r.left) / sc, ly = (C.ty - r.top) / sc;
+    if (C.snap) { C.x = lx; C.y = ly; C.snap = false; }
+    C.x += (lx - C.x) * 0.22; C.y += (ly - C.y) * 0.22;
+    C.el.style.transform = 'translate(' + C.x.toFixed(1) + 'px,' + C.y.toFixed(1) + 'px)';
+    if (C.inside && (Math.abs(lx - C.x) > 0.3 || Math.abs(ly - C.y) > 0.3)) C.raf = requestAnimationFrame(() => this.curTick()); }
+  fxFrame() { this.fxPF = 0; const P0 = this.fxPtr; if (!P0 || !this.fxFar) return; const still = this.fxStill();
+    this.fxFar.forEach((G) => { if (!G.el.isConnected) return; const r = G.el.getBoundingClientRect(); const t = getComputedStyle(G.el).translate;
+      const m = t && t !== 'none' ? t.split(' ').map(parseFloat) : [0, 0];
+      const cx = r.left + r.width / 2 - (m[0] || 0), cy = r.top + r.height / 2 - (m[1] || 0);
+      const dx = P0.x - cx, dy = P0.y - cy; const R = Math.max(r.width, r.height) / 2 + 220;
+      let p = still ? 0 : Math.max(0, 1 - Math.hypot(dx, dy) / R); p = p * p * (3 - 2 * p);
+      const tx = dx * 0.38 * p, ty = dy * 0.5 * p; G.el.style.translate = tx.toFixed(1) + 'px ' + ty.toFixed(1) + 'px'; }); }
+  fxStill() { return (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+  fxAttach(el) {
+    if (!el || el.__fx) return;
+    const kind = el.getAttribute('data-fx') || 'ink';
+    const P = { mag: { mag: 0.55 }, magfar: { far: 1 }, big: { fill: '242,96,12', from: '238,235,229', to: '18,18,18', mag: 0 }, link: {}, nav: {} }[kind] || {};
+    const F = { el, kind, P, h: 0, hv: 0, ht: 0, s: 1, vs: 0, ts: 1, ox: 0.5, oy: 0.5, raf: 0, last: 0 };
+    el.__fx = F;
+    F.blob = el.querySelector(':scope > .fxb'); F.sheen = el.querySelector(':scope > .fxs'); F.line = el.querySelector(':scope > .fxl'); F.arrow = el.querySelector('[data-fx-arrow]');
+    if (F.blob) F.blob.style.background = 'rgb(' + P.fill + ')';
+    if (F.blob) { el.style.transition = 'translate .9s cubic-bezier(.22,1,.36,1)'; }
+    if (kind === 'mag' || kind === 'magfar') F.arrow = null;
+    if (kind === 'magfar') { (this.fxFar = this.fxFar || []).push(F); el.style.transition = 'translate .7s cubic-bezier(.22,1,.36,1), color .5s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.3,1.6,.5,1)'; }
+    const loc = (e) => { const r = el.getBoundingClientRect(); return [(e.clientX - r.left) / (r.width || 1), (e.clientY - r.top) / (r.height || 1)]; };
+    el.addEventListener('pointerenter', (e) => { const [x, y] = loc(e); F.ox = x; F.oy = y; F.ht = 1; F.sheenT = performance.now(); this.fxKick(F); });
+    if (P.mag) {
+      el.addEventListener('pointermove', (e) => {
+        if (e.pointerType !== 'mouse' || this.fxStill()) return;
+        const r = el.getBoundingClientRect(); const t = getComputedStyle(el).translate;
+        const m = t && t !== 'none' ? t.split(' ').map(parseFloat) : [0, 0];
+        const dx = e.clientX - (r.left + r.width / 2 - (m[0] || 0)), dy = e.clientY - (r.top + r.height / 2 - (m[1] || 0));
+        el.style.translate = (dx * 0.2 * P.mag).toFixed(1) + 'px ' + (dy * 0.28 * P.mag).toFixed(1) + 'px';
+      });
+      el.addEventListener('pointerleave', () => { el.style.translate = '0px 0px'; });
+    }
+    el.addEventListener('pointerleave', (e) => { const [x, y] = loc(e); F.ox = x; F.oy = y; F.ht = 0; F.ts = 1; this.fxKick(F); });
+    el.addEventListener('pointerdown', (e) => { F.ts = 0.94; if (e.pointerType !== 'mouse') { const [x, y] = loc(e); F.ox = x; F.oy = y; F.ht = 1; F.sheenT = performance.now(); } this.fxKick(F); });
+    const up = (e) => { F.ts = 1; F.vs += 1.2; if (e && e.pointerType && e.pointerType !== 'mouse') setTimeout(() => { F.ht = 0; this.fxKick(F); }, 380); this.fxKick(F); };
+    el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+    el.addEventListener('focus', () => { F.ox = 0.5; F.oy = 0.5; F.ht = 1; this.fxKick(F); });
+    el.addEventListener('blur', () => { F.ht = 0; this.fxKick(F); });
+  }
+  fxKick(F) { if (!F.raf) { F.last = performance.now(); F.raf = requestAnimationFrame((n) => this.fxStep(F, n)); } }
+  fxStep(F, now) {
+    F.raf = 0; if (!F.el.isConnected) return;
+    const dt = Math.min(0.033, Math.max(0.001, (now - F.last) / 1000)); F.last = now;
+    const still = this.fxStill();
+    const spring = (k, t, v, K, D) => { const a = K * (t - F[k]) - D * F[v]; F[v] += a * dt; F[k] += F[v] * dt; };
+    if (still) { F.h = F.ht; F.s = 1; } else { spring('h', F.ht, 'hv', F.ht > F.h ? 90 : 120, 15); if (F.kind !== 'big') spring('s', F.ts, 'vs', 520, 18); }
+    const h = Math.max(0, Math.min(1.08, F.h));
+    const el = F.el, W = el.offsetWidth, H = el.offsetHeight;
+    if (F.kind !== 'big' && F.kind !== 'nav' && F.kind !== 'link') el.style.scale = F.s.toFixed(4);
+    if (F.blob) {
+      const bx = F.ox * W, by = F.oy * H; const far = Math.hypot(Math.max(bx, W - bx), Math.max(by, H - by));
+      const sc = (far * 2.5 / 10) * Math.min(1, h);
+      const wob = still ? 1 : 1 + 0.06 * Math.sin(now / 90) * (1 - Math.min(1, h));
+      F.blob.style.transform = 'translate(' + bx.toFixed(1) + 'px,' + by.toFixed(1) + 'px) scale(' + (sc * wob).toFixed(3) + ',' + (sc / wob).toFixed(3) + ')';
+      const m = (a, b) => a.split(',').map((v, i) => Math.round(+v + (+b.split(',')[i] - +v) * Math.min(1, h))).join(',');
+      el.style.color = 'rgb(' + m(F.P.from, F.P.to) + ')';
+    }
+    if (F.sheen) {
+      const t = F.sheenT ? (now - F.sheenT) / 700 : 2;
+      const on = t < 1 && !still; F.sheen.style.opacity = on ? (Math.sin(Math.PI * t) * 0.9).toFixed(3) : '0';
+      F.sheen.style.transform = 'translateX(' + (-120 + 420 * Math.min(1, t)).toFixed(1) + '%) skewX(-18deg)';
+    }
+    if (F.line) F.line.style.transform = 'scaleX(' + Math.min(1, h).toFixed(3) + ')';
+    if (F.arrow) { F.arrow.style.display = 'inline-block'; const amp = F.kind === 'big' ? 22 : 5; const ax = amp * h + (still ? 0 : Math.sin(now / 160) * 1.2 * Math.min(1, h)); F.arrow.style.transform = 'translateX(' + ax.toFixed(2) + 'px)'; }
+    const moving = Math.abs(F.ht - F.h) > 0.002 || Math.abs(F.hv) > 0.01 || Math.abs(F.ts - F.s) > 0.001 || Math.abs(F.vs) > 0.01 || (F.sheenT && now - F.sheenT < 720) || (F.arrow && F.h > 0.01);
+    if (moving && !still) F.raf = requestAnimationFrame((n) => this.fxStep(F, n));
+  }
+  bKick() { if (!this.bk.raf) this.bk.raf = requestAnimationFrame(() => this.bTick()); }
+  bRender() { const B = this.bk, el = B.book; if (!el) return; const c = B.cur;
+    el.style.setProperty('--ry', c.ry.toFixed(2) + 'deg'); el.style.setProperty('--rx', c.rx.toFixed(2) + 'deg'); el.style.setProperty('--lift', c.lift.toFixed(1) + 'px');
+    const Lr = -10 * Math.PI / 180, a = c.ry * Math.PI / 180;
+    const sh = (off) => (0.34 * (1 - Math.max(-1, Math.min(1, Math.cos(a + off * Math.PI / 180 - Lr))))).toFixed(3);
+    el.style.setProperty('--sh-front', sh(0)); el.style.setProperty('--sh-spine', sh(-90)); el.style.setProperty('--sh-fore', sh(90)); el.style.setProperty('--sh-back', sh(180));
+    const rel = ((c.ry - 26) % 360 + 540) % 360 - 180;
+    el.style.setProperty('--sheen', Math.max(-40, Math.min(110, 30 + rel * 1.4)).toFixed(1) + '%');
+    if (B.shadow) { const l = c.lift / 28; B.shadow.style.setProperty('--ss', (1 + l * 0.12).toFixed(3)); B.shadow.style.setProperty('--so', (0.85 - l * 0.3).toFixed(3)); B.shadow.style.setProperty('--sx', (-Math.max(-60, Math.min(60, rel)) * 0.5).toFixed(1) + 'px'); } }
+  bReturn() { const B = this.bk; clearTimeout(B.rt);
+    B.rt = setTimeout(() => { B.turn = 360 * Math.round((B.cur.ry - 26) / 360); B.tgt.ry = 26 + B.turn; B.tgt.rx = 4; B.tgt.lift = 0; B.mode = 'idle'; this.bKick(); }, 2600); }
+  bTick() { const B = this.bk; B.raf = 0;
+    if (B.mode === 'inertia') { B.tgt.ry += B.vel; B.vel *= 0.94; if (Math.abs(B.vel) < 0.05) { B.mode = 'rest'; this.bReturn(); } }
+    const k = (B.mode === 'drag' || B.mode === 'inertia') ? 0.35 : 0.09; let moving = false;
+    for (const key in B.tgt) { B.cur[key] += (B.tgt[key] - B.cur[key]) * k; if (Math.abs(B.tgt[key] - B.cur[key]) > 0.01) moving = true; }
+    this.bRender();
+    if (moving || B.mode === 'inertia') B.raf = requestAnimationFrame(() => this.bTick()); }
+  renderVals() {
+    return {
+      c1: this.state.c1, c2: this.state.c2, hdelCls: this.state.struck ? 'hdel on' : 'hdel', setPath: this.setPath, setCur: this.setCur, setTop: this.setTop, setBelief: this.setBelief,
+      replay: this.replay, fxRef: this.fxRef,
+      setStage: this.setStage, setBook3: this.setBook3, setBShadow: this.setBShadow, bDown: this.bDown, bMove: this.bMove, bUp: this.bUp, bKey: this.bKey
+    };
+  }
+}
+
+
+(function () {
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const comp = new Component({});
+  const els = { c1: document.querySelector('[data-hl="c1"]'), c2: document.querySelector('[data-hl="c2"]'), del: document.querySelector('[data-hl="del"]') };
+  const chars = (list) => list.map((c) => '<span' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + esc(c.t) + '</span>').join('');
+  comp.__render = () => {
+    const st = comp.state;
+    if (els.c1 && st.c1) els.c1.innerHTML = chars(st.c1);
+    if (els.c2 && st.c2) els.c2.innerHTML = chars(st.c2);
+    if (els.del) els.del.classList.toggle('on', !!st.struck);
+  };
+  document.querySelectorAll('[data-ref]').forEach((el) => { const fn = comp[el.getAttribute('data-ref')]; if (typeof fn === 'function') fn(el); });
+  ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'keydown'].forEach((ev) => {
+    document.querySelectorAll('[data-on-' + ev + ']').forEach((el) => { const fn = comp[el.getAttribute('data-on-' + ev)]; if (typeof fn === 'function') el.addEventListener(ev, fn); });
+  });
+  comp.__mounted = true; comp.__render();
+  const mb = document.querySelector('.menu-btn'), mn = document.getElementById('mnav');
+  if (mb && mn) {
+    const set = (open) => { document.body.classList.toggle('menu-open', open); mb.setAttribute('aria-expanded', String(open)); mn.setAttribute('aria-hidden', String(!open)); mb.querySelector('.mb-label').textContent = open ? 'Close' : 'Menu'; };
+    mb.addEventListener('click', () => set(!document.body.classList.contains('menu-open')));
+    mn.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+  }
+  if (comp.componentDidMount) comp.componentDidMount();
+})();
+</script>
+</body>
+</html>
