@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Andreas Mitschke — Growth &amp; Product Innovation</title>
-<meta name="description" content="Andreas Mitschke helps companies make better calls on what to build and how to grow it: strategy first, a clear business goal, and experiments to validate it. Author of Known Before Built.">
+<meta name="description" content="Andreas Mitschke helps leadership teams make better calls on what to build and how to grow it, then builds and runs the growth system that delivers it, across product and marketing. Author of Known Before Built.">
 <meta property="og:title" content="Andreas Mitschke — Stop approving. Start proving.">
 <meta property="og:description" content="Growth &amp; product innovation, advisor, author of Known Before Built.">
 <meta property="og:type" content="website">
@@ -18,10 +18,21 @@
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta name="theme-color" content="#EEEBE5">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&amp;family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;1,6..96,400;1,6..96,500&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap">
+<link rel="preload" href="assets/fonts/archivo-latin-wdth-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/ibm-plex-mono-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;font-display:swap;src:url(assets/fonts/archivo-latin-ext-wdth-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url(assets/fonts/bodoni-moda-latin-ext-opsz-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url(assets/fonts/bodoni-moda-latin-ext-opsz-italic.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/ibm-plex-mono-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url(assets/fonts/ibm-plex-mono-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/ibm-plex-mono-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;font-display:swap;src:url(assets/fonts/archivo-latin-wdth-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url(assets/fonts/bodoni-moda-latin-opsz-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url(assets/fonts/bodoni-moda-latin-opsz-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:400;font-display:swap;src:url(assets/fonts/ibm-plex-mono-latin-400-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:500;font-display:swap;src:url(assets/fonts/ibm-plex-mono-latin-500-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Mono';font-style:normal;font-weight:600;font-display:swap;src:url(assets/fonts/ibm-plex-mono-latin-600-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 html,body{overflow-x:clip}
 .talkbig{position:relative;display:inline-grid;cursor:pointer}
 .talkbig > span{grid-area:1/1}
@@ -128,16 +139,23 @@ del.ink::after{background:#121212;height:.09em}
 .ringrot{transform-box:view-box;transform-origin:100px 100px;transform:rotate(var(--srot,0deg))}
 .mnote{position:absolute;right:0;top:2.15em;width:300px;transform:translateY(-50%)}
 @media (max-width:760px){.stampsvg{width:108px;height:108px}.stamp-pos{top:-12px}.mnote{position:static;transform:none;width:auto;margin-top:18px}}
-.pbtn{position:relative;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;gap:16px;min-height:56px;padding:0 8px 0 26px;box-sizing:border-box;border-radius:999px;text-decoration:none;font-weight:700;font-stretch:85%;text-transform:uppercase;letter-spacing:.06em;font-size:15px;transition:color .5s cubic-bezier(.22,1,.36,1),translate .9s cubic-bezier(.22,1,.36,1)}
+.pbtn{position:relative;transition:color .5s cubic-bezier(.22,1,.36,1),translate .7s cubic-bezier(.22,1,.36,1) !important;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;gap:16px;min-height:56px;padding:0 8px 0 26px;box-sizing:border-box;border-radius:999px;text-decoration:none;font-weight:700;font-stretch:85%;text-transform:uppercase;letter-spacing:.06em;font-size:15px;transition:color .5s cubic-bezier(.22,1,.36,1),translate .9s cubic-bezier(.22,1,.36,1)}
 .pb-label{position:relative}
 .pb-fill{position:absolute;right:8px;top:50%;width:40px;height:40px;margin-top:-20px;border-radius:50%;z-index:-1;transform:scale(1);transition:transform .75s cubic-bezier(.22,1,.36,1)}
 .pbtn:hover .pb-fill,.pbtn:focus-visible .pb-fill{transform:scale(18)}
 .pb-dot{position:relative;width:40px;height:40px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
 .pb-arr{position:relative;width:18px;height:20px;overflow:hidden;display:inline-block;font-size:17px}
-.pb-arr i{position:absolute;left:0;top:0;font-style:normal;line-height:20px;transition:transform .55s cubic-bezier(.65,0,.35,1)}
+.pb-arr i{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-style:normal;line-height:1;transition:transform .55s cubic-bezier(.65,0,.35,1)}
 .pb-arr i:last-child{transform:translateX(-150%)}
 .pbtn:hover .pb-arr i:first-child,.pbtn:focus-visible .pb-arr i:first-child{transform:translateX(150%)}
 .pbtn:hover .pb-arr i:last-child,.pbtn:focus-visible .pb-arr i:last-child{transform:translateX(0)}
+.pb-sm{min-height:42px;gap:12px;padding:0 5px 0 18px;font-size:12px;letter-spacing:.07em}
+.pb-sm .pb-dot,.pb-sm .pb-fill{width:32px;height:32px}
+.pb-sm .pb-fill{right:5px;margin-top:-16px}
+.pb-sm .pb-arr{font-size:14px;width:14px;height:18px}
+.pb-down i:last-child{transform:translateY(-150%)}
+.pbtn:hover .pb-down i:first-child,.pbtn:focus-visible .pb-down i:first-child{transform:translateY(150%)}
+.pbtn:hover .pb-down i:last-child,.pbtn:focus-visible .pb-down i:last-child{transform:translateY(0)}
 .pb-ink{background:#121212;color:#EEEBE5}.pb-ink .pb-fill{background:#F2600C}.pb-ink .pb-dot{color:#121212}.pb-ink:hover,.pb-ink:focus-visible{color:#121212}
 .pb-orange{background:#F2600C;color:#121212}.pb-orange .pb-fill{background:#121212}.pb-orange .pb-dot{color:#EEEBE5}.pb-orange:hover,.pb-orange:focus-visible{color:#EEEBE5}
 .pb-outline{box-shadow:inset 0 0 0 1.5px #121212;color:#121212}.pb-outline .pb-fill{background:#121212}.pb-outline .pb-dot{color:#EEEBE5}.pb-outline:hover,.pb-outline:focus-visible{color:#EEEBE5}
@@ -257,14 +275,13 @@ del.ink::after{background:#121212;height:.09em}
         <span class="rise d3" aria-hidden="true" style="display: block; white-space: nowrap"><span data-hl="c2">proving.</span></span>
       </h1>
       <div class="mnote">
-        <div class="rise d4" style="display: flex; flex-direction: column; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; color: #4A4744">
-          <span><span style="color: #B33D00">↳</span> margin note:</span>
-          <span>Everything I do comes back to revenue. Find out what is worth building — then grow it, iteratively, on the product and the marketing side.</span>
+        <div class="rise d4" style="display: flex; flex-direction: column; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; color: #4A4744"><span><span style="color: rgb(179, 61, 0)">↳</span> margin note:</span>
+          <span data-om-label="The most expensive sentence in any meeting: &quot;We believe customers will love it.&quot;">The most expensive sentence in any meeting: "We believe customers will love it."</span>
         </div>
       </div>
     </div>
     <div class="rise d4" style="max-width: 660px; display: flex; flex-direction: column; gap: 24px">
-      <p style="margin: 0; font-size: clamp(19px, 1.8vw, 23px); line-height: 1.45; text-wrap: pretty">I help companies make better calls on what to build and how to grow it: strategy first, a clear business goal, and experiments to validate it. Systems thinking on top, over 15 years of hands-on growth and product underneath. Two exits, author of <em>Known Before Built</em>.</p>
+      <p style="margin: 0; font-size: clamp(19px, 1.8vw, 23px); line-height: 1.45; text-wrap: pretty">I help leadership teams make better calls on what to build and how to grow it, then I build and run the growth system that delivers it, across product and marketing. 15+ years in growth, marketing and product experimentation, most recently in industrial and deep-tech organisations. Two exits, many failed bets, author of <em>Known Before Built</em>.</p>
       <div style="display: flex"><a href="#contact" data-ref="fxRef" data-fx="mag" class="pbtn pb-ink"><span class="pb-fill" aria-hidden="true"></span><span class="pb-label">Start a conversation</span><span class="pb-dot" aria-hidden="true"><span class="pb-arr"><i>→</i><i>→</i></span></span></a></div>
     </div>
   </section>
@@ -421,6 +438,7 @@ del.ink::after{background:#121212;height:.09em}
                 <span style="font-weight: 900; font-stretch: 80%; font-size: 26px; text-transform: uppercase; line-height: 1.05">Author</span>
               </div>
               <p style="margin: 0; font-size: 17px; line-height: 1.6; max-width: 640px"><em>Known Before Built</em>. Written, designed and typeset end to end; published under my own imprint, Grant &amp; Bear.</p>
+              <div style="display: flex; padding-top: 6px"><a href="#releases-start" data-ref="fxRef" data-fx="mag" class="pbtn pb-outline pb-sm"><span class="pb-fill" aria-hidden="true"></span><span class="pb-label">Learn more about the book</span><span class="pb-dot" aria-hidden="true"><span class="pb-arr pb-down"><i>↓</i><i>↓</i></span></span></a></div>
             </div>
           </div>
         </div>
@@ -461,7 +479,7 @@ del.ink::after{background:#121212;height:.09em}
           <div class="reveal" style="display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 0 20px; padding: 22px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
             <span style="font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 40px; line-height: 1; color: #F2600C">1</span>
             <div style="display: flex; flex-direction: column; gap: 12px">
-              <p style="margin: 0; font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(30px, 3.4vw, 48px); line-height: 1">Don’t ask for <del class='bdel'>opinions.<svg class='brush' viewBox='0 0 400 48' preserveAspectRatio='none' aria-hidden='true'><g filter='url(#amBrushEdge)'><path fill='url(#amBrushFill)' d='M6 30 C 50 24, 120 20, 200 17.5 C 280 15, 340 12.5, 391 10.5 C 397 10.3, 399 13, 396 15.5 C 360 19.5, 300 23, 220 27 C 150 30.5, 80 34.5, 22 37 C 10 37.5, 3 35.5, 3 33 C 3 31.5, 4 30.4, 6 30 Z'></path><path d='M40 33.5 C 140 27, 260 20.5, 370 14.5' stroke='#FFFFFF' stroke-opacity='.18' stroke-width='1.1' fill='none'></path></g></svg></del> Ask for behaviour.</p>
+              <p style="margin: 0; font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(30px, 3.4vw, 48px); line-height: 1">Don’t ask for <del class="bdel">opinions.<svg class="brush" viewBox="0 0 400 48" preserveAspectRatio="none" aria-hidden="true"><g filter="url(#amBrushEdge)"><path fill="url(#amBrushFill)" d="M6 30 C 50 24, 120 20, 200 17.5 C 280 15, 340 12.5, 391 10.5 C 397 10.3, 399 13, 396 15.5 C 360 19.5, 300 23, 220 27 C 150 30.5, 80 34.5, 22 37 C 10 37.5, 3 35.5, 3 33 C 3 31.5, 4 30.4, 6 30 Z"></path><path d="M40 33.5 C 140 27, 260 20.5, 370 14.5" stroke="#FFFFFF" stroke-opacity=".18" stroke-width="1.1" fill="none"></path></g></svg></del> Ask for behaviour.</p>
               <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #3E3B38; max-width: 620px">Opinions describe what people believe they would do. Behaviour shows what they did. Reported behaviour beats opinion, and observed behaviour beats both.</p>
             </div>
           </div>
@@ -469,7 +487,7 @@ del.ink::after{background:#121212;height:.09em}
             <span style="font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 40px; line-height: 1; color: #F2600C">2</span>
             <div style="display: flex; flex-direction: column; gap: 12px">
               <p style="margin: 0; font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(30px, 3.4vw, 48px); line-height: 1">They are the rock stars. You are their fan.</p>
-              <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #3E3B38; max-width: 620px">Customers, buyers and users are the experts on their own problems. Your job is to listen and observe to understand their reality.</p>
+              <p style="margin: 0; font-size: 17px; line-height: 1.55; color: #3E3B38; max-width: 620px">Customers, buyers and users are the experts on their own problems. Your job is to listen and observe to understand their reality to see what they can't see.</p>
             </div>
           </div>
           <div class="reveal" style="display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 0 20px; padding: 22px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
@@ -485,7 +503,7 @@ del.ink::after{background:#121212;height:.09em}
 
   <section id="releases" style="background: #F7F5F1; border-top: 2px solid #121212">
    <div style="max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 104px clamp(16px, 4vw, 48px); display: flex; flex-direction: column; gap: 40px">
-    <div style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px">
+    <div id="releases-start" data-scroll-offset="36" style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 16px">
       <h2 style="margin: 0; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(48px, 7vw, 96px); line-height: .9">Releases</h2>
       <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Filed, published, shipped</span>
     </div>
@@ -507,52 +525,47 @@ del.ink::after{background:#121212;height:.09em}
       <div style="flex: 1 1 460px; display: flex; flex-direction: column; gap: 22px">
         <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Latest · Book · paperback · Grant &amp; Bear</span>
         <span style="font-weight: 900; text-transform: uppercase; font-size: clamp(44px, 5vw, 72px); line-height: .92; letter-spacing: -.015em">Known <span style="font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; text-transform: none; letter-spacing: 0">before</span> Built</span>
-        <p style="margin: 0; font-size: 19px; line-height: 1.55; max-width: 600px">From Discovery to Decision for Enterprises in Transformation. It ends at the investment decision — and gives you a number for the next time someone asks “Why can’t we just ship it?”</p>
+        <p style="margin: 0; font-size: 19px; line-height: 1.55; max-width: 600px">From Discovery to Decision for Enterprises in Transformation.&nbsp;<br><br>An intrapreneurial operating system that replaces the innovation theatre of brainstorming sessions and Post-it-plastered whiteboards with evidence-driven discovery methods, allowing you to de-risk every hypothesis before a major investment decision must be made.</p>
         <div style="display: flex; flex-wrap: wrap; gap: 14px"><a href="#" data-ref="fxRef" data-fx="mag" class="pbtn pb-orange"><span class="pb-fill" aria-hidden="true"></span><span class="pb-label">Get the book</span><span class="pb-dot" aria-hidden="true"><span class="pb-arr"><i>→</i><i>→</i></span></span></a><a href="#" data-ref="fxRef" data-fx="mag" class="pbtn pb-outline"><span class="pb-fill" aria-hidden="true"></span><span class="pb-label">knownbeforebuilt.com</span><span class="pb-dot" aria-hidden="true"><span class="pb-arr"><i>→</i><i>→</i></span></span></a></div>
       </div>
     </div>
     <div style="display: flex; flex-direction: column">
       <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
-        <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Paper · preprint, SSRN</span>
-        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
-          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">Why Entrepreneurship Education Cannot Close the Intention-Behavior Gap</span>
-          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">Implementation intentions, programme design and venture outcomes. A PRISMA systematic review.</span>
+        <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Paper · preprint, SSRN</span><div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 800; font-size: 24px; line-height: 1.15">Why Entrepreneurship Education Cannot Close the Intention-Behavior Gap</span>
+          <span style="font-size: 16px; line-height: 1.5; color: rgb(62, 59, 56)">A research paper which started as a systematic review and evolved into a conceptual paper identifying the limits of currently applied Entrepreneurship Education methods.</span>
         </div>
+        
         <span style="flex: 0 0 auto; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 18px; color: #B33D00">Under review</span>
         <a href="#" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Read the preprint <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
       </div>
       <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
         <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Paper · preprint, SSRN</span>
-        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
-          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">Structured not to create Entrepreneurs</span>
-          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">The legitimation function, institutional decoupling and the data privacy wall in German entrepreneurship education.</span>
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 800; font-size: 24px; line-height: 1.15">Structured not to create Entrepreneurs</span>
+          <span style="font-size: 16px; line-height: 1.5; color: rgb(62, 59, 56)">Another paper I wrote about entrepreneurship education in universities, which identified that EE is mostly window dressing for legitimating funding, and is entirely decoupled from the institutional outcome goals they are built on.</span>
         </div>
         <span style="flex: 0 0 auto; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 18px; color: #B33D00">Under review</span>
         <a href="#" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Read the preprint <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
       </div>
       <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
         <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Tool · free, no sign-up</span>
-        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
-          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">Signal</span>
-          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">Score an idea before anyone puts it on a roadmap.</span>
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 800; font-size: 24px; line-height: 1.15">Signal</span>
+          <span style="font-size: 16px; line-height: 1.5; color: rgb(62, 59, 56)">The freebie that comes with the book: a conversational UI feedback tool for internal pattern mining.<br></span>
         </div>
         <span style="flex: 0 0 auto; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 18px; color: #B33D00">Coming soon</span>
         <a href="#" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Get notified <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
       </div>
       <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
         <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Template · free, Notion</span>
-        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
-          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">The Ultimate Data Room</span>
-          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">A ready-made data room for startups going into due diligence.</span>
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 800; font-size: 24px; line-height: 1.15">The Ultimate Data Room</span>
+          <span style="font-size: 16px; line-height: 1.5; color: rgb(62, 59, 56)">A "template of the month" by the Notion team. Became one of the most rated templates in the startup category. A ready-made, exhaustive data room for startups going into due diligence.</span>
         </div>
         <span style="flex: 0 0 auto; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 18px; color: #B33D00">Free</span>
         <a href="#" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Duplicate it <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
       </div>
       <div style="display: flex; flex-wrap: wrap; gap: 10px 40px; padding: 26px 0; border-top: 1px solid #CFC9C1; border-bottom: 1px solid #CFC9C1; align-items: baseline">
         <span style="flex: 0 1 220px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954">Off the record</span>
-        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
-          <span style="font-weight: 800; font-size: 24px; line-height: 1.15">More on request</span>
-          <span style="font-size: 16px; line-height: 1.5; color: #3E3B38">Teaching notes, templates, talks and working papers.</span>
+        <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 800; font-size: 24px; line-height: 1.15">More on request</span>
+          <span style="font-size: 16px; line-height: 1.5; color: rgb(62, 59, 56)">Systems, templates, talks and working papers. Happy to share, happy to collab.</span>
         </div>
         <a href="#contact" data-ref="fxRef" data-fx="link" style="flex: 0 0 auto; position: relative; display: inline-block; text-decoration: none; font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">Ask <span data-fx-arrow="right" aria-hidden="true">→</span><span class="fxl0" aria-hidden="true"></span><span class="fxl" aria-hidden="true"></span></a>
       </div>
@@ -565,15 +578,14 @@ del.ink::after{background:#121212;height:.09em}
       <div style="flex: 0 1 340px; display: flex; flex-direction: column; gap: 18px">
         <span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #B33D00">Talks</span>
         <span style="font-size: clamp(38px, 4vw, 56px); line-height: 1.05; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400">Put me on your stage.</span>
-        <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #3E3B38">Keynotes, panels, workshops, guest lectures and podcasts — in English or German. I co-created event series long before I spoke at them, so I know what organisers need.</p>
+        <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #3E3B38">Keynotes, speeches, panels, fireside chats, workshops, guest lectures and podcasts in English or German. I created and organised many event series long before I spoke at them, so I know what organisers need.</p>
         <div style="display: flex; flex-wrap: wrap; gap: 14px"><a href="mailto:[EMAIL]?subject=Talk" data-ref="fxRef" data-fx="magfar" class="pbtn pb-orange"><span class="pb-fill" aria-hidden="true"></span><span class="pb-label">Book a talk</span><span class="pb-dot" aria-hidden="true"><span class="pb-arr"><i>→</i><i>→</i></span></span></a></div>
       </div>
       <div style="flex: 1 1 560px; display: flex; flex-direction: column; border-bottom: 1px solid #CFC9C1; min-width: 0">
         <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 24px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
           <span style="flex: 0 0 56px; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 34px; line-height: 1; color: #F2600C">1</span>
-          <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px; min-width: 0">
-            <span style="font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(26px, 2.8vw, 38px); line-height: 1">Known before built</span>
-            <span style="font-size: 17px; line-height: 1.5; color: #3E3B38">How enterprises decide what is worth building — before the budget is spent.</span>
+          <div style="flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px; min-width: 0"><span style="font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(26px, 2.8vw, 38px); line-height: 1">Known before built</span>
+            <span style="font-size: 17px; line-height: 1.5; color: rgb(62, 59, 56)">How enterprises decide what is worth building, before the big budget is spent.</span>
           </div>
         </div>
         <div class="rrow reveal" style="display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 24px 0; border-top: 1px solid #CFC9C1; align-items: baseline">
@@ -606,7 +618,7 @@ del.ink::after{background:#121212;height:.09em}
     <div style="position: relative; z-index: 1; max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 104px clamp(16px, 4vw, 48px) 100px; display: flex; flex-direction: column; gap: 44px">
       <div style="display: flex; flex-wrap: wrap; gap: 10px 28px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; font-size: 14px; color: #B9B3AB"><span>Strategic roles in growth, product &amp; innovation</span><span>Advisory</span><span>Consulting</span><span>Talks</span></div>
       <h2 style="margin: 0; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(44px, 6vw, 92px); line-height: .9; max-width: 1100px">Where does your next revenue come from?</h2>
-      <p style="margin: -16px 0 0; font-size: clamp(20px, 2vw, 26px); line-height: 1.4; max-width: 760px; color: #D6D1CA">A new channel, a new vertical, a new product or feature. Let’s find it — then grow it.</p>
+      <p style="margin: -16px 0 0; font-size: clamp(20px, 2vw, 26px); line-height: 1.4; max-width: 760px; color: #D6D1CA">A new channel, a new vertical, a new product or feature. Let’s find it, then grow it, then scale it.</p>
       <a href="mailto:[EMAIL]" data-ref="fxRef" data-fx="big" class="talkbig" aria-label="Let’s talk — email Andreas" style="align-self: flex-start; text-decoration: none; color: #EEEBE5; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(64px, 11vw, 176px); line-height: .86; padding: 8px 0 14px"><span class="tb-base">Let’s talk</span><span class="tb-fill" aria-hidden="true">Let’s talk</span></a>
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #B9B3AB">
         <span style="display: flex; align-items: center; gap: 7px">Built with <svg class="heart" width="16" height="15" viewBox="0 0 24 22" role="img" aria-label="love" style="display: block"><path d="M12 21.5 C 5 16.2 1 12.4 1 7.4 C 1 3.8 3.7 1 7.1 1 C 9.2 1 10.9 2 12 3.7 C 13.1 2 14.8 1 16.9 1 C 20.3 1 23 3.8 23 7.4 C 23 12.4 19 16.2 12 21.5 Z" fill="#F2600C"></path></svg> by Andreas Mitschke</span><div style="display: flex; gap: 24px"><a href="#" style="color: #EEEBE5">LinkedIn</a><a href="#" style="color: #EEEBE5">SSRN</a><a href="#" style="color: #EEEBE5">knownbeforebuilt.com</a></div>
@@ -620,7 +632,6 @@ class DCLogic {
   setState(patch) { Object.assign(this.state, typeof patch === 'function' ? patch(this.state) : patch); if (this.__mounted) this.__render(); }
   forceUpdate() { if (this.__mounted) this.__render(); }
 }
-
 class Component extends DCLogic {
   constructor(props) {
     super(props);
@@ -630,7 +641,7 @@ class Component extends DCLogic {
         const id = a.getAttribute('href').slice(1); if (!id) return; const el = document.getElementById(id); if (!el) return;
         e.preventDefault();
         const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const y0 = window.scrollY || document.documentElement.scrollTop; const hd = document.querySelector('.site-head'); const off = hd && getComputedStyle(hd).position === 'sticky' ? hd.offsetHeight : 0; const y1 = y0 + el.getBoundingClientRect().top - off;
+        const y0 = window.scrollY || document.documentElement.scrollTop; const hd = document.querySelector('.site-head'); const off = hd && getComputedStyle(hd).position === 'sticky' ? hd.offsetHeight : 0; const y1 = y0 + el.getBoundingClientRect().top - off - (parseFloat(el.getAttribute('data-scroll-offset')) || 0);
         const dist = Math.abs(y1 - y0); if (reduce || dist < 2) { window.scrollTo(0, y1); return; }
         const D = Math.min(2000, 900 + dist * 0.3); const t0 = performance.now();
         const ease = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
@@ -652,7 +663,8 @@ class Component extends DCLogic {
     this.topEl = null; this.setTop = (el) => { this.topEl = el; };
     this.belEl = null; this.setBelief = (el) => { this.belEl = el; };
     this.onPtr = (e) => { if (e.pointerType && e.pointerType !== 'mouse') return; const C = this.cur; C.tx = e.clientX; C.ty = e.clientY; this.curCheck(); this.fxPtr = { x: e.clientX, y: e.clientY }; if (this.fxFar && this.fxFar.length && !this.fxPF) this.fxPF = requestAnimationFrame(() => this.fxFrame()); };
-    this.onScroll = () => { if (!this.railRaf) this.railRaf = requestAnimationFrame(() => { this.railRaf = 0; this.railUpdate(); }); };
+    this.onOut = (e) => { if (!e.relatedTarget) { this.fxPtr = { x: -1e5, y: -1e5 }; this.fxFrame(); } };
+    this.onScroll = () => { if (this.fxFar && this.fxPtr && !this.fxPF) this.fxPF = requestAnimationFrame(() => this.fxFrame()); if (!this.railRaf) this.railRaf = requestAnimationFrame(() => { this.railRaf = 0; this.railUpdate(); }); };
     this.fxRef = (el) => this.fxAttach(el);
     this.bk = { cur: { ry: 26, rx: 4, lift: 0 }, tgt: { ry: 26, rx: 4, lift: 0 }, turn: 0, mode: 'idle', vel: 0, drag: null, raf: 0, rt: 0 };
     this.setStage = (el) => { this.bk.stage = el; }; this.setBook3 = (el) => { this.bk.book = el; if (el) this.bRender(); }; this.setBShadow = (el) => { this.bk.shadow = el; };
@@ -678,7 +690,8 @@ class Component extends DCLogic {
       B.tgt.ry = B.turn + 26 - p * 20 + nx * 16 * p; B.tgt.rx = 4 - ny * 10 * p; B.tgt.lift = p * 28; this.bKick(); };
   }
   componentDidMount() {
-    document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true });
+    this.initMenu(); this.initDots();
+    document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
     const h1 = document.querySelector('#top h1');
@@ -749,9 +762,9 @@ class Component extends DCLogic {
     this.fxFar.forEach((G) => { if (!G.el.isConnected) return; const r = G.el.getBoundingClientRect(); const t = getComputedStyle(G.el).translate;
       const m = t && t !== 'none' ? t.split(' ').map(parseFloat) : [0, 0];
       const cx = r.left + r.width / 2 - (m[0] || 0), cy = r.top + r.height / 2 - (m[1] || 0);
-      const dx = P0.x - cx, dy = P0.y - cy; const R = Math.max(r.width, r.height) / 2 + 220;
+      const dx = P0.x - cx, dy = P0.y - cy; const R = Math.max(r.width, r.height) / 2 + (G.mR || 220);
       let p = still ? 0 : Math.max(0, 1 - Math.hypot(dx, dy) / R); p = p * p * (3 - 2 * p);
-      const tx = dx * 0.38 * p, ty = dy * 0.5 * p; G.el.style.translate = tx.toFixed(1) + 'px ' + ty.toFixed(1) + 'px'; }); }
+      const tx = dx * (G.mX || 0.38) * p, ty = dy * (G.mY || 0.5) * p; G.el.style.translate = tx.toFixed(1) + 'px ' + ty.toFixed(1) + 'px'; }); }
   fxStill() { return (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
   fxAttach(el) {
     if (!el || el.__fx) return;
@@ -763,19 +776,10 @@ class Component extends DCLogic {
     if (F.blob) F.blob.style.background = 'rgb(' + P.fill + ')';
     if (F.blob) { el.style.transition = 'translate .9s cubic-bezier(.22,1,.36,1)'; }
     if (kind === 'mag' || kind === 'magfar') F.arrow = null;
-    if (kind === 'magfar') { (this.fxFar = this.fxFar || []).push(F); el.style.transition = 'translate .7s cubic-bezier(.22,1,.36,1), color .5s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.3,1.6,.5,1)'; }
+    if (kind === 'magfar') { F.mR = 220; F.mX = 0.38; F.mY = 0.5; (this.fxFar = this.fxFar || []).push(F); el.style.transition = 'translate .7s cubic-bezier(.22,1,.36,1), color .5s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.3,1.6,.5,1)'; }
     const loc = (e) => { const r = el.getBoundingClientRect(); return [(e.clientX - r.left) / (r.width || 1), (e.clientY - r.top) / (r.height || 1)]; };
     el.addEventListener('pointerenter', (e) => { const [x, y] = loc(e); F.ox = x; F.oy = y; F.ht = 1; F.sheenT = performance.now(); this.fxKick(F); });
-    if (P.mag) {
-      el.addEventListener('pointermove', (e) => {
-        if (e.pointerType !== 'mouse' || this.fxStill()) return;
-        const r = el.getBoundingClientRect(); const t = getComputedStyle(el).translate;
-        const m = t && t !== 'none' ? t.split(' ').map(parseFloat) : [0, 0];
-        const dx = e.clientX - (r.left + r.width / 2 - (m[0] || 0)), dy = e.clientY - (r.top + r.height / 2 - (m[1] || 0));
-        el.style.translate = (dx * 0.2 * P.mag).toFixed(1) + 'px ' + (dy * 0.28 * P.mag).toFixed(1) + 'px';
-      });
-      el.addEventListener('pointerleave', () => { el.style.translate = '0px 0px'; });
-    }
+    if (P.mag) { F.mR = 70; F.mX = 0.2; F.mY = 0.28; (this.fxFar = this.fxFar || []).push(F); }
     el.addEventListener('pointerleave', (e) => { const [x, y] = loc(e); F.ox = x; F.oy = y; F.ht = 0; F.ts = 1; this.fxKick(F); });
     el.addEventListener('pointerdown', (e) => { F.ts = 0.94; if (e.pointerType !== 'mouse') { const [x, y] = loc(e); F.ox = x; F.oy = y; F.ht = 1; F.sheenT = performance.now(); } this.fxKick(F); });
     const up = (e) => { F.ts = 1; F.vs += 1.2; if (e && e.pointerType && e.pointerType !== 'mouse') setTimeout(() => { F.ht = 0; this.fxKick(F); }, 380); this.fxKick(F); };
@@ -841,25 +845,8 @@ class Component extends DCLogic {
       setStage: this.setStage, setBook3: this.setBook3, setBShadow: this.setBShadow, bDown: this.bDown, bMove: this.bMove, bUp: this.bUp, bKey: this.bKey
     };
   }
-}
 
-
-(function () {
-  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const comp = new Component({});
-  const els = { c1: document.querySelector('[data-hl="c1"]'), c2: document.querySelector('[data-hl="c2"]'), del: document.querySelector('[data-hl="del"]') };
-  const chars = (list) => list.map((c) => '<span' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + esc(c.t) + '</span>').join('');
-  comp.__render = () => {
-    const st = comp.state;
-    if (els.c1 && st.c1) els.c1.innerHTML = chars(st.c1);
-    if (els.c2 && st.c2) els.c2.innerHTML = chars(st.c2);
-    if (els.del) els.del.classList.toggle('on', !!st.struck);
-  };
-  document.querySelectorAll('[data-ref]').forEach((el) => { const fn = comp[el.getAttribute('data-ref')]; if (typeof fn === 'function') fn(el); });
-  ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'keydown'].forEach((ev) => {
-    document.querySelectorAll('[data-on-' + ev + ']').forEach((el) => { const fn = comp[el.getAttribute('data-on-' + ev)]; if (typeof fn === 'function') el.addEventListener(ev, fn); });
-  });
-  comp.__mounted = true; comp.__render();
+  initMenu() {
   const mb = document.querySelector('.menu-btn'), mn = document.getElementById('mnav');
   if (mb && mn) {
     const set = (open) => { document.body.classList.toggle('menu-open', open); mb.setAttribute('aria-expanded', String(open)); mn.setAttribute('aria-hidden', String(!open)); mb.querySelector('.mb-label').textContent = open ? 'Close' : 'Menu'; };
@@ -867,8 +854,8 @@ class Component extends DCLogic {
     mn.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
   }
-  if (comp.componentDidMount) comp.componentDidMount();
-})();
+  }
+  initDots() {
 (function () {
   const sec = document.getElementById('contact'), cv = sec && sec.querySelector('.dotfield'); if (!cv) return;
   const ctx = cv.getContext('2d'); const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -928,7 +915,24 @@ class Component extends DCLogic {
   if ('ResizeObserver' in window) new ResizeObserver(() => build()).observe(sec); else window.addEventListener('resize', build);
   build();
 })();
-
+  }
+}
+(function () {
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const comp = new Component({});
+  const els = { c1: document.querySelector('[data-hl="c1"]'), c2: document.querySelector('[data-hl="c2"]'), del: document.querySelector('[data-hl="del"]') };
+  const chars = (list) => list.map((c) => '<span' + (c.cls ? ' class="' + c.cls + '"' : '') + '>' + esc(c.t) + '</span>').join('');
+  comp.__render = () => { const st = comp.state;
+    if (els.c1 && st.c1) els.c1.innerHTML = chars(st.c1);
+    if (els.c2 && st.c2) els.c2.innerHTML = chars(st.c2);
+    if (els.del) els.del.classList.toggle('on', !!st.struck); };
+  document.querySelectorAll('[data-ref]').forEach((el) => { const fn = comp[el.getAttribute('data-ref')]; if (typeof fn === 'function') fn(el); });
+  ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'keydown', 'click', 'pointerenter'].forEach((ev) => {
+    document.querySelectorAll('[data-on-' + ev + ']').forEach((el) => { const fn = comp[el.getAttribute('data-on-' + ev)]; if (typeof fn === 'function') el.addEventListener(ev, fn); });
+  });
+  comp.__mounted = true; comp.__render();
+  if (comp.componentDidMount) comp.componentDidMount();
+})();
 </script>
 </body>
 </html>
