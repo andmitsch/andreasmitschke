@@ -297,4 +297,4 @@ del.ink::after{background:#121212;height:.09em}
 .footer-row{display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #B9B3AB}
 .madeby{display: flex; align-items: center; gap: 7px}
 .footer-links{display: flex; gap: 24px}
-.footer-link{color: #EEEBE5}
+.footer-link{color: #EEEBE5 !important}
