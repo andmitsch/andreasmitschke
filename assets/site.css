@@ -67,14 +67,14 @@ html,body{overflow-x:clip}
   .pgrp > div:first-child{flex-basis:100% !important}
   .pgrp > div:first-child span:last-child{font-size:30px !important}
   .prow p{font-size:16px !important}
-  #beliefs .reveal{grid-template-columns:36px minmax(0,1fr) !important;gap:0 12px !important}
   #beliefs .reveal p:first-child{font-size:29px !important}
+  #talks .rrow{grid-template-columns:minmax(0,1fr) !important}
+  #talks .rrow > span:last-child{grid-column:1 !important;grid-row:auto !important;margin-top:4px}
   .kbstage{--w:236px;--h:378px;--t:32px}
   #releases div:is(.book-stage-wrap){height:auto !important;width:100% !important;padding-top:20px !important;padding-bottom:88px !important}
   .kbhint{bottom:-56px}
   .rrow{gap:6px 16px !important}
   .rrow > span:first-child{flex-basis:100% !important}
-  #talks .rrow > span:first-child{flex-basis:40px !important}
   #contact{min-height:0 !important}
   #contact > div{padding-top:72px !important;padding-bottom:72px !important;gap:28px !important}
   #contact h2{font-size:clamp(40px,11.5vw,56px) !important}
@@ -254,8 +254,7 @@ del.ink::after{background:#121212;height:.09em}
 .split-aside{flex: 0 1 340px; display: flex; flex-direction: column; gap: 18px}
 .aside-title{font-size: clamp(38px, 4vw, 56px); line-height: 1.05; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400}
 .split-list{flex: 1 1 560px; display: flex; flex-direction: column; border-bottom: 1px solid #CFC9C1; min-width: 0}
-.thesis{display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 0 20px; padding: 22px 0; border-top: 1px solid #CFC9C1; align-items: baseline}
-.numeral{font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 40px; line-height: 1; color: #F2600C}
+.thesis{display: block; padding: 22px 0; border-top: 1px solid #CFC9C1; align-items: baseline}
 .thesis-body{display: flex; flex-direction: column; gap: 12px}
 .thesis-head{margin: 0; font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(30px, 3.4vw, 48px); line-height: 1}
 .thesis-text{margin: 0; font-size: 17px; line-height: 1.55; color: #3E3B38; max-width: 620px}
@@ -282,19 +281,20 @@ del.ink::after{background:#121212;height:.09em}
 .talks-inner{max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 96px clamp(16px, 4vw, 48px); display: flex; flex-wrap: wrap; gap: 40px 56px}
 .kicker-accent{font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; color: #B33D00}
 .talks-intro{margin: 0; font-size: 17px; line-height: 1.6; color: #3E3B38}
-.trow{display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 24px 0; border-top: 1px solid #CFC9C1; align-items: baseline}
-.trow-num{flex: 0 0 56px; font-family: 'Bodoni Moda', 'Didot', Georgia, serif; font-style: italic; font-weight: 400; font-size: 34px; line-height: 1; color: #F2600C}
-.trow-main{flex: 1 1 380px; display: flex; flex-direction: column; gap: 6px; min-width: 0}
+.trow{display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 32px; padding: 24px 0; border-top: 1px solid #CFC9C1; align-items: baseline}
+.trow-main{display: contents}
 .trow-title{font-weight: 900; font-stretch: 72%; text-transform: uppercase; font-size: clamp(26px, 2.8vw, 38px); line-height: 1}
-.trow-sub{font-size: 17px; line-height: 1.5; color: rgb(62, 59, 56)}
-.trow-sub{font-size: 17px; line-height: 1.5; color: #3E3B38}
+.trow-sub{grid-column: 1 / -1; font-size: 17px; line-height: 1.5; color: #3E3B38}
 .contact{position: relative; overflow: hidden; background: #121212; color: #EEEBE5; flex-grow: 1; box-sizing: border-box}
 .contact-inner{position: relative; z-index: 1; max-width: 1280px; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 104px clamp(16px, 4vw, 48px) 100px; display: flex; flex-direction: column; gap: 44px}
 .contact-kicker{display: flex; flex-wrap: wrap; gap: 10px 28px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; font-size: 14px; color: #B9B3AB}
 .contact-title{margin: 0; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(44px, 6vw, 92px); line-height: .9; max-width: 1100px}
 .contact-lead{margin: -16px 0 0; font-size: clamp(20px, 2vw, 26px); line-height: 1.4; max-width: 760px; color: #D6D1CA}
-.talkbig{align-self: flex-start; text-decoration: none; color: #EEEBE5 !important; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(64px, 11vw, 176px); line-height: .86; padding: 8px 0 14px}
+.talkbig{align-self: flex-start; text-decoration: none; color: #EEEBE5; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(64px, 11vw, 176px); line-height: .86; padding: 8px 0 14px}
 .footer-row{display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #B9B3AB}
 .madeby{display: flex; align-items: center; gap: 7px}
 .footer-links{display: flex; gap: 24px}
-.footer-link{color: #EEEBE5 !important}
+.footer-link{color: #EEEBE5}
+
+.talks-label{display: block; padding-bottom: 18px}
+.trow-format{grid-column: 2; grid-row: 1; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954}
