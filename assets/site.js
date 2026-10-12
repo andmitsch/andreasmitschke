@@ -135,7 +135,7 @@ class Component extends DCLogic {
       const cx = r.left + r.width / 2 - (m[0] || 0), cy = r.top + r.height / 2 - (m[1] || 0);
       const dx = P0.x - cx, dy = P0.y - cy; const R = Math.max(r.width, r.height) / 2 + (G.mR || 220);
       let p = still ? 0 : Math.max(0, 1 - Math.hypot(dx, dy) / R); p = p * p * (3 - 2 * p);
-      const tx = dx * (G.mX || 0.38) * p, ty = dy * (G.mY || 0.5) * p; G.el.style.translate = tx.toFixed(1) + 'px ' + ty.toFixed(1) + 'px'; }); }
+      const tx = dx * (G.mX || 0.38) * p, ty = dy * (G.mY || 0.5) * p; G.el.style.translate = tx.toFixed(1) + 'px ' + ty.toFixed(1) + 'px'; if (G.fol) G.fol.style.translate = (tx * G.folK).toFixed(1) + 'px ' + (ty * G.folK).toFixed(1) + 'px'; }); }
   fxStill() { return (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
   fxAttach(el) {
     if (!el || el.__fx) return;
@@ -147,7 +147,7 @@ class Component extends DCLogic {
     if (F.blob) F.blob.style.background = 'rgb(' + P.fill + ')';
     if (F.blob) { el.style.transition = 'translate .9s cubic-bezier(.22,1,.36,1)'; }
     if (kind === 'mag' || kind === 'magfar') F.arrow = null;
-    if (kind === 'magfar') { F.mR = 220; F.mX = 0.38; F.mY = 0.5; (this.fxFar = this.fxFar || []).push(F); el.style.transition = 'translate .7s cubic-bezier(.22,1,.36,1), color .5s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.3,1.6,.5,1)'; }
+    if (kind === 'magfar') { F.mR = 220; F.mX = 0.38; F.mY = 0.5; const fk = parseFloat(el.getAttribute('data-fx-k')); if (fk > 0) { F.mX *= fk; F.mY *= fk; } const fr = parseFloat(el.getAttribute('data-fx-r')); if (fr > 0) F.mR = fr; const ft = parseFloat(el.getAttribute('data-fx-t')); if (ft > 0) el.style.transition = 'translate ' + ft + 's cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.3,1.6,.5,1)'; const fw = el.parentElement && el.parentElement.querySelector(':scope > [data-fx-follow]'); if (fw) { F.fol = fw; F.folK = parseFloat(fw.getAttribute('data-fx-follow')) || 0.7; fw.style.transition = 'translate ' + ((ft > 0 ? ft : .7) + .25) + 's cubic-bezier(.22,1,.36,1)'; fw.style.display = 'inline-block'; } (this.fxFar = this.fxFar || []).push(F); el.style.transition = 'translate .7s cubic-bezier(.22,1,.36,1), color .5s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.3,1.6,.5,1)'; }
     const loc = (e) => { const r = el.getBoundingClientRect(); return [(e.clientX - r.left) / (r.width || 1), (e.clientY - r.top) / (r.height || 1)]; };
     el.addEventListener('pointerenter', (e) => { const [x, y] = loc(e); F.ox = x; F.oy = y; F.ht = 1; F.sheenT = performance.now(); this.fxKick(F); });
     if (P.mag) { F.mR = 70; F.mX = 0.2; F.mY = 0.28; (this.fxFar = this.fxFar || []).push(F); }
