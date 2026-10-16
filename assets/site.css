@@ -290,11 +290,11 @@ del.ink::after{background:#121212;height:.09em}
 .contact-kicker{display: flex; flex-wrap: wrap; gap: 10px 28px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; font-size: 14px; color: #B9B3AB}
 .contact-title{margin: 0; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(44px, 6vw, 92px); line-height: .9; max-width: 1100px}
 .contact-lead{margin: -16px 0 0; font-size: clamp(20px, 2vw, 26px); line-height: 1.4; max-width: 760px; color: #D6D1CA}
-.talkbig{align-self: flex-start; text-decoration: none; color: #EEEBE5 !important; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(64px, 11vw, 176px); line-height: .86; padding: 8px 0 14px}
+.talkbig{align-self: flex-start; text-decoration: none; color: #EEEBE5; font-weight: 900; font-stretch: 68%; text-transform: uppercase; font-size: clamp(64px, 11vw, 176px); line-height: .86; padding: 8px 0 14px}
 .footer-row{display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #B9B3AB}
 .madeby{display: flex; align-items: center; gap: 7px}
 .footer-links{display: flex; gap: 24px}
-.footer-link{color: #EEEBE5 !important}
+.footer-link{color: #EEEBE5}
 
 .talks-label{display: block; padding-bottom: 18px}
 .trow-format{grid-column: 2; grid-row: 1; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: #5E5954}
@@ -310,3 +310,10 @@ del.ink::after{background:#121212;height:.09em}
 #talks .btn-group{margin-top:8px}
 @media (max-width:760px){.talks-id{margin-left:0;gap:18px}.portrait-wrap{width:80px;height:80px}}
 @media (prefers-reduced-motion:reduce){.portrait,.portrait-ring{transition:none}}
+
+/* ---- margin-note brush hook ---- */
+.mnote-label{position:relative}
+.mnote-hook{position:absolute;right:calc(100% + 10px);top:-19px;display:block;width:66px;height:36px;overflow:visible;animation:hookdraw .9s cubic-bezier(.65,0,.35,1) 1.15s both}
+@keyframes hookdraw{from{clip-path:inset(0 100% 100% 0)}to{clip-path:inset(0 0 0 0)}}
+@media (max-width:760px){.mnote{border-left:0 !important;padding-left:58px !important}.mnote-hook{width:48px;height:26px;top:-12px;right:calc(100% + 8px)}}
+@media (prefers-reduced-motion:reduce){.mnote-hook{animation:none}}
