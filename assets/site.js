@@ -1,3 +1,4 @@
+function cssVar(n, d) { try { const v = getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v || d; } catch (e) { return d; } }
 class DCLogic {
   constructor(props) { this.props = props || {}; this.state = {}; }
   setState(patch) { Object.assign(this.state, typeof patch === 'function' ? patch(this.state) : patch); if (this.__mounted) this.__render(); }
@@ -140,7 +141,7 @@ class Component extends DCLogic {
   fxAttach(el) {
     if (!el || el.__fx) return;
     const kind = el.getAttribute('data-fx') || 'ink';
-    const P = { mag: { mag: 0.55 }, magfar: { far: 1 }, big: { fill: '242,96,12', from: '238,235,229', to: '18,18,18', mag: 0 }, link: {}, nav: {} }[kind] || {};
+    const P = { mag: { mag: 0.55 }, magfar: { far: 1 }, big: { fill: cssVar('--accent-rgb', '242,96,12'), from: cssVar('--paper-rgb', '238,235,229'), to: cssVar('--paper-rgb', '238,235,229'), mag: 0 }, link: {}, nav: {} }[kind] || {};
     const F = { el, kind, P, h: 0, hv: 0, ht: 0, s: 1, vs: 0, ts: 1, ox: 0.5, oy: 0.5, raf: 0, last: 0 };
     el.__fx = F;
     F.blob = el.querySelector(':scope > .fxb'); F.sheen = el.querySelector(':scope > .fxs'); F.line = el.querySelector(':scope > .fxl'); F.arrow = el.querySelector('[data-fx-arrow]');
@@ -271,7 +272,7 @@ class Component extends DCLogic {
         const rad = (0.5 + n * 1.45) * dep;
         let l = Math.floor(n * dep * (LV - 1) + 0.5); if (l < 0) l = 0; if (l >= LV) l = LV - 1;
         paths[l].moveTo(x + rad, y); paths[l].arc(x, y, rad, 0, 6.2832); } }
-    for (let l = 0; l < LV; l++) { const a = 0.04 + 0.52 * (l / (LV - 1)); ctx.fillStyle = 'rgba(238,235,229,' + a.toFixed(3) + ')'; ctx.fill(paths[l]); }
+    for (let l = 0; l < LV; l++) { const a = 0.04 + 0.52 * (l / (LV - 1)); ctx.fillStyle = 'rgba(' + cssVar('--paper-rgb', '238,235,229') + ',' + a.toFixed(3) + ')'; ctx.fill(paths[l]); }
   };
   const loop = (now) => { raf = 0; frame(now); if (vis && !still) raf = requestAnimationFrame(loop); };
   const kick = () => { if (!raf && vis && !still) { last = 0; raf = requestAnimationFrame(loop); } };
