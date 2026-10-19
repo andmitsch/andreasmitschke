@@ -23,12 +23,12 @@ class Component extends DCLogic {
         requestAnimationFrame(step);
       });
     }
-    this.pairs = [['meeting.', 'testing.'], ['discussing.', 'building.'], ['debating.', 'shipping.'], ['approving.', 'proving.']];
+    this.pairs = [['meeting.', 'testing.'], ['discussing.', 'building.'], ['approving.', 'proving.']];
     this.pool = '∑∫∂πΔ≈±×÷√∞λσμθ≠≤≥01·−';
-    const k0 = this.fxStill() ? 3 : 0;
-    this.state = { k: k0, c1: this.plain(this.pairs[k0][0]), c2: this.plain(this.pairs[k0][1]), struck: k0 === 3 };
+    const k0 = this.fxStill() ? this.pairs.length - 1 : 0;
+    this.state = { k: k0, c1: this.plain(this.pairs[k0][0]), c2: this.plain(this.pairs[k0][1]), struck: k0 === this.pairs.length - 1 };
     this.hlT = 0; this.hlRaf = 0; this.hlRunning = false; this.HOLD = 2600;
-    this.replay = () => { if (this.fxStill() || this.hlRunning || this.state.k !== 3) return; this.hlRunning = true; this.setState({ struck: false }); this.hlT = setTimeout(() => this.morph(0, () => this.cycle()), 300); };
+    this.replay = () => { if (this.fxStill() || this.hlRunning || this.state.k !== this.pairs.length - 1) return; this.hlRunning = true; this.setState({ struck: false }); this.hlT = setTimeout(() => this.morph(0, () => this.cycle()), 300); };
     this.pathEl = null; this.setPath = (el) => { this.pathEl = el; this.railUpdate(); };
     this.cur = { el: null, x: -100, y: -100, tx: -100, ty: -100, raf: 0, inside: false };
     this.setCur = (el) => { this.cur.el = el; };
