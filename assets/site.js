@@ -74,8 +74,53 @@ class Component extends DCLogic {
     if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => { es.forEach((e) => { if (e.isIntersecting) { io.disconnect(); setTimeout(play, 2000); } }); }, { threshold: 0.5 }); io.observe(w); } else { setTimeout(play, 2000); }
     w.addEventListener('mouseenter', play);
   }
+  initMemo() {
+    const cv = document.querySelector('#top .memo-canvas'), top = document.getElementById('top');
+    if (!cv || !cv.getContext || !top) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ctx = cv.getContext('2d'), CELL = 28, GAP = 36, STEP = 8;
+    let W = 0, H = 0, DPR = 1, fc = 0, fr = 0, FX, FY, VX, VY, active = 0, vis = true, last = 0;
+    const t0 = performance.now(), fp = { on: false, x: 0, y: 0, px: 0, py: 0 }, o = [0, 0];
+    const size = () => { const r = cv.getBoundingClientRect(); DPR = Math.min(2, window.devicePixelRatio || 1); W = r.width; H = r.height; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); fc = Math.ceil(W / CELL) + 2; fr = Math.ceil(H / CELL) + 2; FX = new Float32Array(fc * fr); FY = new Float32Array(fc * fr); VX = new Float32Array(fc * fr); VY = new Float32Array(fc * fr); };
+    /* the cursor drags a soft displacement field along its path; each cell springs back like ink settling (as in the Grant & Bear footer) */
+    const stamp = () => {
+      if (!fp.on) return; let vx = fp.x - fp.px, vy = fp.y - fp.py; fp.px = fp.x; fp.py = fp.y;
+      const sp = Math.hypot(vx, vy); if (sp < 0.3) return; if (sp > 40) { vx *= 40 / sp; vy *= 40 / sp; }
+      const cx = fp.x / CELL + 1, cy = fp.y / CELL + 1, rc = Math.ceil(110 / CELL);
+      for (let j = Math.max(0, Math.floor(cy - rc)); j <= Math.min(fr - 1, Math.ceil(cy + rc)); j++)
+        for (let i = Math.max(0, Math.floor(cx - rc)); i <= Math.min(fc - 1, Math.ceil(cx + rc)); i++) {
+          const dx = (i - cx) * CELL, dy = (j - cy) * CELL, w = Math.exp(-(dx * dx + dy * dy) / (2 * 45 * 45)); if (w < 0.02) continue;
+          const k = j * fc + i; FX[k] += vx * w * 0.4; FY[k] += vy * w * 0.4; const m = Math.hypot(FX[k], FY[k]); if (m > 40) { FX[k] *= 40 / m; FY[k] *= 40 / m; }
+        }
+      active = 150;
+    };
+    const relax = () => { if (active <= 0) return; active--; let any = false; const K = 0.03, D = 0.86;
+      for (let k = 0; k < FX.length; k++) { VX[k] = (VX[k] - FX[k] * K) * D; VY[k] = (VY[k] - FY[k] * K) * D; FX[k] += VX[k]; FY[k] += VY[k];
+        if (FX[k] > 0.05 || FX[k] < -0.05 || FY[k] > 0.05 || FY[k] < -0.05 || VX[k] > 0.02 || VX[k] < -0.02 || VY[k] > 0.02 || VY[k] < -0.02) any = true; }
+      if (any) active = Math.max(active, 1); };
+    const sample = (px, py) => { const gx = px / CELL + 1, gy = py / CELL + 1, i = Math.floor(gx), j = Math.floor(gy);
+      if (i < 0 || j < 0 || i >= fc - 1 || j >= fr - 1) { o[0] = o[1] = 0; return; } const ax = gx - i, ay = gy - j, k = j * fc + i;
+      o[0] = (FX[k] * (1 - ax) + FX[k + 1] * ax) * (1 - ay) + (FX[k + fc] * (1 - ax) + FX[k + fc + 1] * ax) * ay;
+      o[1] = (FY[k] * (1 - ax) + FY[k + 1] * ax) * (1 - ay) + (FY[k + fc] * (1 - ax) + FY[k + fc + 1] * ax) * ay; };
+    const draw = (now) => {
+      const t = (now - t0) / 1000, breathe = reduce ? 0 : Math.sin(t / 4.2) * 1.4;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(18,18,18,.07)';
+      for (let y0 = GAP - 2; y0 < H + GAP; y0 += GAP) {
+        ctx.beginPath();
+        for (let x = -STEP; x <= W + STEP; x += STEP) { let X = x, Y = y0 + breathe; if (active > 0) { sample(x, Y); X += o[0] * 0.8; Y += o[1]; } if (x > -STEP) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); }
+        ctx.stroke();
+      }
+    };
+    size(); window.addEventListener('resize', () => { size(); draw(performance.now()); });
+    if (reduce) { draw(performance.now()); return; }
+    window.addEventListener('pointermove', (e) => { const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      if (x < 0 || y < 0 || x > r.width || y > r.height) { fp.on = false; return; } if (!fp.on) { fp.px = x; fp.py = y; } fp.x = x; fp.y = y; fp.on = true; }, { passive: true });
+    if ('IntersectionObserver' in window) new IntersectionObserver((es) => { vis = es[0].isIntersecting; }).observe(top);
+    const loop = (now) => { requestAnimationFrame(loop); if (!vis || now - last < 1000 / 30) return; last = now; stamp(); relax(); draw(now); };
+    requestAnimationFrame(loop);
+  }
   componentDidMount() {
-    this.initMenu(); this.initDots(); this.initPortraitVid();
+    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
