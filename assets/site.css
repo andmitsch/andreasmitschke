@@ -345,4 +345,4 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 
 /* ---- hero: ruled paper that bends under the cursor ---- */
 .memo-paper{position:absolute;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 62%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 62%,transparent 100%)}
-.memo-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.memo-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;color:var(--accent)}

@@ -102,13 +102,26 @@ class Component extends DCLogic {
       if (i < 0 || j < 0 || i >= fc - 1 || j >= fr - 1) { o[0] = o[1] = 0; return; } const ax = gx - i, ay = gy - j, k = j * fc + i;
       o[0] = (FX[k] * (1 - ax) + FX[k + 1] * ax) * (1 - ay) + (FX[k + fc] * (1 - ax) + FX[k + fc + 1] * ax) * ay;
       o[1] = (FY[k] * (1 - ax) + FY[k + 1] * ax) * (1 - ay) + (FY[k + fc] * (1 - ax) + FY[k + fc + 1] * ax) * ay; };
+    const accent = (getComputedStyle(cv).color || 'rgb(71,134,235)');
+    const PX = [], PY = [], PM = [];
     const draw = (now) => {
       const t = (now - t0) / 1000, breathe = reduce ? 0 : Math.sin(t / 4.2) * 1.4;
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H); ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(18,18,18,.07)';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
       for (let y0 = GAP - 2; y0 < H + GAP; y0 += GAP) {
-        ctx.beginPath();
-        for (let x = -STEP; x <= W + STEP; x += STEP) { let X = x, Y = y0 + breathe; if (active > 0) { sample(x, Y); X += o[0] * 0.8; Y += o[1]; } if (x > -STEP) ctx.lineTo(X, Y); else ctx.moveTo(X, Y); }
+        let n = 0, hot = false;
+        for (let x = -STEP; x <= W + STEP; x += STEP) {
+          let X = x, Y = y0 + breathe, m = 0;
+          if (active > 0) { sample(x, Y); X += o[0] * 0.8; Y += o[1]; m = Math.hypot(o[0], o[1]); if (m > 0.6) hot = true; }
+          PX[n] = X; PY[n] = Y; PM[n] = m; n++;
+        }
+        ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(18,18,18,.07)'; ctx.globalAlpha = 1; ctx.beginPath(); ctx.moveTo(PX[0], PY[0]);
+        for (let i = 1; i < n; i++) ctx.lineTo(PX[i], PY[i]);
         ctx.stroke();
+        if (!hot) continue;
+        /* only the part of the line the cursor moved tints into the accent, and fades back as the ink settles */
+        ctx.strokeStyle = accent; ctx.lineWidth = 1.2;
+        for (let i = 1; i < n; i++) { const m = (PM[i - 1] + PM[i]) / 2; if (m < 0.6) continue; ctx.globalAlpha = Math.min(0.3, m / 26); ctx.beginPath(); ctx.moveTo(PX[i - 1], PY[i - 1]); ctx.lineTo(PX[i], PY[i]); ctx.stroke(); }
+        ctx.globalAlpha = 1;
       }
     };
     size(); window.addEventListener('resize', () => { size(); draw(performance.now()); });
