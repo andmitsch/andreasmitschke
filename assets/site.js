@@ -61,8 +61,21 @@ class Component extends DCLogic {
       const nx = Math.max(-1, Math.min(1, dx / R)), ny = Math.max(-1, Math.min(1, dy / R));
       B.tgt.ry = B.turn + 26 - p * 20 + nx * 16 * p; B.tgt.rx = 4 - ny * 10 * p; B.tgt.lift = p * 28; this.bKick(); };
   }
+  initPortraitVid() {
+    const w = document.querySelector('.portrait-wrap'), v = w && w.querySelector('.portrait-vid');
+    if (!v || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    const FADE = 1300, HOLD_IN = 700, HOLD_OUT = 500, RAMP = 0.7, MIN = 0.3;
+    let busy = false, raf = 0;
+    const ease = () => { const d = v.duration || 4, t = v.currentTime; v.playbackRate = Math.max(MIN, Math.min(1, t / RAMP, (d - t) / RAMP)); if (!v.paused && !v.ended) raf = requestAnimationFrame(ease); };
+    const finish = () => { cancelAnimationFrame(raf); setTimeout(() => { w.classList.remove('vid-on'); setTimeout(() => { try { v.currentTime = 0; } catch (e) {} busy = false; }, FADE + 100); }, HOLD_OUT); };
+    const start = () => { w.classList.add('vid-on'); setTimeout(() => { v.playbackRate = MIN; const p = v.play(); if (p && p.catch) p.catch(() => { w.classList.remove('vid-on'); busy = false; }); raf = requestAnimationFrame(ease); }, FADE * 0.6 + HOLD_IN); };
+    const play = () => { if (busy) return; busy = true; v.preload = 'auto'; try { v.currentTime = 0; } catch (e) {} if (v.readyState >= 2) start(); else { v.addEventListener('loadeddata', start, { once: true }); v.load(); } };
+    v.addEventListener('ended', finish);
+    if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => { es.forEach((e) => { if (e.isIntersecting) { io.disconnect(); setTimeout(play, 2000); } }); }, { threshold: 0.5 }); io.observe(w); } else { setTimeout(play, 2000); }
+    w.addEventListener('mouseenter', play);
+  }
   componentDidMount() {
-    this.initMenu(); this.initDots();
+    this.initMenu(); this.initDots(); this.initPortraitVid();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
