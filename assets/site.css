@@ -130,7 +130,7 @@ del.ink::after{background:#121212;height:.09em}
 .hdel{text-decoration:none;position:relative;white-space:nowrap;display:inline-block}
 .hdel::after{content:"";position:absolute;left:-1.5%;right:-1.5%;top:50%;height:.115em;background:var(--accent);border-radius:999px;transform-origin:left center;transform:rotate(-2.2deg) scaleX(0);transition:transform .28s cubic-bezier(.7,0,.2,1)}
 .hdel.on::after{transform:rotate(-2.2deg) scaleX(1);transition:transform .6s cubic-bezier(.7,0,.2,1)}
-.gl{color:var(--accent);font-family:'Bodoni Moda',Georgia,serif;font-style:italic;font-weight:400;text-transform:none;opacity:.9}
+.gl{color:var(--accent);font-family:'Bodoni Moda',Georgia,serif;font-style:italic;font-weight:400;text-transform:none;opacity:.9;line-height:0;vertical-align:baseline}
 .stampsvg{display:block;width:180px;height:180px}
 .ringrot{transform-box:view-box;transform-origin:100px 100px;transform:rotate(var(--srot,0deg))}
 .mnote{position:absolute;right:0;top:2.15em;width:300px;transform:translateY(-50%)}
@@ -234,6 +234,8 @@ del.ink::after{background:#121212;height:.09em}
 .hl-h1{margin: 0; font-size: 1em; font-weight: 900; font-stretch: 68%; text-transform: uppercase; line-height: .86}
 .hl-line{display: block}
 .hl-line-word{display: block; white-space: nowrap}
+/* fixed line boxes: the scrambling glyphs can never change the headline height, so the text below stays still */
+.hl-line,.hl-line-word{height:.86em}
 .mnote-body{display: flex; flex-direction: column; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 1.5; color: var(--n-4a)}
 .mnote-arrow{color: var(--accent-text)}
 .hero-copy{max-width: 660px; display: flex; flex-direction: column; gap: 24px}
