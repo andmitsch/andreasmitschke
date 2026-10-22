@@ -75,66 +75,73 @@ class Component extends DCLogic {
     w.addEventListener('mouseenter', play);
   }
   initMemo() {
+    /* Hero background: the Grant & Bear footer's flowing line field, in ink on paper.
+       Interaction as plucked strings: a line only moves once the cursor crosses it, follows the cursor
+       until stretched past MAXPULL, then lets go and settles back. */
     const cv = document.querySelector('#top .memo-canvas'), top = document.getElementById('top');
     if (!cv || !cv.getContext || !top) return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const ctx = cv.getContext('2d'), GAP = 36, STEP = 8;
-    /* plucked strings: a line only moves once the cursor actually crosses it. It then follows the cursor
-       until pulled further than MAXPULL, lets go, and springs back with a small overshoot. */
-    const SIGMA = 100, MAXPULL = 32, GRAB_K = 0.3, GRAB_D = 0.6, BACK_K = 0.05, BACK_D = 0.78;
-    let W = 0, H = 0, DPR = 1, lines = [], vis = true, last = 0, cur = null, prev = null;
+    const ctx = cv.getContext('2d'), GAP = 14, STEP = 6, AMP = 0.75;
+    const SIGMA = 100, MAXPULL = 24, GRAB_K = 0.3, GRAB_D = 0.6, BACK_K = 0.05, BACK_D = 0.78;
+    let W = 0, H = 0, DPR = 1, lines = [], vis = true, last = 0, cur = null, prev = null, t = 0;
     const t0 = performance.now();
     const accent = (getComputedStyle(cv).color || 'rgb(71,134,235)');
+    const wave = (x, y0) => y0 + AMP * (40 * Math.sin(x * 0.0042 + y0 * 0.011 + t * 0.16) + 18 * Math.sin(x * 0.011 - y0 * 0.006 - t * 0.22) + 9 * Math.sin((x + y0) * 0.023 + t * 0.31) + 46 * Math.sin(y0 * 0.004 + Math.sin(x * 0.0016 + t * 0.07) * 2.2));
     const size = () => {
       const r = cv.getBoundingClientRect(); DPR = Math.min(2, window.devicePixelRatio || 1); W = r.width; H = r.height;
       cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
-      lines = []; for (let y0 = GAP - 2; y0 < H + GAP; y0 += GAP) lines.push({ y0, a: 0, v: 0, gx: 0, held: false });
+      lines = []; for (let y0 = -GAP * 6, li = 0; y0 < H + GAP * 6; y0 += GAP, li++) lines.push({ y0, li, a: 0, v: 0, gx: 0, held: false });
     };
     const step = () => {
-      if (cur && prev) {
+      if (cur && prev && (cur.x !== prev.x || cur.y !== prev.y)) {
         for (const L of lines) {
-          if (!L.held) {
-            /* grab when the cursor path crosses this line */
-            if ((prev.y - L.y0) * (cur.y - L.y0) <= 0 && Math.abs(cur.y - prev.y) > 0.01) { const k = (L.y0 - prev.y) / (cur.y - prev.y); L.held = true; L.gx = prev.x + (cur.x - prev.x) * k; }
-          }
+          const dp = prev.y - wave(prev.x, L.y0), dc = cur.y - wave(cur.x, L.y0);
+          if (!L.held && dp * dc <= 0) { const k = Math.abs(dp) / (Math.abs(dp) + Math.abs(dc) || 1); L.held = true; L.gx = prev.x + (cur.x - prev.x) * k; }
           if (L.held) {
             L.gx += (cur.x - L.gx) * 0.5;
-            const want = cur.y - L.y0;
-            if (Math.abs(want) > MAXPULL) { L.held = false; L.a = Math.sign(want) * Math.max(Math.abs(L.a), MAXPULL * 0.85); L.v = 0; }  /* a fast swipe still stretches the line to the limit before it snaps */
-            else { L.v = (L.v + (want - L.a) * GRAB_K) * GRAB_D; L.a += L.v; continue; }
+            if (Math.abs(dc) > MAXPULL) { L.held = false; L.a = Math.sign(dc) * Math.max(Math.abs(L.a), MAXPULL * 0.85); L.v = 0; }
           }
         }
       }
-      for (const L of lines) if (!L.held) { L.v = (L.v - L.a * BACK_K) * BACK_D; L.a += L.v; if (Math.abs(L.a) < 0.02 && Math.abs(L.v) < 0.02) { L.a = 0; L.v = 0; } }
+      for (const L of lines) {
+        if (L.held && cur) { const want = cur.y - wave(cur.x, L.y0); L.v = (L.v + (want - L.a) * GRAB_K) * GRAB_D; L.a += L.v; }
+        else { L.held = false; L.v = (L.v - L.a * BACK_K) * BACK_D; L.a += L.v; if (Math.abs(L.a) < 0.02 && Math.abs(L.v) < 0.02) { L.a = 0; L.v = 0; } }
+      }
       prev = cur ? { x: cur.x, y: cur.y } : null;
     };
-    const draw = (now) => {
-      const t = (now - t0) / 1000, breathe = reduce ? 0 : Math.sin(t / 4.2) * 1.4;
+    const draw = () => {
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
+      const P = [];
       for (const L of lines) {
-        const moving = Math.abs(L.a) > 0.05;
-        ctx.globalAlpha = 1; ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(18,18,18,.07)'; ctx.beginPath();
-        if (!moving) { ctx.moveTo(0, L.y0 + breathe); ctx.lineTo(W, L.y0 + breathe); ctx.stroke(); continue; }
-        const pts = [];
-        for (let x = -STEP; x <= W + STEP; x += STEP) { const d = x - L.gx, off = L.a * Math.exp(-(d * d) / (2 * SIGMA * SIGMA)); pts.push([x, L.y0 + breathe + off, Math.abs(off)]); }
-        ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]); ctx.stroke();
-        /* only the part that was pulled tints into the accent, and fades as it settles */
-        ctx.strokeStyle = accent; ctx.lineWidth = 1.2;
-        for (let i = 1; i < pts.length; i++) { const m = (pts[i - 1][2] + pts[i][2]) / 2; if (m < 0.6) continue; ctx.globalAlpha = Math.min(0.3, m / 26); ctx.beginPath(); ctx.moveTo(pts[i - 1][0], pts[i - 1][1]); ctx.lineTo(pts[i][0], pts[i][1]); ctx.stroke(); }
+        const row = L.y0 / H, moving = Math.abs(L.a) > 0.05;
+        ctx.globalAlpha = 1; ctx.lineWidth = 0.8;
+        ctx.strokeStyle = 'rgba(18,18,18,' + (0.045 + 0.04 * Math.pow(Math.sin(row * 3.1 + t * 0.05), 2)).toFixed(3) + ')';
+        ctx.beginPath(); P.length = 0;
+        for (let x = -STEP; x <= W + STEP; x += STEP) {
+          let y = wave(x, L.y0), off = 0;
+          if (moving) { const d = x - L.gx; off = L.a * Math.exp(-(d * d) / (2 * SIGMA * SIGMA)); y += off; }
+          if (x > -STEP) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+          if (moving) P.push(x, y, Math.abs(off));
+        }
+        ctx.stroke();
+        if (!moving) continue;
+        /* only the pulled part tints into the accent, fading as it settles */
+        ctx.strokeStyle = accent; ctx.lineWidth = 1;
+        for (let i = 3; i < P.length; i += 3) { const m = (P[i - 1] + P[i + 2]) / 2; if (m < 0.6) continue; ctx.globalAlpha = Math.min(0.2, m / 32); ctx.beginPath(); ctx.moveTo(P[i - 3], P[i - 2]); ctx.lineTo(P[i], P[i + 1]); ctx.stroke(); }
       }
       ctx.globalAlpha = 1;
     };
-    size(); window.addEventListener('resize', () => { size(); draw(performance.now()); });
-    if (reduce) { draw(performance.now()); return; }
+    size(); window.addEventListener('resize', () => { size(); draw(); });
+    if (reduce) { draw(); return; }
     window.addEventListener('pointermove', (e) => {
       if (e.pointerType && e.pointerType !== 'mouse') return;
       const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-      if (x < 0 || y < 0 || x > r.width || y > r.height) { cur = null; prev = null; lines.forEach((L) => { L.held = false; }); return; }
+      if (x < 0 || y < 0 || x > r.width || y > r.height) { cur = null; prev = null; return; }
       cur = { x, y };
     }, { passive: true });
-    document.addEventListener('mouseleave', () => { cur = null; prev = null; lines.forEach((L) => { L.held = false; }); });
+    document.addEventListener('mouseleave', () => { cur = null; prev = null; });
     if ('IntersectionObserver' in window) new IntersectionObserver((es) => { vis = es[0].isIntersecting; }).observe(top);
-    const loop = (now) => { requestAnimationFrame(loop); if (!vis || now - last < 1000 / 60) return; last = now; step(); draw(now); };
+    const loop = (now) => { requestAnimationFrame(loop); if (!vis || now - last < 1000 / 45) return; last = now; t = (now - t0) / 1000; step(); draw(); };
     requestAnimationFrame(loop);
   }
   componentDidMount() {
