@@ -77,20 +77,26 @@ class Component extends DCLogic {
   initMemo() {
     /* Hero background: the Grant & Bear footer's flowing line field, in ink on paper.
        Interaction as plucked strings: a line only moves once the cursor crosses it, follows the cursor
-       until stretched past MAXPULL, then lets go and settles back. */
+       until stretched past MAXPULL, then lets go and settles back.
+       Tuned for slower machines (Firefox on integrated graphics): steady 30 fps cadence, capped pixel density,
+       lines batched into a few strokes, shared wave terms computed once per frame, no CSS mask on the canvas. */
     const cv = document.querySelector('#top .memo-canvas'), top = document.getElementById('top');
     if (!cv || !cv.getContext || !top) return;
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const ctx = cv.getContext('2d'), GAP = 14, STEP = 6, AMP = 0.75;
+    const ctx = cv.getContext('2d', { alpha: true }), GAP = 14, STEP = 10, AMP = 0.75;
     const SIGMA = 100, MAXPULL = 24, GRAB_K = 0.3, GRAB_D = 0.6, BACK_K = 0.05, BACK_D = 0.78;
-    let W = 0, H = 0, DPR = 1, lines = [], vis = true, last = 0, cur = null, prev = null, t = 0;
+    const BUCKETS = 8, FADE_FROM = 0.62;
+    let W = 0, H = 0, DPR = 1, lines = [], vis = true, last = 0, cur = null, prev = null, t = 0, n = 0;
+    let XS = new Float32Array(0), A1 = XS, A2 = XS, A3 = XS, A4 = XS;
     const t0 = performance.now();
     const accent = (getComputedStyle(cv).color || 'rgb(71,134,235)');
     const wave = (x, y0) => y0 + AMP * (40 * Math.sin(x * 0.0042 + y0 * 0.011 + t * 0.16) + 18 * Math.sin(x * 0.011 - y0 * 0.006 - t * 0.22) + 9 * Math.sin((x + y0) * 0.023 + t * 0.31) + 46 * Math.sin(y0 * 0.004 + Math.sin(x * 0.0016 + t * 0.07) * 2.2));
     const size = () => {
-      const r = cv.getBoundingClientRect(); DPR = Math.min(2, window.devicePixelRatio || 1); W = r.width; H = r.height;
+      const r = cv.getBoundingClientRect(); DPR = Math.min(1.5, window.devicePixelRatio || 1); W = r.width; H = r.height;
       cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
-      lines = []; for (let y0 = -GAP * 6, li = 0; y0 < H + GAP * 6; y0 += GAP, li++) lines.push({ y0, li, a: 0, v: 0, gx: 0, held: false });
+      lines = []; for (let y0 = -GAP * 6; y0 < H + GAP * 6; y0 += GAP) lines.push({ y0, a: 0, v: 0, gx: 0, held: false });
+      n = Math.ceil((W + 2 * STEP) / STEP) + 1; XS = new Float32Array(n); A1 = new Float32Array(n); A2 = new Float32Array(n); A3 = new Float32Array(n); A4 = new Float32Array(n);
+      for (let i = 0; i < n; i++) XS[i] = -STEP + i * STEP;
     };
     const step = () => {
       if (cur && prev && (cur.x !== prev.x || cur.y !== prev.y)) {
@@ -105,30 +111,44 @@ class Component extends DCLogic {
       }
       for (const L of lines) {
         if (L.held && cur) { const want = cur.y - wave(cur.x, L.y0); L.v = (L.v + (want - L.a) * GRAB_K) * GRAB_D; L.a += L.v; }
-        else { L.held = false; L.v = (L.v - L.a * BACK_K) * BACK_D; L.a += L.v; if (Math.abs(L.a) < 0.02 && Math.abs(L.v) < 0.02) { L.a = 0; L.v = 0; } }
+        else if (L.a !== 0 || L.v !== 0) { L.held = false; L.v = (L.v - L.a * BACK_K) * BACK_D; L.a += L.v; if (Math.abs(L.a) < 0.02 && Math.abs(L.v) < 0.02) { L.a = 0; L.v = 0; } }
       }
       prev = cur ? { x: cur.x, y: cur.y } : null;
     };
+    const lineY = (y0, i) => y0 + AMP * (40 * Math.sin(A1[i] + y0 * 0.011) + 18 * Math.sin(A2[i] - y0 * 0.006) + 9 * Math.sin(A3[i] + y0 * 0.023) + 46 * Math.sin(y0 * 0.004 + A4[i]));
+    const paths = new Array(BUCKETS), tint = new Array(5);
     const draw = () => {
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
-      const P = [];
+      /* wave terms that depend only on x and time: once per frame instead of once per point */
+      for (let i = 0; i < n; i++) { const x = XS[i]; A1[i] = x * 0.0042 + t * 0.16; A2[i] = x * 0.011 - t * 0.22; A3[i] = x * 0.023 + t * 0.31; A4[i] = Math.sin(x * 0.0016 + t * 0.07) * 2.2; }
+      for (let b = 0; b < BUCKETS; b++) paths[b] = null;
+      for (let b = 0; b < tint.length; b++) tint[b] = null;
+      const fadeStart = H * FADE_FROM, fadeLen = H - fadeStart;
       for (const L of lines) {
-        const row = L.y0 / H, moving = Math.abs(L.a) > 0.05;
-        ctx.globalAlpha = 1; ctx.lineWidth = 0.8;
-        ctx.strokeStyle = 'rgba(18,18,18,' + (0.045 + 0.04 * Math.pow(Math.sin(row * 3.1 + t * 0.05), 2)).toFixed(3) + ')';
-        ctx.beginPath(); P.length = 0;
-        for (let x = -STEP; x <= W + STEP; x += STEP) {
-          let y = wave(x, L.y0), off = 0;
+        const fade = L.y0 <= fadeStart ? 1 : Math.max(0, 1 - (L.y0 - fadeStart) / fadeLen);
+        if (fade <= 0.02) continue;
+        const pulse = Math.sin((L.y0 / H) * 3.1 + t * 0.05);
+        const alpha = (0.045 + 0.04 * pulse * pulse) * fade;               /* 0 … 0.085 */
+        const b = Math.min(BUCKETS - 1, Math.round(alpha / 0.085 * (BUCKETS - 1)));
+        const p = paths[b] || (paths[b] = new Path2D());
+        const moving = L.a !== 0;
+        let prevY = 0, prevOff = 0;
+        for (let i = 0; i < n; i++) {
+          const x = XS[i]; let y = lineY(L.y0, i), off = 0;
           if (moving) { const d = x - L.gx; off = L.a * Math.exp(-(d * d) / (2 * SIGMA * SIGMA)); y += off; }
-          if (x > -STEP) ctx.lineTo(x, y); else ctx.moveTo(x, y);
-          if (moving) P.push(x, y, Math.abs(off));
+          if (i === 0) p.moveTo(x, y); else p.lineTo(x, y);
+          if (moving && i > 0) {
+            /* only the pulled part tints into the accent, fading as it settles (5 opacity steps, one stroke each) */
+            const m = (Math.abs(prevOff) + Math.abs(off)) / 2 * fade;
+            if (m >= 0.6) { const k = Math.min(4, Math.floor(Math.min(0.2, m / 32) / 0.2 * 5)); const tp = tint[k] || (tint[k] = new Path2D()); tp.moveTo(x - STEP, prevY); tp.lineTo(x, y); }
+          }
+          prevY = y; prevOff = off;
         }
-        ctx.stroke();
-        if (!moving) continue;
-        /* only the pulled part tints into the accent, fading as it settles */
-        ctx.strokeStyle = accent; ctx.lineWidth = 1;
-        for (let i = 3; i < P.length; i += 3) { const m = (P[i - 1] + P[i + 2]) / 2; if (m < 0.6) continue; ctx.globalAlpha = Math.min(0.2, m / 32); ctx.beginPath(); ctx.moveTo(P[i - 3], P[i - 2]); ctx.lineTo(P[i], P[i + 1]); ctx.stroke(); }
       }
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
+      ctx.lineWidth = 0.8; ctx.strokeStyle = 'rgb(18,18,18)';
+      for (let b = 0; b < BUCKETS; b++) if (paths[b]) { ctx.globalAlpha = Math.max(0.004, (b / (BUCKETS - 1)) * 0.085); ctx.stroke(paths[b]); }
+      ctx.lineWidth = 1; ctx.strokeStyle = accent;
+      for (let k = 0; k < tint.length; k++) if (tint[k]) { ctx.globalAlpha = (k + 1) / 5 * 0.2; ctx.stroke(tint[k]); }
       ctx.globalAlpha = 1;
     };
     size(); window.addEventListener('resize', () => { size(); draw(); });
@@ -141,7 +161,9 @@ class Component extends DCLogic {
     }, { passive: true });
     document.addEventListener('mouseleave', () => { cur = null; prev = null; });
     if ('IntersectionObserver' in window) new IntersectionObserver((es) => { vis = es[0].isIntersecting; }).observe(top);
-    const loop = (now) => { requestAnimationFrame(loop); if (!vis || now - last < 1000 / 45) return; last = now; t = (now - t0) / 1000; step(); draw(); };
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) last = 0; });
+    /* steady cadence: every second display frame at 60 Hz (30 fps), every fourth at 120 Hz. Uneven skipping caused the stutter. */
+    const loop = (now) => { requestAnimationFrame(loop); if (!vis || document.hidden || now - last < 1000 / 30 - 4) return; last = now; t = (now - t0) / 1000; step(); draw(); };
     requestAnimationFrame(loop);
   }
   componentDidMount() {
