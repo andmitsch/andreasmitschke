@@ -326,11 +326,23 @@ class Component extends DCLogic {
   initMenu() {
   const mb = document.querySelector('.menu-btn'), mn = document.getElementById('mnav');
   if (mb && mn) {
-    const set = (open) => { document.body.classList.toggle('menu-open', open); mb.setAttribute('aria-expanded', String(open)); mn.setAttribute('aria-hidden', String(!open)); mb.querySelector('.mb-label').textContent = open ? 'Close' : 'Menu'; document.documentElement.classList.toggle('menu-lock', open); if (open) document.querySelector('.site-head').classList.remove('head-up'); };
+    /* the menu opens as a ball growing out of the menu button and closes by shrinking into the point you tapped,
+       the same circular reveal as the footer's Let's talk fill. Origin and radius are set before the class changes so the circle never drifts. */
+    const ball = mb.querySelector('.mb-icon') || mb;
+    const origin = (x, y) => {
+      if (x == null) { const r = ball.getBoundingClientRect(); x = r.left + r.width / 2; y = r.top + r.height / 2; }
+      const w = window.innerWidth, h = window.innerHeight, rad = Math.ceil(Math.hypot(Math.max(x, w - x), Math.max(y, h - y))) + 2;
+      mn.style.transition = 'none'; mn.style.setProperty('--mx', x + 'px'); mn.style.setProperty('--my', y + 'px'); mn.style.setProperty('--mr', rad + 'px');
+      void mn.offsetWidth; mn.style.transition = '';
+    };
+    const set = (open, x, y) => {
+      if (open === document.body.classList.contains('menu-open')) return;
+      origin(open ? null : x, open ? null : y);
+      document.body.classList.toggle('menu-open', open); mb.setAttribute('aria-expanded', String(open)); mn.setAttribute('aria-hidden', String(!open)); mb.querySelector('.mb-label').textContent = open ? 'Close' : 'Menu'; document.documentElement.classList.toggle('menu-lock', open); if (open) document.querySelector('.site-head').classList.remove('head-up');
+    };
     mb.addEventListener('click', () => set(!document.body.classList.contains('menu-open')));
-    mn.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
-    /* tapping anywhere in the open menu that is not a link closes it */
-    mn.addEventListener('click', (e) => { if (!e.target.closest('a')) set(false); });
+    /* any tap inside the open menu closes it, into the tapped point; links then navigate as usual */
+    mn.addEventListener('click', (e) => set(false, e.detail ? e.clientX : null, e.detail ? e.clientY : null));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
   }
   /* mobile: the bar slides away while scrolling down and comes back on any scroll up */
