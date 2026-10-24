@@ -13,7 +13,7 @@ class Component extends DCLogic {
         const id = a.getAttribute('href').slice(1); if (!id) return; const el = document.getElementById(id); if (!el) return;
         e.preventDefault();
         const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const y0 = window.scrollY || document.documentElement.scrollTop; const hd = document.querySelector('.site-head'); const off = hd && getComputedStyle(hd).position === 'sticky' ? hd.offsetHeight : 0; const y1 = y0 + el.getBoundingClientRect().top - off - (parseFloat(el.getAttribute('data-scroll-offset')) || 0);
+        const y0 = window.scrollY || document.documentElement.scrollTop; const hd = document.querySelector('.site-head'); const off = hd && getComputedStyle(hd).position === 'sticky' && el.getBoundingClientRect().top < 0 ? hd.offsetHeight : 0; /* scrolling down hides the mobile bar, so only leave room for it when going up */ const y1 = y0 + el.getBoundingClientRect().top - off - (parseFloat(el.getAttribute('data-scroll-offset')) || 0);
         const dist = Math.abs(y1 - y0); if (reduce || dist < 2) { window.scrollTo(0, y1); return; }
         const D = Math.min(2000, 900 + dist * 0.3); const t0 = performance.now();
         const ease = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
@@ -326,10 +326,26 @@ class Component extends DCLogic {
   initMenu() {
   const mb = document.querySelector('.menu-btn'), mn = document.getElementById('mnav');
   if (mb && mn) {
-    const set = (open) => { document.body.classList.toggle('menu-open', open); mb.setAttribute('aria-expanded', String(open)); mn.setAttribute('aria-hidden', String(!open)); mb.querySelector('.mb-label').textContent = open ? 'Close' : 'Menu'; };
+    const set = (open) => { document.body.classList.toggle('menu-open', open); mb.setAttribute('aria-expanded', String(open)); mn.setAttribute('aria-hidden', String(!open)); mb.querySelector('.mb-label').textContent = open ? 'Close' : 'Menu'; document.documentElement.classList.toggle('menu-lock', open); if (open) document.querySelector('.site-head').classList.remove('head-up'); };
     mb.addEventListener('click', () => set(!document.body.classList.contains('menu-open')));
     mn.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
+    /* tapping anywhere in the open menu that is not a link closes it */
+    mn.addEventListener('click', (e) => { if (!e.target.closest('a')) set(false); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+  }
+  /* mobile: the bar slides away while scrolling down and comes back on any scroll up */
+  const hd = document.querySelector('.site-head'), mq = window.matchMedia && window.matchMedia('(max-width:760px)');
+  if (hd && mq) {
+    let ly = window.scrollY, busy = false;
+    window.addEventListener('scroll', () => {
+      if (busy) return; busy = true;
+      requestAnimationFrame(() => {
+        busy = false; const y = Math.max(0, window.scrollY), d = y - ly;
+        if (document.body.classList.contains('menu-open')) { ly = y; return; }
+        if (!mq.matches || y < hd.offsetHeight) { hd.classList.remove('head-up'); ly = y; return; }
+        if (d > 6) { hd.classList.add('head-up'); ly = y; } else if (d < -6) { hd.classList.remove('head-up'); ly = y; }
+      });
+    }, { passive: true });
   }
   }
   initDots() {
