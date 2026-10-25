@@ -167,7 +167,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid();
+    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -321,6 +321,131 @@ class Component extends DCLogic {
       replay: this.replay, fxRef: this.fxRef,
       setStage: this.setStage, setBook3: this.setBook3, setBShadow: this.setBShadow, bDown: this.bDown, bMove: this.bMove, bUp: this.bUp, bKey: this.bKey
     };
+  }
+
+  initPhotoTrail() {
+    /* Street Photography side quest: hovering the entry shows a photo beside the cursor. It trails the pointer and
+       moves like a flag in a light breeze (WebGL wave shader). Every 2 s a wave rolls across the photo and the next
+       picture is revealed behind the wave front, while the frame eases to the new picture's proportions.
+       Desktop with a fine pointer only. Without WebGL (or if a texture cannot be read) a plain image follows instead. */
+    const el = document.querySelector('.side-photo[data-photos]');
+    if (!el || !window.matchMedia || !window.matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+    const srcs = el.getAttribute('data-photos').split(',').map((s) => s.trim()).filter(Boolean);
+    if (!srcs.length) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const MAXW = 340, MAXH = 300, PAD = 24, GAP = 30, HOLD = 2000, SWEEP = 1300;
+    const CW = MAXW + PAD * 2, CH = MAXH + PAD * 2;
+    const shots = srcs.map((s) => ({ s, img: new Image(), ok: false, tex: null, w: 0, h: 0 }));
+    let requested = false;
+    const ready = (o) => { if (!o.ok && o.img.complete && o.img.naturalWidth) o.ok = true; if (o.ok && !o.w) { const ar = o.img.naturalWidth / o.img.naturalHeight; o.w = Math.round(Math.min(MAXW, MAXH * ar)); o.h = Math.round(o.w / ar); } return o.ok; };
+    const preload = () => { if (requested) return; requested = true; shots.forEach((o) => { o.img.decoding = 'async'; o.img.src = o.s; }); };
+    if ('IntersectionObserver' in window) { const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { preload(); io.disconnect(); } }, { rootMargin: '600px 0px' }); io.observe(el); } else preload();
+
+    const cv = document.createElement('canvas'); cv.className = 'photo-trail'; cv.setAttribute('aria-hidden', 'true');
+    let gl = null; try { gl = cv.getContext('webgl', { alpha: true, premultipliedAlpha: true, antialias: true }); } catch (e) { gl = null; }
+    let flat = null;
+    const useFlat = () => { if (flat) return; gl = null; cv.remove(); flat = document.createElement('img'); flat.className = 'photo-trail'; flat.alt = ''; flat.setAttribute('aria-hidden', 'true'); document.body.appendChild(flat); };
+
+    const loc = {};
+    if (gl) {
+      document.body.appendChild(cv);
+      const dpr = Math.min(2, window.devicePixelRatio || 1); cv.width = Math.round(CW * dpr); cv.height = Math.round(CH * dpr); cv.style.width = CW + 'px'; cv.style.height = CH + 'px';
+      const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+      const vs = 'attribute vec2 p; varying vec2 v; void main(){ v = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }';
+      const fs = [
+        'precision mediump float;',
+        'varying vec2 v; uniform sampler2D t0, t1; uniform vec4 rect; uniform vec2 c0, c1, bend; uniform float tm, amp, a, p, sweep;',
+        'void main(){',
+        '  vec2 uv = (v - rect.xy) / (rect.zw - rect.xy);',
+        /* a flag: ripples travel along the width and grow towards the free edge */
+        '  float lift = 0.35 + 0.65 * uv.x;',
+        '  uv.y += sin(uv.x * 4.2 - tm * 2.0) * 0.02 * amp * lift + bend.y * sin(uv.x * 3.14159);',
+        '  uv.x += sin(uv.y * 3.4 + tm * 1.5) * 0.008 * amp + bend.x * sin(uv.y * 3.14159);',
+        /* the switch: one broad wave rolls across, the next photo appears behind its crest */
+        '  float f = mix(-0.35, 1.35, p); float d = uv.x - f;',
+        '  float crest = exp(-d * d / 0.045) * sweep;',
+        '  float ph = uv.x * 7.0 - p * 9.0;',
+        '  uv.y += sin(ph) * 0.045 * crest; uv.x -= 0.025 * crest;',
+        '  if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) discard;',
+        '  float m = smoothstep(0.16, -0.16, d);',
+        '  vec3 A = texture2D(t0, (uv - 0.5) * c0 + 0.5).rgb, B = texture2D(t1, (uv - 0.5) * c1 + 0.5).rgb;',
+        '  vec3 col = mix(A, B, m) * (1.0 + 0.09 * crest * cos(ph));',
+        '  gl_FragColor = vec4(col * a, a);',
+        '}'].join('\n');
+      const prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(prog);
+      if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) useFlat();
+      else {
+        gl.useProgram(prog);
+        const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        const ap = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(ap); gl.vertexAttribPointer(ap, 2, gl.FLOAT, false, 0, 0);
+        ['t0', 't1', 'rect', 'c0', 'c1', 'bend', 'tm', 'amp', 'a', 'p', 'sweep'].forEach((k) => { loc[k] = gl.getUniformLocation(prog, k); });
+        gl.uniform1i(loc.t0, 0); gl.uniform1i(loc.t1, 1);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true); gl.clearColor(0, 0, 0, 0); gl.viewport(0, 0, cv.width, cv.height);
+      }
+    } else useFlat();
+
+    const texOf = (o) => {
+      if (o.tex) return o.tex;
+      const tx = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tx);
+      [gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_T].forEach((k) => gl.texParameteri(gl.TEXTURE_2D, k, gl.CLAMP_TO_EDGE));
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, o.img); /* throws if the image cannot be read */
+      o.tex = tx; return tx;
+    };
+    const bindPair = (A, B) => {
+      try { gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, texOf(A)); gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, texOf(B)); return true; }
+      catch (e) { useFlat(); return false; }
+    };
+    const cover = (o, w, h) => { const A = o.w / o.h, B = w / h; return A > B ? [B / A, 1] : [1, A / B]; };
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+    let idx = -1, nxt = -1, on = false, x = 0, y = 0, px = 0, py = 0, show = 0, raf = 0, side = 1, holdAt = 0, sweepAt = 0;
+    const t0 = performance.now();
+    const frame = (now) => {
+      raf = 0;
+      const cur = idx >= 0 ? shots[idx] : null; if (cur) ready(cur);
+      /* schedule the next photo */
+      if (on && cur && cur.ok && nxt < 0 && shots.length > 1 && now - holdAt > HOLD) { const n = (idx + 1) % shots.length; if (ready(shots[n])) { nxt = n; sweepAt = now; } }
+      let p = 0;
+      if (nxt >= 0) { p = Math.min(1, (now - sweepAt) / (reduce ? 500 : SWEEP)); if (p >= 1) { idx = nxt; nxt = -1; p = 0; holdAt = now; } }
+      const A = shots[idx], B = nxt >= 0 ? shots[nxt] : A, e = ease(p);
+      const k = reduce ? 1 : 0.16, dx = x - px, dy = y - py; px += dx * k; py += dy * k;
+      show += ((on && A && A.ok ? 1 : 0) - show) * (reduce ? 1 : (on ? 0.14 : 0.2));
+      if (on) side = (px + GAP + MAXW > window.innerWidth - 12) ? -1 : (px - GAP - MAXW < 12 ? 1 : side);
+      if (A && A.ok) {
+        const w = A.w + (B.w - A.w) * e, h = A.h + (B.h - A.h) * e;
+        if (flat) {
+          const want = p > 0.5 ? B : A; if (flat.dataset.s !== want.s) { flat.src = want.s; flat.dataset.s = want.s; }
+          flat.style.width = w + 'px'; flat.style.height = h + 'px';
+          const l = side > 0 ? px + GAP : px - GAP - w;
+          flat.style.transform = 'translate3d(' + l.toFixed(1) + 'px,' + (py - h / 2).toFixed(1) + 'px,0) scale(' + (0.92 + 0.08 * show).toFixed(4) + ')'; flat.style.opacity = show.toFixed(3);
+        } else if (gl && bindPair(A, B)) {
+          const l = side > 0 ? px + GAP - PAD : px - GAP - MAXW - PAD, tp = py - CH / 2;
+          cv.style.transform = 'translate3d(' + l.toFixed(1) + 'px,' + tp.toFixed(1) + 'px,0) scale(' + (0.92 + 0.08 * show).toFixed(4) + ')';
+          cv.style.transformOrigin = (side > 0 ? PAD : PAD + MAXW) + 'px 50%'; cv.style.opacity = show.toFixed(3);
+          const x0 = side > 0 ? PAD : PAD + MAXW - w, y0 = PAD + (MAXH - h) / 2;
+          const t = (now - t0) / 1000, speed = Math.min(1, Math.hypot(dx, dy) / 160);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+          gl.uniform4f(loc.rect, x0 / CW, y0 / CH, (x0 + w) / CW, (y0 + h) / CH);
+          const c0 = cover(A, w, h), c1 = cover(B, w, h); gl.uniform2f(loc.c0, c0[0], c0[1]); gl.uniform2f(loc.c1, c1[0], c1[1]);
+          gl.uniform1f(loc.tm, reduce ? 0 : t); gl.uniform1f(loc.amp, reduce ? 0 : 0.45 + speed * 1.4 + (1 - show) * 1.2); gl.uniform1f(loc.a, show);
+          gl.uniform1f(loc.p, nxt >= 0 ? e : 0); gl.uniform1f(loc.sweep, reduce ? 0 : Math.sin(Math.PI * e));
+          gl.uniform2f(loc.bend, reduce ? 0 : Math.max(-0.05, Math.min(0.05, -dx / 2600)), reduce ? 0 : Math.max(-0.05, Math.min(0.05, dy / 2600)));
+          gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+        }
+      }
+      if (on || show > 0.005) raf = requestAnimationFrame(frame); else { show = 0; (flat || cv).style.opacity = '0'; }
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+    el.addEventListener('pointerenter', (e) => {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      preload(); on = true; x = e.clientX; y = e.clientY;
+      if (show < 0.05) { px = x; py = y; if (nxt >= 0) { idx = nxt; nxt = -1; } else idx = (idx + 1) % shots.length; holdAt = performance.now(); }
+      kick();
+    });
+    el.addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY; if (on) kick(); });
+    el.addEventListener('pointerleave', () => { on = false; kick(); });
+    window.addEventListener('scroll', () => { if (on) { const r = el.getBoundingClientRect(); if (y < r.top || y > r.bottom || x < r.left || x > r.right) { on = false; kick(); } } }, { passive: true });
   }
 
   initMenu() {
