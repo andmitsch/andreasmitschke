@@ -167,7 +167,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail();
+    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -448,6 +448,16 @@ class Component extends DCLogic {
     window.addEventListener('scroll', () => { if (on) { const r = el.getBoundingClientRect(); if (y < r.top || y > r.bottom || x < r.left || x > r.right) { on = false; kick(); } } }, { passive: true });
   }
 
+  initBtnFill() {
+    /* pill buttons: the fill grows out of the point where the cursor enters and shrinks back into where it leaves,
+       like the footer's Let's talk. Diameter covers the farthest corner from that point. */
+    const place = (b, e) => {
+      const r = b.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      const d = 2 * Math.ceil(Math.hypot(Math.max(x, r.width - x), Math.max(y, r.height - y))) + 4;
+      b.style.setProperty('--fx', x.toFixed(1) + 'px'); b.style.setProperty('--fy', y.toFixed(1) + 'px'); b.style.setProperty('--fd', d + 'px');
+    };
+    document.querySelectorAll('.pbtn').forEach((b) => { b.addEventListener('pointerenter', (e) => place(b, e)); b.addEventListener('pointerleave', (e) => place(b, e)); });
+  }
   initMenu() {
   const mb = document.querySelector('.menu-btn'), mn = document.getElementById('mnav');
   if (mb && mn) {
