@@ -354,3 +354,7 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 
 .photo-trail{position:fixed;left:0;top:0;z-index:30;pointer-events:none;opacity:0;will-change:transform,opacity;transform-origin:50% 50%}
 img.photo-trail{object-fit:cover;box-shadow:0 18px 40px -18px rgba(18,18,18,.35)}
+.contact-spec{display:grid;grid-template-columns:max-content 1fr;gap:8px 24px;margin:0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.5;letter-spacing:.05em;text-transform:uppercase;color:var(--n-d6);max-width:920px}
+.contact-spec dt{color:var(--n-b9)}
+.contact-spec dd{margin:0}
+@media (max-width:760px){.contact-spec{grid-template-columns:1fr;gap:2px}.contact-spec dd{margin-bottom:10px}}
