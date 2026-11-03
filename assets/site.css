@@ -367,3 +367,10 @@ img.photo-trail{object-fit:cover;box-shadow:0 18px 40px -18px rgba(18,18,18,.35)
 .hp-cutb{right:clamp(16px,4vw,48px);bottom:0;width:480px}
 .hp-cutb img{filter:grayscale(var(--g,1)) contrast(calc(1 + .06 * var(--g,1)))}
 @media (max-width:760px){.hp-cutb{position:relative;right:auto;bottom:auto;order:10;width:72%;margin:0 0 -64px auto}}
+
+/* hero exit: sticky hero eases back while the next section slides over it */
+.hero-out #top{position:sticky;top:var(--pin,0px);z-index:0;transform-origin:50% var(--oy,100%);transform:translateY(calc(var(--out,0) * -4vh)) scale(calc(1 - var(--out,0) * .06));opacity:calc(1 - var(--out,0) * .55);will-change:transform,opacity}
+.hero-out #top + section{position:relative;z-index:2;box-shadow:0 -28px 56px -30px rgba(18,18,18,.28)}
+.hero-out #top ~ section{position:relative;z-index:2}
+.hero-out #top ~ .section-rule{background:var(--paper)}
+.hero-out #top.hero-gone{visibility:hidden}

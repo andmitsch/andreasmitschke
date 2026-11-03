@@ -208,7 +208,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone();
+    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -515,6 +515,44 @@ class Component extends DCLogic {
     window.addEventListener('scroll', kick, { passive: true });
     window.addEventListener('resize', kick);
     upd();
+  }
+  initHeroOut() {
+    /* leaving the hero: the page scrolls normally until the hero copy ("I help ...") reaches the middle of the screen.
+       From there the hero stays put, eases back and fades a little, while the next section slides over it
+       like the next sheet of paper. AT sets that trigger line (0.5 = middle of the screen). */
+    const top = document.getElementById('top'), next = top && top.nextElementSibling;
+    if (!top || !next || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const anchor = top.querySelector('.hero-copy');
+    const AT = 0.5;
+    let raf = 0, anchorY = 0, heroH = 0;
+    /* only on real screens: a full-height preview (like the design canvas, where the "screen" is the whole page)
+       must never pin or fade the hero */
+    const fits = () => (window.innerHeight || 0) < top.offsetHeight * 1.6;
+    const measure = () => {
+      heroH = top.offsetHeight;
+      let y = heroH;
+      if (anchor) { y = anchor.offsetHeight / 2; for (let e = anchor; e && e !== top; e = e.offsetParent) y += e.offsetTop; }
+      anchorY = Math.min(heroH, Math.max(0, y));
+      top.style.setProperty('--oy', anchorY.toFixed(0) + 'px');
+    };
+    const upd = () => {
+      raf = 0;
+      const vh = window.innerHeight || 1, r = next.getBoundingClientRect();
+      const on = fits();
+      document.documentElement.classList.toggle('hero-out', on);
+      if (!on) { top.style.setProperty('--out', '0'); top.classList.remove('hero-gone'); return; }
+      const pin = Math.min(0, vh * AT - anchorY);            /* where the hero sticks, relative to the screen top */
+      top.style.setProperty('--pin', pin.toFixed(0) + 'px');
+      const s = Math.max(1, Math.min(vh, pin + heroH));      /* where the next section is when the hero sticks */
+      const p = Math.min(1, Math.max(0, (s - r.top) / s));
+      top.style.setProperty('--out', (p * p * (3 - 2 * p)).toFixed(4));
+      top.classList.toggle('hero-gone', p >= 1);
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(upd); };
+    measure(); upd();
+    window.addEventListener('scroll', kick, { passive: true });
+    window.addEventListener('resize', () => { measure(); kick(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); kick(); });
   }
   initMenu() {
   const mb = document.querySelector('.menu-btn'), mn = document.getElementById('mnav');
