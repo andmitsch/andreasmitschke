@@ -88,15 +88,53 @@ class Component extends DCLogic {
     const BUCKETS = 8, FADE_FROM = 0.62;
     let W = 0, H = 0, DPR = 1, lines = [], vis = true, last = 0, cur = null, prev = null, t = 0, n = 0;
     let XS = new Float32Array(0), A1 = XS, A2 = XS, A3 = XS, A4 = XS;
+    /* hero portrait: the lines flow over and around its silhouette like contour lines around a rock.
+       GF is a soft (blurred) copy of the portrait's alpha on a coarse grid; every line point is lifted by CA * GF,
+       which keeps the bend smooth in both directions and never lets two lines cross. */
+    const CA = 64, CELL = 8;
+    let GF = null, GW = 0, GH = 0;
+    const lift = (x, y) => {
+      if (!GF) return 0;
+      const gx = x / CELL, gy = y / CELL, i = Math.floor(gx), j = Math.floor(gy);
+      if (i < 0 || j < 0 || i >= GW - 1 || j >= GH - 1) return 0;
+      const fx = gx - i, fy = gy - j, k = j * GW + i;
+      const v = (GF[k] * (1 - fx) + GF[k + 1] * fx) * (1 - fy) + (GF[k + GW] * (1 - fx) + GF[k + GW + 1] * fx) * fy;
+      return CA * v;
+    };
+    const field = () => {
+      GF = null;
+      const img = document.querySelector('#top .hero-portrait img');
+      if (!img || !img.complete || !img.naturalWidth || !W || !H) return;
+      const cr = cv.getBoundingClientRect(), ir = img.getBoundingClientRect();
+      if (!ir.width || !ir.height) return;
+      GW = Math.ceil(W / CELL) + 2; GH = Math.ceil(H / CELL) + 2;
+      let data;
+      try {
+        const oc = document.createElement('canvas'); oc.width = GW; oc.height = GH;
+        const ox = oc.getContext('2d'); ox.drawImage(img, (ir.left - cr.left) / CELL, (ir.top - cr.top) / CELL, ir.width / CELL, ir.height / CELL);
+        data = ox.getImageData(0, 0, GW, GH).data;
+      } catch (e) { return; }
+      let a = new Float32Array(GW * GH), b = new Float32Array(GW * GH), any = false;
+      for (let k = 0; k < a.length; k++) { a[k] = data[k * 4 + 3] / 255; if (a[k] > 0.5) any = true; }
+      if (!any) return;
+      /* three box-blur passes in each direction approximate a gaussian of about 36 px */
+      const R = 4;
+      for (let pass = 0; pass < 3; pass++) {
+        for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) { let s = 0, c = 0; for (let d = -R; d <= R; d++) { const ii = i + d; if (ii >= 0 && ii < GW) { s += a[j * GW + ii]; c++; } } b[j * GW + i] = s / c; }
+        for (let j = 0; j < GH; j++) for (let i = 0; i < GW; i++) { let s = 0, c = 0; for (let d = -R; d <= R; d++) { const jj = j + d; if (jj >= 0 && jj < GH) { s += b[jj * GW + i]; c++; } } a[j * GW + i] = s / c; }
+      }
+      GF = a;
+    };
     const t0 = performance.now();
     const accent = (getComputedStyle(cv).color || 'rgb(71,134,235)');
-    const wave = (x, y0) => y0 + AMP * (40 * Math.sin(x * 0.0042 + y0 * 0.011 + t * 0.16) + 18 * Math.sin(x * 0.011 - y0 * 0.006 - t * 0.22) + 9 * Math.sin((x + y0) * 0.023 + t * 0.31) + 46 * Math.sin(y0 * 0.004 + Math.sin(x * 0.0016 + t * 0.07) * 2.2));
+    const wave = (x, y0) => { const y = y0 + AMP * (40 * Math.sin(x * 0.0042 + y0 * 0.011 + t * 0.16) + 18 * Math.sin(x * 0.011 - y0 * 0.006 - t * 0.22) + 9 * Math.sin((x + y0) * 0.023 + t * 0.31) + 46 * Math.sin(y0 * 0.004 + Math.sin(x * 0.0016 + t * 0.07) * 2.2)); return y - lift(x, y); };
     const size = () => {
       const r = cv.getBoundingClientRect(); DPR = Math.min(1.5, window.devicePixelRatio || 1); W = r.width; H = r.height;
       cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
       lines = []; for (let y0 = -GAP * 6; y0 < H + GAP * 6; y0 += GAP) lines.push({ y0, a: 0, v: 0, gx: 0, held: false });
       n = Math.ceil((W + 2 * STEP) / STEP) + 1; XS = new Float32Array(n); A1 = new Float32Array(n); A2 = new Float32Array(n); A3 = new Float32Array(n); A4 = new Float32Array(n);
       for (let i = 0; i < n; i++) XS[i] = -STEP + i * STEP;
+      field();
     };
     const step = () => {
       if (cur && prev && (cur.x !== prev.x || cur.y !== prev.y)) {
@@ -134,6 +172,7 @@ class Component extends DCLogic {
         let prevY = 0, prevOff = 0;
         for (let i = 0; i < n; i++) {
           const x = XS[i]; let y = lineY(L.y0, i), off = 0;
+          if (GF) y -= lift(x, y);
           if (moving) { const d = x - L.gx; off = L.a * Math.exp(-(d * d) / (2 * SIGMA * SIGMA)); y += off; }
           if (i === 0) p.moveTo(x, y); else p.lineTo(x, y);
           if (moving && i > 0) {
@@ -152,6 +191,8 @@ class Component extends DCLogic {
       ctx.globalAlpha = 1;
     };
     size(); window.addEventListener('resize', () => { size(); draw(); });
+    const pimg = document.querySelector('#top .hero-portrait img');
+    if (pimg && !pimg.complete) pimg.addEventListener('load', () => { field(); draw(); }, { once: true });
     if (reduce) { draw(); return; }
     window.addEventListener('pointermove', (e) => {
       if (e.pointerType && e.pointerType !== 'mouse') return;
@@ -167,7 +208,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill();
+    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -457,6 +498,23 @@ class Component extends DCLogic {
       b.style.setProperty('--fx', x.toFixed(1) + 'px'); b.style.setProperty('--fy', y.toFixed(1) + 'px'); b.style.setProperty('--fd', d + 'px');
     };
     document.querySelectorAll('.pbtn').forEach((b) => { b.addEventListener('pointerenter', (e) => place(b, e)); b.addEventListener('pointerleave', (e) => place(b, e)); });
+  }
+  initPortraitTone() {
+    /* hero portrait: black and white while it scrolls into view, full colour once it is completely visible */
+    const fig = document.querySelector('.hp-cutb');
+    if (!fig) return;
+    let raf = 0;
+    const upd = () => {
+      raf = 0;
+      const r = fig.getBoundingClientRect(), vh = window.innerHeight || 1;
+      const p = Math.min(1, Math.max(0, (vh - r.top) / (r.height || 1)));
+      const e = p * p * (3 - 2 * p);
+      fig.style.setProperty('--g', (1 - e).toFixed(3));
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(upd); };
+    window.addEventListener('scroll', kick, { passive: true });
+    window.addEventListener('resize', kick);
+    upd();
   }
   initMenu() {
   const mb = document.querySelector('.menu-btn'), mn = document.getElementById('mnav');

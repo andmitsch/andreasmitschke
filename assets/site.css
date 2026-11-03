@@ -358,3 +358,12 @@ img.photo-trail{object-fit:cover;box-shadow:0 18px 40px -18px rgba(18,18,18,.35)
 .contact-spec dt{color:var(--n-b9)}
 .contact-spec dd{margin:0}
 @media (max-width:760px){.contact-spec{grid-template-columns:1fr;gap:2px}.contact-spec dd{margin-bottom:10px}}
+
+/* hero portrait: cut-out standing on the hero's bottom edge; colour fades in as it scrolls fully into view */
+.hl{position:relative;z-index:1}
+.hero-copy{position:relative;z-index:1}
+.hero-portrait{position:absolute;margin:0;z-index:0}
+.hero-portrait img{display:block;width:100%;height:auto}
+.hp-cutb{right:clamp(16px,4vw,48px);bottom:0;width:480px}
+.hp-cutb img{filter:grayscale(var(--g,1)) contrast(calc(1 + .06 * var(--g,1)))}
+@media (max-width:760px){.hp-cutb{position:relative;right:auto;bottom:auto;order:10;width:72%;margin:0 0 -64px auto}}
