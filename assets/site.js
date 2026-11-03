@@ -1,10 +1,11 @@
-function cssVar(n, d) { try { const v = getComputedStyle(document.documentElement).getPropertyValue(n).trim(); return v || d; } catch (e) { return d; } }
 class DCLogic {
   constructor(props) { this.props = props || {}; this.state = {}; }
   setState(patch) { Object.assign(this.state, typeof patch === 'function' ? patch(this.state) : patch); if (this.__mounted) this.__render(); }
   forceUpdate() { if (this.__mounted) this.__render(); }
 }
 class Component extends DCLogic {
+  /* a theme colour from the page's CSS tokens (read from .page, so the design canvas gets the same theme) */
+  static cssVar(n, d) { try { const v = getComputedStyle(document.querySelector('.page') || document.documentElement).getPropertyValue(n).trim(); return v || d; } catch (e) { return d; } }
   constructor(props) {
     super(props);
     if (!window.__amAnchor) { window.__amAnchor = true;
@@ -23,16 +24,12 @@ class Component extends DCLogic {
         requestAnimationFrame(step);
       });
     }
-    /* headline: "Stop approving. Start proving." is always the first (and with ROTATE off, the only) line.
-       ROTATE off: the line builds itself once when the page opens, gets struck through, and stays.
-       ROTATE on: after that it cycles through the other pairs and keeps coming back to the first. */
-    this.ROTATE = false;
-    this.pairs = [['approving.', 'proving.'], ['meeting.', 'testing.'], ['discussing.', 'building.']];
+    /* headline: "Stop approving. Start proving." builds itself once from symbols when the page opens,
+       then "approving." gets struck through and the line stays. */
+    this.line = ['approving.', 'proving.'];
     this.pool = '∑∫∂πΔ≈±×÷√∞λσμθ≠≤≥01·−';
-    const k0 = 0;
-    this.state = { k: k0, c1: this.plain(this.pairs[k0][0]), c2: this.plain(this.pairs[k0][1]), struck: this.fxStill() };
-    this.hlT = 0; this.hlRaf = 0; this.hlRunning = false; this.HOLD = 2600;
-    this.replay = () => { if (this.fxStill() || this.hlRunning) return; this.hlRunning = true; this.setState({ struck: false }); this.hlT = setTimeout(() => this.build(() => { this.hlRunning = false; if (this.ROTATE) { this.hlRunning = true; this.hlT = setTimeout(() => this.cycle(), this.HOLD * 1.6); } }), 300); };
+    this.state = { c1: this.plain(this.line[0]), c2: this.plain(this.line[1]), struck: this.fxStill() };
+    this.hlT = 0; this.hlRaf = 0;
     this.pathEl = null; this.setPath = (el) => { this.pathEl = el; this.railUpdate(); };
     this.cur = { el: null, x: -100, y: -100, tx: -100, ty: -100, raf: 0, inside: false };
     this.setCur = (el) => { this.cur.el = el; };
@@ -216,64 +213,34 @@ class Component extends DCLogic {
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
-    const h1 = document.querySelector('#top h1');
-    if (h1 && 'IntersectionObserver' in window) {
-      this.hlIO = new IntersectionObserver((ents) => { const vis = ents[0].isIntersecting; this.hlPaused = !vis;
-        if (vis && this.hlWaiting) { this.hlWaiting = false; this.cycle(); } }, { threshold: 0.15 });
-      this.hlIO.observe(h1);
-    }
-    if (!this.fxStill()) {
-      /* the opening line builds from symbols as the headline rises in, then gets struck through */
-      const [a, b] = this.pairs[0]; this.setState({ c1: this.noise(a), c2: this.noise(b) });
-      this.hlRunning = true;
-      this.hlT = setTimeout(() => this.build(() => { this.hlRunning = false; if (this.ROTATE) { this.hlRunning = true; this.hlT = setTimeout(() => this.cycle(), this.HOLD * 1.6); } }), 450);
+    /* design canvas only: a board shown zoomed out redraws the whole scaled board on every frame of the build,
+       so there it shows the finished, struck-through line instead. On the live site the zoom is always 1. */
+    const tEl = this.topEl, zoom = tEl && tEl.offsetWidth ? tEl.getBoundingClientRect().width / tEl.offsetWidth : 1;
+    if (zoom < 0.75) this.setState({ struck: true });
+    else if (!this.fxStill()) {
+      const [a, b] = this.line; this.setState({ c1: this.noise(a), c2: this.noise(b) });
+      this.hlT = setTimeout(() => this.build(), 450);
     }
   }
   componentWillUnmount() { document.removeEventListener('pointermove', this.bNear); document.removeEventListener('pointermove', this.onPtr); window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); clearTimeout(this.hlT); cancelAnimationFrame(this.hlRaf); }
   plain(w) { return Array.from(w).map((t) => ({ t, cls: '' })); }
   glyph() { return this.pool[Math.floor(Math.random() * this.pool.length)]; }
   noise(w) { return Array.from(w).map(() => ({ t: this.glyph(), cls: 'gl' })); }
-  build(done) {
-    /* resolve the first pair letter by letter out of symbols, then strike "approving." */
-    const [n1, n2] = this.pairs[0], IN = 140 * Math.max(n1.length, n2.length), t0 = performance.now(); let last = 0;
+  build() {
+    /* resolve the line letter by letter out of symbols, then strike "approving." */
+    const [n1, n2] = this.line, IN = 140 * Math.max(n1.length, n2.length), t0 = performance.now(); let last = 0;
     const mk = (n, t) => { const per = IN / n.length, keep = Math.floor(t / per); return Array.from(n).map((ch, i) => i < keep ? { t: ch, cls: '' } : { t: this.glyph(), cls: 'gl' }); };
     const step = (now) => {
       const t = now - t0;
-      if (t >= IN) { this.setState({ k: 0, c1: this.plain(n1), c2: this.plain(n2) });
-        this.hlT = setTimeout(() => { this.setState({ struck: true }); this.hlT = setTimeout(done, 700); }, 160); return; }
+      if (t >= IN) { this.setState({ c1: this.plain(n1), c2: this.plain(n2) });
+        this.hlT = setTimeout(() => this.setState({ struck: true }), 160); return; }
       if (now - last >= 90) { last = now; this.setState({ c1: mk(n1, t), c2: mk(n2, t) }); }
       this.hlRaf = requestAnimationFrame(step);
     };
     this.hlRaf = requestAnimationFrame(step);
   }
-  cycle() {
-    if (this.hlPaused) { this.hlWaiting = true; return; }
-    const to = (this.state.k + 1) % this.pairs.length;
-    this.morph(to, () => { this.hlT = setTimeout(() => this.cycle(), to === 0 ? this.HOLD * 1.6 : this.HOLD); });
-  }
-  morph(to, done) {
-    const [o1, o2] = this.pairs[this.state.k], [n1, n2] = this.pairs[to];
-    this.setState({ struck: false });
-    const OUT = 55 * Math.max(o1.length, o2.length), IN = 100 * Math.max(n1.length, n2.length);
-    const t0 = performance.now() + 320; let last = 0;
-    const mk = (o, n, t) => {
-      if (t < OUT) { const L = o.length, k = Math.ceil(L * t / OUT);
-        return Array.from(o).map((ch, i) => i >= L - k ? { t: this.glyph(), cls: 'gl' } : { t: ch, cls: '' }); }
-      const L = n.length, per = IN / L, keep = Math.floor((t - OUT) / per);
-      return Array.from(n).map((ch, i) => i < keep ? { t: ch, cls: '' } : { t: this.glyph(), cls: 'gl' });
-    };
-    const step = (now) => {
-      const t = now - t0;
-      if (t < 0) { this.hlRaf = requestAnimationFrame(step); return; }
-      if (t >= OUT + IN) { this.setState({ k: to, c1: this.plain(n1), c2: this.plain(n2) });
-        this.hlT = setTimeout(() => { this.setState({ struck: true }); this.hlT = setTimeout(done, 700); }, 160); return; }
-      if (now - last >= 66) { last = now; this.setState({ c1: mk(o1, n1, t), c2: mk(o2, n2, t) }); }
-      this.hlRaf = requestAnimationFrame(step);
-    };
-    this.hlRaf = requestAnimationFrame(step);
-  }
   railUpdate() {
-    if (this.belEl) { const vh0 = window.innerHeight || 800; this.belEl.querySelectorAll('.bdel').forEach((d) => { const b = d.getBoundingClientRect(); if (b.top < vh0 * 0.78 && b.bottom > 0) d.classList.add('on'); else if (b.top > vh0) d.classList.remove('on'); }); } if (this.topEl) this.topEl.style.setProperty('--srot', ((window.scrollY || 0) * 0.12).toFixed(1) + 'deg'); const el = this.pathEl; if (!el) return; const r = el.getBoundingClientRect(); const vh = window.innerHeight || 800;
+    if (this.belEl) { const vh0 = window.innerHeight || 800; this.belEl.querySelectorAll('.bdel').forEach((d) => { const b = d.getBoundingClientRect(); if (b.top < vh0 * 0.78 && b.bottom > 0) d.classList.add('on'); else if (b.top > vh0) d.classList.remove('on'); }); } const el = this.pathEl; if (!el) return; const r = el.getBoundingClientRect(); const vh = window.innerHeight || 800;
     const p = Math.max(0, Math.min(1, (vh * 0.45 - r.top) / Math.max(1, r.height - vh * 0.35)));
     el.style.setProperty('--p', p.toFixed(4));
     const inView = r.top < vh * 0.6 && r.bottom > vh * 0.4; el.classList.toggle('tracking', inView);
@@ -310,7 +277,7 @@ class Component extends DCLogic {
   fxAttach(el) {
     if (!el || el.__fx) return;
     const kind = el.getAttribute('data-fx') || 'ink';
-    const P = { mag: { mag: 0.55 }, magfar: { far: 1 }, big: { fill: cssVar('--accent-rgb', '242,96,12'), from: cssVar('--paper-rgb', '238,235,229'), to: cssVar('--paper-rgb', '238,235,229'), mag: 0 }, link: {}, nav: {} }[kind] || {};
+    const P = { mag: { mag: 0.55 }, magfar: { far: 1 }, big: { fill: Component.cssVar('--accent-rgb', '242,96,12'), from: Component.cssVar('--paper-rgb', '238,235,229'), to: Component.cssVar('--paper-rgb', '238,235,229'), mag: 0 }, link: {}, nav: {} }[kind] || {};
     const F = { el, kind, P, h: 0, hv: 0, ht: 0, s: 1, vs: 0, ts: 1, ox: 0.5, oy: 0.5, raf: 0, last: 0 };
     el.__fx = F;
     F.blob = el.querySelector(':scope > .fxb'); F.sheen = el.querySelector(':scope > .fxs'); F.line = el.querySelector(':scope > .fxl'); F.arrow = el.querySelector('[data-fx-arrow]');
@@ -382,7 +349,7 @@ class Component extends DCLogic {
   renderVals() {
     return {
       c1: this.state.c1, c2: this.state.c2, hdelCls: this.state.struck ? 'hdel on' : 'hdel', setPath: this.setPath, setCur: this.setCur, setTop: this.setTop, setBelief: this.setBelief,
-      replay: this.replay, fxRef: this.fxRef,
+      fxRef: this.fxRef,
       setStage: this.setStage, setBook3: this.setBook3, setBShadow: this.setBShadow, bDown: this.bDown, bMove: this.bMove, bUp: this.bUp, bKey: this.bKey
     };
   }
@@ -573,6 +540,8 @@ class Component extends DCLogic {
     /* leaving the hero: the page scrolls normally until the hero copy ("I help ...") reaches the middle of the screen.
        From there the hero stays put, eases back and fades a little, while the next section slides over it
        like the next sheet of paper. AT sets that trigger line (0.5 = middle of the screen). */
+    /* live site only: the design canvas shows boards as fixed pictures that never scroll */
+    if (!this.__site) return;
     const top = document.getElementById('top'), next = top && top.nextElementSibling;
     if (!top || !next || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const anchor = top.querySelector('.hero-copy');
@@ -692,7 +661,7 @@ class Component extends DCLogic {
         const rad = (0.5 + n * 1.45) * dep;
         let l = Math.floor(n * dep * (LV - 1) + 0.5); if (l < 0) l = 0; if (l >= LV) l = LV - 1;
         paths[l].moveTo(x + rad, y); paths[l].arc(x, y, rad, 0, 6.2832); } }
-    for (let l = 0; l < LV; l++) { const a = 0.04 + 0.52 * (l / (LV - 1)); ctx.fillStyle = 'rgba(' + cssVar('--paper-rgb', '238,235,229') + ',' + a.toFixed(3) + ')'; ctx.fill(paths[l]); }
+    for (let l = 0; l < LV; l++) { const a = 0.04 + 0.52 * (l / (LV - 1)); ctx.fillStyle = 'rgba(' + Component.cssVar('--paper-rgb', '238,235,229') + ',' + a.toFixed(3) + ')'; ctx.fill(paths[l]); }
   };
   const loop = (now) => { raf = 0; frame(now); if (vis && !still) raf = requestAnimationFrame(loop); };
   const kick = () => { if (!raf && vis && !still) { last = 0; raf = requestAnimationFrame(loop); } };
@@ -722,6 +691,6 @@ class Component extends DCLogic {
   ['pointerdown', 'pointermove', 'pointerup', 'pointercancel', 'keydown', 'click', 'pointerenter'].forEach((ev) => {
     document.querySelectorAll('[data-on-' + ev + ']').forEach((el) => { const fn = comp[el.getAttribute('data-on-' + ev)]; if (typeof fn === 'function') el.addEventListener(ev, fn); });
   });
-  comp.__mounted = true; comp.__render();
+  comp.__site = true; comp.__mounted = true; comp.__render();
   if (comp.componentDidMount) comp.componentDidMount();
 })();
