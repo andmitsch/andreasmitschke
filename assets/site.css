@@ -374,3 +374,6 @@ img.photo-trail{object-fit:cover;box-shadow:0 18px 40px -18px rgba(18,18,18,.35)
 .hero-out #top ~ section{position:relative;z-index:2}
 .hero-out #top ~ .section-rule{background:var(--paper)}
 .hero-out #top.hero-gone{visibility:hidden}
+/* stacked fallback when the screen is too narrow for text and portrait side by side (set by initPortraitFit) */
+.hp-stack .hp-cutb{position:relative;right:auto;bottom:auto;order:10;width:min(72%,460px) !important;margin:24px 0 -96px auto}
+.hp-stack .hero-copy{max-width:660px !important}

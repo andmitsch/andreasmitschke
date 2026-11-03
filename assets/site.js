@@ -23,12 +23,16 @@ class Component extends DCLogic {
         requestAnimationFrame(step);
       });
     }
-    this.pairs = [['meeting.', 'testing.'], ['discussing.', 'building.'], ['approving.', 'proving.']];
+    /* headline: "Stop approving. Start proving." is always the first (and with ROTATE off, the only) line.
+       ROTATE off: the line builds itself once when the page opens, gets struck through, and stays.
+       ROTATE on: after that it cycles through the other pairs and keeps coming back to the first. */
+    this.ROTATE = false;
+    this.pairs = [['approving.', 'proving.'], ['meeting.', 'testing.'], ['discussing.', 'building.']];
     this.pool = '∑∫∂πΔ≈±×÷√∞λσμθ≠≤≥01·−';
-    const k0 = this.fxStill() ? this.pairs.length - 1 : 0;
-    this.state = { k: k0, c1: this.plain(this.pairs[k0][0]), c2: this.plain(this.pairs[k0][1]), struck: k0 === this.pairs.length - 1 };
+    const k0 = 0;
+    this.state = { k: k0, c1: this.plain(this.pairs[k0][0]), c2: this.plain(this.pairs[k0][1]), struck: this.fxStill() };
     this.hlT = 0; this.hlRaf = 0; this.hlRunning = false; this.HOLD = 2600;
-    this.replay = () => { if (this.fxStill() || this.hlRunning || this.state.k !== this.pairs.length - 1) return; this.hlRunning = true; this.setState({ struck: false }); this.hlT = setTimeout(() => this.morph(0, () => this.cycle()), 300); };
+    this.replay = () => { if (this.fxStill() || this.hlRunning) return; this.hlRunning = true; this.setState({ struck: false }); this.hlT = setTimeout(() => this.build(() => { this.hlRunning = false; if (this.ROTATE) { this.hlRunning = true; this.hlT = setTimeout(() => this.cycle(), this.HOLD * 1.6); } }), 300); };
     this.pathEl = null; this.setPath = (el) => { this.pathEl = el; this.railUpdate(); };
     this.cur = { el: null, x: -100, y: -100, tx: -100, ty: -100, raf: 0, inside: false };
     this.setCur = (el) => { this.cur.el = el; };
@@ -208,7 +212,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initMenu(); this.initDots(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
+    this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -218,15 +222,34 @@ class Component extends DCLogic {
         if (vis && this.hlWaiting) { this.hlWaiting = false; this.cycle(); } }, { threshold: 0.15 });
       this.hlIO.observe(h1);
     }
-    if (!this.fxStill()) { this.hlRunning = true; this.hlT = setTimeout(() => { this.setState({ struck: true }); this.hlT = setTimeout(() => this.cycle(), 700 + this.HOLD); }, 1150); }
+    if (!this.fxStill()) {
+      /* the opening line builds from symbols as the headline rises in, then gets struck through */
+      const [a, b] = this.pairs[0]; this.setState({ c1: this.noise(a), c2: this.noise(b) });
+      this.hlRunning = true;
+      this.hlT = setTimeout(() => this.build(() => { this.hlRunning = false; if (this.ROTATE) { this.hlRunning = true; this.hlT = setTimeout(() => this.cycle(), this.HOLD * 1.6); } }), 450);
+    }
   }
   componentWillUnmount() { document.removeEventListener('pointermove', this.bNear); document.removeEventListener('pointermove', this.onPtr); window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); clearTimeout(this.hlT); cancelAnimationFrame(this.hlRaf); }
   plain(w) { return Array.from(w).map((t) => ({ t, cls: '' })); }
   glyph() { return this.pool[Math.floor(Math.random() * this.pool.length)]; }
+  noise(w) { return Array.from(w).map(() => ({ t: this.glyph(), cls: 'gl' })); }
+  build(done) {
+    /* resolve the first pair letter by letter out of symbols, then strike "approving." */
+    const [n1, n2] = this.pairs[0], IN = 140 * Math.max(n1.length, n2.length), t0 = performance.now(); let last = 0;
+    const mk = (n, t) => { const per = IN / n.length, keep = Math.floor(t / per); return Array.from(n).map((ch, i) => i < keep ? { t: ch, cls: '' } : { t: this.glyph(), cls: 'gl' }); };
+    const step = (now) => {
+      const t = now - t0;
+      if (t >= IN) { this.setState({ k: 0, c1: this.plain(n1), c2: this.plain(n2) });
+        this.hlT = setTimeout(() => { this.setState({ struck: true }); this.hlT = setTimeout(done, 700); }, 160); return; }
+      if (now - last >= 90) { last = now; this.setState({ c1: mk(n1, t), c2: mk(n2, t) }); }
+      this.hlRaf = requestAnimationFrame(step);
+    };
+    this.hlRaf = requestAnimationFrame(step);
+  }
   cycle() {
     if (this.hlPaused) { this.hlWaiting = true; return; }
     const to = (this.state.k + 1) % this.pairs.length;
-    this.morph(to, () => { this.hlT = setTimeout(() => this.cycle(), to === this.pairs.length - 1 ? this.HOLD * 1.6 : this.HOLD); });
+    this.morph(to, () => { this.hlT = setTimeout(() => this.cycle(), to === 0 ? this.HOLD * 1.6 : this.HOLD); });
   }
   morph(to, done) {
     const [o1, o2] = this.pairs[this.state.k], [n1, n2] = this.pairs[to];
@@ -499,6 +522,36 @@ class Component extends DCLogic {
     };
     document.querySelectorAll('.pbtn').forEach((b) => { b.addEventListener('pointerenter', (e) => place(b, e)); b.addEventListener('pointerleave', (e) => place(b, e)); });
   }
+  initPortraitFit() {
+    /* desktop and tablet: text on the left, a big portrait on the right standing on the hero's bottom edge.
+       The portrait is 480px wherever there is room. On narrower screens the text column gives way first (down to
+       MINCOPY), then the portrait shrinks a little (never below MINW). The intro text eases from 23px to 17px as its
+       column narrows, which keeps the top of the head roughly level with the top of the text. Only when even that
+       does not fit does the portrait move below the text (as on phones). */
+    const top = this.topEl || document.getElementById('top'), fig = top && top.querySelector('.hp-cutb'), copy = top && top.querySelector('.hero-copy');
+    const lead = copy && copy.querySelector('p');
+    if (!fig || !copy || !lead || !window.matchMedia) return;
+    const W0 = 480, MINW = 340, GAP = 40, MINCOPY = 340, MAXCOPY = 660, FMAX = 23, FMIN = 17;
+    const reset = () => { fig.style.width = ''; copy.style.maxWidth = ''; lead.style.removeProperty('font-size'); };
+    const fit = () => {
+      top.classList.remove('hp-stack');
+      if (!window.matchMedia('(min-width:761px)').matches) { reset(); return; }
+      const cs = getComputedStyle(top), content = top.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+      let w = W0, c = Math.min(MAXCOPY, content - w - GAP);
+      if (c < MINCOPY) { c = MINCOPY; w = content - GAP - c; }
+      if (w < MINW) { reset(); top.classList.add('hp-stack'); return; }
+      const k = Math.max(0, Math.min(1, (c - MINCOPY) / (MAXCOPY - 60 - MINCOPY)));   /* full size from 600px column */
+      fig.style.width = w.toFixed(1) + 'px';
+      copy.style.maxWidth = c.toFixed(1) + 'px';
+      lead.style.setProperty('font-size', (FMIN + (FMAX - FMIN) * k).toFixed(2) + 'px', 'important');
+    };
+    fit();
+    /* refit when the hero's width changes (window resize, or a resized board in the design canvas) */
+    let lastW = top.clientWidth;
+    if ('ResizeObserver' in window) new ResizeObserver(() => { if (top.clientWidth !== lastW) { lastW = top.clientWidth; fit(); } }).observe(top);
+    window.addEventListener('resize', () => { lastW = top.clientWidth; fit(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  }
   initPortraitTone() {
     /* hero portrait: black and white while it scrolls into view, full colour once it is completely visible */
     const fig = document.querySelector('.hp-cutb');
@@ -537,11 +590,14 @@ class Component extends DCLogic {
     };
     const upd = () => {
       raf = 0;
+      heroH = top.offsetHeight;
       const vh = window.innerHeight || 1, r = next.getBoundingClientRect();
       const on = fits();
       document.documentElement.classList.toggle('hero-out', on);
       if (!on) { top.style.setProperty('--out', '0'); top.classList.remove('hero-gone'); return; }
-      const pin = Math.min(0, vh * AT - anchorY);            /* where the hero sticks, relative to the screen top */
+      /* where the hero sticks, relative to the screen top: once the intro text is mid-screen, but never before the
+         whole hero (incl. a portrait stacked under the text) has scrolled into view */
+      const pin = Math.min(0, vh * AT - anchorY, vh - heroH);
       top.style.setProperty('--pin', pin.toFixed(0) + 'px');
       const s = Math.max(1, Math.min(vh, pin + heroH));      /* where the next section is when the hero sticks */
       const p = Math.min(1, Math.max(0, (s - r.top) / s));
