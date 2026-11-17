@@ -448,7 +448,9 @@ body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
 /* Off my desk: the other work as a list in the site's language. Each row is the link. One ink shape serves the whole list
    (site.js, initRowFill): it grows out of the cursor, flows from row to row and shrinks back out; the other rows go soft */
 .rlA{position:relative;display:flex;flex-direction:column;border-bottom:1px solid var(--rule);margin-top:72px}
-.rlA-ink{position:absolute;left:0;right:0;top:0;height:0;z-index:0;overflow:hidden;pointer-events:none;opacity:0;will-change:top,height}
+/* the row states are set by site.js (is-ink on the row under the ink, has-ink on the list), not by :hover, so rows that
+   slide under a resting cursor while the page scrolls do not react */
+.rlA-ink{position:absolute;left:0;right:0;top:0;height:0;z-index:0;overflow:hidden;pointer-events:none;opacity:0;will-change:top,height;transition:opacity .2s}
 .rlA-ink.on{opacity:1}
 .rlA-ink.full{background:var(--ink)}
 /* the circle that grows and shrinks, with the pill buttons' timing: in .8s easing out, out .55s */
@@ -458,23 +460,23 @@ body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
 .rA{z-index:1}
 .rA-fill{display:none}
 .rA{position:relative;overflow:hidden;isolation:isolate;display:grid;grid-template-columns:200px minmax(0,1fr) auto;gap:8px 40px;align-items:center;padding:30px 24px;border-top:1px solid var(--rule);color:var(--ink);text-decoration:none;transition:color .6s .08s}
-.rlA.ink-js .rA:hover,.rlA.ink-js .rA:focus-visible{color:var(--paper)}
+.rlA.ink-js .rA.is-ink{color:var(--paper)}
 .rA:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .rA-kind{font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:color .6s .08s}
-.rlA.ink-js .rA:hover .rA-kind,.rlA.ink-js .rA:focus-visible .rA-kind{color:var(--n-b9)}
+.rlA.ink-js .rA.is-ink .rA-kind{color:var(--n-b9)}
 .rA-main{display:flex;flex-direction:column;gap:8px}
 .rA-title{font-weight:900;font-stretch:72%;text-transform:uppercase;font-size:clamp(26px,2.6vw,36px);line-height:1}
 .rA-sub{font-size:16px;line-height:1.5;color:var(--body);max-width:640px;transition:color .6s .08s}
-.rlA.ink-js .rA:hover .rA-sub,.rlA.ink-js .rA:focus-visible .rA-sub{color:var(--n-b9)}
+.rlA.ink-js .rA.is-ink .rA-sub{color:var(--n-b9)}
 .rA-cta{display:inline-flex;align-items:center;gap:10px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
 .rA .rx-arr{transition:transform .35s cubic-bezier(.22,1,.36,1)}
 .rA:hover .rx-arr{transform:translateX(6px)}
 .rA-last .rA-cta{color:var(--accent)}
-.rlA.ink-js .rA-last:hover .rA-cta,.rlA.ink-js .rA-last:focus-visible .rA-cta{color:var(--paper)}
+.rlA.ink-js .rA-last.is-ink .rA-cta{color:var(--paper)}
 /* focus pull, the site's blur theme: while one row is under the cursor, the others go soft and quiet (desktop pointers only) */
 @media (hover:hover) and (pointer:fine){
   .rA{transition:color .6s .08s,filter .45s cubic-bezier(.22,1,.36,1),opacity .45s}
-  .rlA:hover .rA:not(:hover){filter:blur(2.5px);opacity:.5}
+  .rlA.has-ink .rA:not(.is-ink){filter:blur(2.5px);opacity:.5}
 }
 @media (max-width:760px){.rA{grid-template-columns:1fr;padding:24px 4px}.rA-cta{margin-top:6px}}
 /* trial: the heavy black section lines become hairlines, to match the softer glass and blur language */
@@ -531,8 +533,30 @@ body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
     opacity:0;filter:blur(8px);transform:translateY(8px);transition:opacity .6s 1.7s,filter .6s 1.7s,transform .8s 1.7s cubic-bezier(.22,1,.36,1)}
   #beliefs.pr-js.pr-complete .pr-hint{opacity:1;filter:none;transform:none}
   #beliefs.pr-js.pr-complete.pr-used .pr-hint{opacity:0;filter:blur(6px);transition:opacity .5s,filter .5s}
-  #beliefs.pr-js .pr-hint-dot{animation:pr-swipe 2.4s cubic-bezier(.45,0,.2,1) infinite}
-  @keyframes pr-swipe{0%,100%{transform:translateX(0)}25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}
+  /* the icon: three small solid cards shuffling. The top card gathers itself, glides out, stops beside the pile and is
+     slung back under; the others move up a place. Darker on top, lighter behind; a hairline in the page colour keeps them apart */
+  #beliefs.pr-js .pr-hint-ic{position:relative;width:36px;height:18px;flex:none}
+  #beliefs.pr-js .pr-hint-ic i{position:absolute;left:8px;top:1px;width:11px;height:15px;border-radius:2.5px;background:#56585C;box-shadow:0 0 0 1px var(--paper);animation:pr-shuffle 5.7s linear infinite}
+  #beliefs.pr-js .pr-hint-ic i:nth-child(2){animation-delay:-1.9s}
+  #beliefs.pr-js .pr-hint-ic i:nth-child(3){animation-delay:-3.8s}
+  @keyframes pr-shuffle{
+    0%     {transform:translate(-4px,1px) rotate(-6deg);background:#A3A5AA;z-index:1}
+    6.14%  {transform:translate(-4px,1px) rotate(-6deg);background:#A3A5AA;z-index:1;animation-timing-function:cubic-bezier(.45,0,.2,1)}
+    14.91% {transform:translate(-1.6px,-.3px) rotate(-1.4deg);background:#7C7E83;z-index:2;animation-timing-function:cubic-bezier(.3,0,.4,1)}
+    19.3%  {transform:translate(-2px,0) rotate(-2deg);background:#7C7E83;z-index:2}
+    39.47% {transform:translate(-2px,0) rotate(-2deg);background:#7C7E83;z-index:2;animation-timing-function:cubic-bezier(.45,0,.2,1)}
+    48.25% {transform:translate(.4px,-.4px) rotate(2.6deg);background:#56585C;z-index:3;animation-timing-function:cubic-bezier(.3,0,.4,1)}
+    52.63% {transform:translate(0,0) rotate(2deg);background:#56585C;z-index:3}
+    70.18% {transform:translate(0,0) rotate(2deg);background:#56585C;z-index:3;animation-timing-function:cubic-bezier(.4,0,.6,1)}
+    73.68% {transform:translate(-1.2px,.4px) rotate(.5deg);background:#56585C;z-index:3;animation-timing-function:cubic-bezier(.5,0,.4,1)}
+    82.46% {transform:translate(13.8px,-4.3px) rotate(16.8deg);background:#56585C;z-index:3;animation-timing-function:cubic-bezier(.3,0,.4,1)}
+    85.09% {transform:translate(13px,-4px) rotate(16deg);background:#56585C;z-index:3}
+    87.72% {transform:translate(13px,-4px) rotate(16deg);background:#56585C;z-index:3}
+    87.75% {transform:translate(13px,-4px) rotate(16deg);background:#8E9095;z-index:0;animation-timing-function:cubic-bezier(.45,0,.55,1)}
+    90.6%  {transform:translate(14.4px,-4.6px) rotate(18.6deg);background:#8E9095;z-index:0;animation-timing-function:cubic-bezier(.5,0,.25,1)}
+    96.8%  {transform:translate(-5.4px,1.4px) rotate(-8deg);background:#A3A5AA;z-index:0;animation-timing-function:cubic-bezier(.35,0,.45,1)}
+    98.6%  {transform:translate(-3.7px,.9px) rotate(-5.5deg);background:#A3A5AA;z-index:0;animation-timing-function:cubic-bezier(.4,0,.4,1)}
+    100%   {transform:translate(-4px,1px) rotate(-6deg);background:#A3A5AA;z-index:1}}
   /* the finished pile is a deck you can flick (site.js) */
   #beliefs.pr-js.pr-complete .split-list{touch-action:pan-y}
   #beliefs.pr-js.pr-complete .thesis{-webkit-user-select:none;user-select:none}

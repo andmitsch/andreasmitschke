@@ -258,7 +258,7 @@ class Component extends DCLogic {
     nav.append(prev, next); list.appendChild(nav);
     /* a small hint above the arrows that the finished pile can be flicked; it goes once someone has used the deck */
     const hint = document.createElement('div'); hint.className = 'pr-hint'; hint.setAttribute('aria-hidden', 'true');
-    hint.innerHTML = '<svg width="34" height="14" viewBox="0 0 34 14"><path d="M5 7h24M8 4 5 7l3 3M26 4l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle class="pr-hint-dot" cx="17" cy="7" r="3.2" fill="currentColor"/></svg><span>Drag or flick the cards</span>';
+    hint.innerHTML = '<span class="pr-hint-ic"><i></i><i></i><i></i></span><span>Drag or flick the cards</span>';
     list.appendChild(hint);
     /* the stage clips the flying cards; never let focus or scrollIntoView scroll it sideways */
     inner && inner.addEventListener('scroll', () => { if (inner.scrollLeft || inner.scrollTop) { inner.scrollLeft = 0; inner.scrollTop = 0; } });
@@ -397,44 +397,58 @@ class Component extends DCLogic {
     /* Off my desk: one ink shape for the whole list. Entering the list it grows out of the cursor exactly like the pill
        buttons (a circle sized to the farthest corner, scaled up from the cursor); moving to another row it flows there
        like a drop of ink, stretching across both rows and settling into the new one; leaving the list it shrinks back
-       into the point where the cursor left, again like the buttons. */
+       into the point where the cursor left, again like the buttons.
+       The same happens when the rows slide under a resting cursor while the page scrolls (trackpads): the row under the
+       cursor is checked once per frame, and each new flow starts from wherever the ink is at that moment, so quick
+       changes chain into one smooth movement instead of jumping. */
     const list = document.querySelector('.rlA'); if (!list) return;
     const rows = [...list.querySelectorAll('.rA')];
     const ink = document.createElement('span'), dot = document.createElement('i');
     ink.className = 'rlA-ink'; ink.setAttribute('aria-hidden', 'true'); ink.appendChild(dot); list.prepend(ink); list.classList.add('ink-js');
     const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let cur = null, move = null;
+    let cur = null, move = null, px = null, py = null, raf = 0, mouse = false;
     const box = (row) => ({ t: row.offsetTop, h: row.offsetHeight });
     const set = (b) => { ink.style.top = b.t + 'px'; ink.style.height = b.h + 'px'; };
+    const mark = (row) => { rows.forEach((x) => x.classList.toggle('is-ink', x === row)); list.classList.toggle('has-ink', !!row); };
     /* the circle: centred on the pointer, its diameter reaching the farthest corner of the ink box */
     const place = (e) => { const r = ink.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
       const d = 2 * Math.ceil(Math.hypot(Math.max(x, r.width - x), Math.max(y, r.height - y))) + 4;
       dot.style.left = x.toFixed(1) + 'px'; dot.style.top = y.toFixed(1) + 'px'; dot.style.width = dot.style.height = d + 'px'; dot.style.margin = (-d / 2) + 'px 0 0 ' + (-d / 2) + 'px'; };
-    const grow = (on) => { ink.classList.toggle('full', false); dot.classList.toggle('in', on); };
-    dot.addEventListener('transitionend', () => { if (dot.classList.contains('in')) ink.classList.add('full'); else if (!cur) ink.classList.remove('on'); });
+    dot.addEventListener('transitionend', () => { if (dot.classList.contains('in')) { if (cur) ink.classList.add('full'); } else if (!cur) ink.classList.remove('on'); });
     const go = (row, e) => {
-      const b = box(row);
-      if (!cur) { set(b); cur = b; ink.classList.add('on'); if (reduce) { ink.classList.add('full'); return; }
+      const b = box(row); mark(row);
+      if (!cur) { move && move.cancel(); set(b); cur = b; ink.classList.add('on'); if (reduce) { ink.classList.add('full'); return; }
         place(e); dot.classList.add('now'); dot.classList.remove('in'); ink.classList.remove('full');
-        void dot.offsetWidth; dot.classList.remove('now'); grow(true); return; }
+        void dot.offsetWidth; dot.classList.remove('now'); dot.classList.add('in'); return; }
       if (b.t === cur.t) return;
-      const a = cur; cur = b; ink.classList.add('full'); set(b); if (reduce) return;   /* while it flows, the whole box is ink */
+      /* start from where the ink is right now (it may still be flowing), not from the last row */
+      const cs = getComputedStyle(ink), a = { t: parseFloat(cs.top), h: parseFloat(cs.height) }, r0 = cs.borderTopLeftRadius;
+      cur = b; ink.classList.add('full'); move && move.cancel(); set(b); if (reduce) return;   /* while it flows, the whole box is ink */
       const top = Math.min(a.t, b.t), bottom = Math.max(a.t + a.h, b.t + b.h);
-      move && move.cancel();
       move = ink.animate([
-        { top: a.t + 'px', height: a.h + 'px', borderRadius: '0px', transform: 'scaleX(1)' },
+        { top: a.t + 'px', height: a.h + 'px', borderRadius: r0, transform: 'scaleX(1)' },
         { top: top + 'px', height: (bottom - top) + 'px', borderRadius: '34px', transform: 'scaleX(.985)', offset: .42 },
         { top: b.t + 'px', height: b.h + 'px', borderRadius: '0px', transform: 'scaleX(1)' }
       ], { duration: 720, easing: 'cubic-bezier(.45,0,.25,1)' });
     };
-    rows.forEach((row) => { row.addEventListener('pointerenter', (e) => go(row, e));
-      row.addEventListener('focus', () => { const r = row.getBoundingClientRect(); go(row, { clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }); }); });
-    list.addEventListener('focusout', (e) => { if (!list.contains(e.relatedTarget) && !list.matches(':hover')) { cur = null; ink.classList.remove('on', 'full'); dot.classList.remove('in'); } });
-    list.addEventListener('pointerleave', (e) => { if (!cur) return; cur = null; move && move.cancel();
-      if (reduce) { ink.classList.remove('on', 'full'); return; }
+    const leave = (e) => { if (!cur) return; cur = null; mark(null); move && move.cancel();
+      if (reduce || !e) { ink.classList.remove('on'); setTimeout(() => { if (!cur) { ink.classList.remove('full'); dot.classList.remove('in'); } }, 220); return; }
       /* hand over from the full box to a full circle at the exit point, then shrink it there */
-      place(e); dot.classList.add('now', 'in'); ink.classList.remove('full'); void dot.offsetWidth; dot.classList.remove('now'); grow(false); });
+      place(e); dot.classList.add('now', 'in'); ink.classList.remove('full'); void dot.offsetWidth; dot.classList.remove('now'); dot.classList.remove('in'); };
+    /* the row under the cursor decides, whether the cursor moved or the page scrolled under it */
+    const check = () => { raf = 0; if (!mouse || px === null) return;
+      const el = document.elementFromPoint(px, py), row = el && el.closest ? el.closest('.rA') : null;
+      if (row && list.contains(row) && !row.classList.contains('sh-block')) go(row, { clientX: px, clientY: py });
+      else if (cur) leave({ clientX: px, clientY: py }); };
+    const queue = () => { if (!raf) raf = requestAnimationFrame(check); };
+    document.addEventListener('pointermove', (e) => { mouse = e.pointerType === 'mouse'; px = e.clientX; py = e.clientY; queue(); }, { passive: true });
+    window.addEventListener('scroll', queue, { passive: true });
+    document.addEventListener('pointerleave', () => { px = null; if (cur) leave(null); });
+    rows.forEach((row) => row.addEventListener('focus', () => { const r = row.getBoundingClientRect(); go(row, { clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }); }));
+    list.addEventListener('focusout', (e) => { if (!list.contains(e.relatedTarget) && !list.matches(':hover')) leave(null); });
   }
+
+
 
   initTalks() {
     /* talk topics: four panels, one open at a time. A click, the keyboard, or resting the pointer for 0.75 s opens one;
