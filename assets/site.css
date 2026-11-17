@@ -477,7 +477,7 @@ body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
 /* focus pull, the site's blur theme: while one row is under the cursor, the others go soft and quiet (desktop pointers only) */
 @media (hover:hover) and (pointer:fine){
   .rA{transition:color .6s .08s,filter .45s cubic-bezier(.22,1,.36,1),opacity .45s}
-  .rlA.has-ink .rA:not(.is-ink){filter:blur(2.5px);opacity:.5}
+  .rlA.has-ink .rA:not(.is-ink){filter:blur(1.2px);opacity:.65}
 }
 @media (max-width:760px){.rA{grid-template-columns:1fr;padding:24px 4px}.rA-cta{margin-top:6px}}
 /* trial: the heavy black section lines become hairlines, to match the softer glass and blur language */
