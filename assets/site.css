@@ -49,7 +49,7 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 .serif-it{font-family:'Bodoni Moda','Didot',Georgia,serif;font-style:italic;font-weight:400;text-transform:none}
 .spin{animation:gspin 1.4s steps(12) infinite}
 @keyframes gspin{to{transform:rotate(360deg)}}
-@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(28px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}  /* scroll reveals sharpen out of a blur, like the headlines */
 .rise{animation:rise .8s cubic-bezier(.2,.8,.2,1) both}
 .d1{animation-delay:.05s}.d2{animation-delay:.18s}.d3{animation-delay:.32s}.d4{animation-delay:.5s}
 @supports (animation-timeline: view()){
@@ -115,7 +115,8 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 .rail-sticky{position:sticky;top:280px;display:flex;flex-direction:column;align-items:center;gap:14px}
 .railline{display:block;width:2px;height:220px;background:var(--n-d9);position:relative;overflow:hidden}
 .railbar{position:absolute;inset:0;background:var(--ink);transform-origin:top;transform:scaleY(var(--p))}
-.pgrp{opacity:var(--go,1);transition:opacity .25s linear}
+/* the journey keeps the group you are reading in focus: the others fade and go soft (--go from site.js, 1 = in focus) */
+.pgrp{opacity:var(--go,1);filter:blur(calc((1 - var(--go,1)) * 5px));transition:opacity .25s linear,filter .25s linear}
 .pgrp-box{display:flex;flex-wrap:wrap;gap:16px 56px;padding:40px 0;border-top:1px solid var(--rule)}
 .pgrp-head{flex:0 1 280px;display:flex;flex-direction:column;gap:10px}
 .pgrp-title{font-size:clamp(30px, 3vw, 40px);line-height:1.1;font-family:'Bodoni Moda','Didot',Georgia,serif;font-style:italic;font-weight:400}
@@ -285,8 +286,6 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 /* phones */
 @media (max-width:760px){
   /* header + menu: the menu opens as a ball growing from the button (initMenu) */
-  .site-head{position:sticky;top:0;z-index:40;background:var(--paper);transition:transform .35s var(--ease-out)}
-  .site-head.head-up{transform:translateY(-100%)}
   .site-head nav{padding-top:14px;padding-bottom:14px;flex-wrap:nowrap}
   .site-head nav > a:first-child{font-size:21px}
   .nav-links{display:none}
@@ -354,11 +353,11 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .hl-h1 .b2{filter:blur(.008em);transform:translateY(.012em) scale(.995);text-shadow:0 0 .1em rgba(var(--accent-rgb),.18)}
 .hl-h1 .b1{transform:none}
 
-/* talk topics as panels: one open at a time, the others show only the talk title (click, tap or rest the pointer to open).
+/* talk topics as panels (no black outline: like the principle cards, they are told apart by a hairline edge and a soft shadow): one open at a time, the others show only the talk title (click, tap or rest the pointer to open).
    Gated on .tp-js (set by site.js): without JavaScript the topics show as plain text. */
 #talks .split-list{flex:1 1 560px;min-width:0}
 .tpanels.tp-js{display:flex;gap:10px;height:var(--ph,520px)}
-.tp-js .tpan{position:relative;flex:0 0 64px;min-width:0;overflow:hidden;box-sizing:border-box;border:2px solid var(--ink);border-radius:10px;background:var(--paper-2);cursor:pointer;animation:none;
+.tp-js .tpan{position:relative;flex:0 0 64px;min-width:0;overflow:hidden;box-sizing:border-box;border:1px solid rgba(18,18,18,.07);border-radius:10px;background:var(--paper-2);box-shadow:0 1px 2px rgba(18,18,18,.06),0 18px 36px -24px rgba(18,18,18,.45);cursor:pointer;animation:none;
   transition:flex-basis .8s cubic-bezier(.22,1,.36,1),flex-grow .8s cubic-bezier(.22,1,.36,1),color .3s .35s,transform .3s}
 .tp-js .tpan:not(.act):hover{transform:translateY(-6px);background:#fff}
 .tp-js .tpan.act{flex:1 1 auto;color:var(--paper);cursor:default}
@@ -410,6 +409,67 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .tpanels:not(.tp-js) .tpan-head{margin:8px 0 0;font-size:17px;line-height:1.5;color:var(--body)}
 .tpanels:not(.tp-js) .tpan-text,.tpanels:not(.tp-js) .tpan-fmt{display:none}
 
+/* the header stays at the top while the hero is on screen; from the journey on it slides away while scrolling down and
+   returns on scroll up (site.js; on phones from the first scroll).
+   It is glass from the start: the page shows through, softened by a strong blur, with only a light paper tint, a sheen
+   along the top and a fine grain for texture. Blur and tint fade out just below the bar (two backdrop layers with masks),
+   so there is no hard edge. */
+.site-head{position:sticky;top:0;z-index:40;background:transparent;border-bottom-color:transparent;isolation:isolate;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+/* hiding glides out with a soft start and stop; coming back is a little quicker and settles gently */
+.site-head.head-up{transform:translateY(calc(-100% - 40px));transition:transform .75s cubic-bezier(.65,0,.35,1)}
+.site-head::before,.site-head::after{content:"";position:absolute;left:0;right:0;top:0;z-index:-1;pointer-events:none;transition:opacity .3s}
+/* the glass settings live in custom properties, so they can be tuned in one place (values chosen with the tuning panel) */
+.site-head{--hg-blur:3px;--hg-sat:2.5;--hg-bright:1.02;--hg-sheen:.48;--hg-tint:42%;--hg-tint2:18%;--hg-soft:4px;--hg-ext:24px;
+  --hg-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .12 0 0 0 -.024'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.site-head::before{bottom:calc(var(--hg-ext) * -.45);-webkit-backdrop-filter:blur(var(--hg-blur)) saturate(var(--hg-sat)) brightness(var(--hg-bright));backdrop-filter:blur(var(--hg-blur)) saturate(var(--hg-sat)) brightness(var(--hg-bright));
+  background:var(--hg-grain),linear-gradient(to bottom,rgba(255,255,255,var(--hg-sheen)),rgba(255,255,255,calc(var(--hg-sheen) * .18)) 55%,rgba(255,255,255,0));
+  -webkit-mask:linear-gradient(to bottom,#000 0,#000 70%,transparent);mask:linear-gradient(to bottom,#000 0,#000 70%,transparent)}
+.site-head::after{bottom:calc(var(--hg-ext) * -1);-webkit-backdrop-filter:blur(var(--hg-soft));backdrop-filter:blur(var(--hg-soft));
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--paper) var(--hg-tint),transparent),color-mix(in srgb,var(--paper) var(--hg-tint2),transparent) 60%,transparent);
+  -webkit-mask:linear-gradient(to bottom,#000 0,#000 50%,transparent);mask:linear-gradient(to bottom,#000 0,#000 50%,transparent)}
+body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
+/* sharpen-in on scroll, the site's blur theme: section headings and the book title sharpen word by word, the book
+   comes into focus, and the copy beside it fades up out of a blur, once, as each comes into view (site.js, initSharpen).
+   It all waits for .sh-js on <html>; without JavaScript everything is simply there. */
+.sh-js .sh-words .shw{display:inline-block;opacity:0;filter:blur(8px);transform:translateY(.3em);
+  transition:opacity .5s calc(var(--i) * 70ms),filter .6s calc(var(--i) * 70ms),transform .8s calc(var(--i) * 70ms) cubic-bezier(.2,1.2,.4,1)}
+.sh-js .sh-words.sh-on .shw{opacity:1;filter:none;transform:none}
+.sh-js .sh-block{opacity:0;filter:blur(8px);transform:translateY(18px);transition:opacity .7s var(--d,0s),filter .8s var(--d,0s),transform 1s var(--d,0s) cubic-bezier(.22,1,.36,1)}
+.sh-js .sh-block.sh-on{opacity:1;filter:none;transform:none}
+.sh-js .sh-book{opacity:0;filter:blur(14px);transform:translateY(16px) scale(.94);transition:opacity .8s,filter 1s,transform 1.2s cubic-bezier(.22,1,.36,1)}
+.sh-js .sh-book.sh-on{opacity:1;filter:none;transform:none}
+
+/* Off my desk: the other work as a list in the site's language. Each row is the link. One ink shape serves the whole list
+   (site.js, initRowFill): it grows out of the cursor, flows from row to row and shrinks back out; the other rows go soft */
+.rlA{position:relative;display:flex;flex-direction:column;border-bottom:1px solid var(--rule);margin-top:72px}
+.rlA-ink{position:absolute;left:0;right:0;top:0;height:0;z-index:0;background:var(--ink);pointer-events:none;opacity:0;will-change:top,height}
+.rlA-ink.on{opacity:1}
+.rA{z-index:1}
+.rA-fill{display:none}
+.rA{position:relative;overflow:hidden;isolation:isolate;display:grid;grid-template-columns:200px minmax(0,1fr) auto;gap:8px 40px;align-items:center;padding:30px 24px;border-top:1px solid var(--rule);color:var(--ink);text-decoration:none;transition:color .6s .08s}
+.rlA.ink-js .rA:hover,.rlA.ink-js .rA:focus-visible{color:var(--paper)}
+.rA:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.rA-kind{font:500 12px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);transition:color .6s .08s}
+.rlA.ink-js .rA:hover .rA-kind,.rlA.ink-js .rA:focus-visible .rA-kind{color:var(--n-b9)}
+.rA-main{display:flex;flex-direction:column;gap:8px}
+.rA-title{font-weight:900;font-stretch:72%;text-transform:uppercase;font-size:clamp(26px,2.6vw,36px);line-height:1}
+.rA-sub{font-size:16px;line-height:1.5;color:var(--body);max-width:640px;transition:color .6s .08s}
+.rlA.ink-js .rA:hover .rA-sub,.rlA.ink-js .rA:focus-visible .rA-sub{color:var(--n-b9)}
+.rA-cta{display:inline-flex;align-items:center;gap:10px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.rA .rx-arr{transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.rA:hover .rx-arr{transform:translateX(6px)}
+.rA-last .rA-cta{color:var(--accent)}
+.rlA.ink-js .rA-last:hover .rA-cta,.rlA.ink-js .rA-last:focus-visible .rA-cta{color:var(--paper)}
+/* focus pull, the site's blur theme: while one row is under the cursor, the others go soft and quiet (desktop pointers only) */
+@media (hover:hover) and (pointer:fine){
+  .rA{transition:color .6s .08s,filter .45s cubic-bezier(.22,1,.36,1),opacity .45s}
+  .rlA:hover .rA:not(:hover){filter:blur(2.5px);opacity:.5}
+}
+@media (max-width:760px){.rA{grid-template-columns:1fr;padding:24px 4px}.rA-cta{margin-top:6px}}
+/* trial: the heavy black section lines become hairlines, to match the softer glass and blur language */
+.path,.section-rule,.releases{border-top:1px solid rgba(18,18,18,.14)}
+.pgrp-side{border-top:1px solid rgba(18,18,18,.14)}
+.side{border-top:1px solid rgba(18,18,18,.22)}
 /* reduced motion: no animations or transitions (except where marked !important above) */
 @media (prefers-reduced-motion:reduce){*,*::after{animation:none !important;transition:none !important}}
 /* My principles. On desktop the section pins while the six cards are thrown onto a pile, one per scroll step (site.js,
@@ -422,8 +482,8 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
   #beliefs.pr-js .split-aside::before{content:"";position:absolute;right:100%;top:0;bottom:0;width:100vw;background:var(--paper)}
   #beliefs.pr-js .aside-title{white-space:nowrap}
   #beliefs.pr-js .split-list{position:relative;display:block;flex:1 1 auto;height:520px;border-bottom:0}
-  #beliefs.pr-js .thesis{position:absolute;left:0;top:10px;width:400px;min-height:440px;box-sizing:border-box;display:flex;flex-direction:column;padding:28px;border:2px solid var(--ink);border-radius:8px;background:var(--paper-2);
-    box-shadow:0 22px 44px -26px rgba(18,18,18,.45);animation:none;will-change:transform;
+  #beliefs.pr-js .thesis{position:absolute;left:0;top:10px;width:400px;min-height:440px;box-sizing:border-box;display:flex;flex-direction:column;padding:28px;border:1px solid rgba(18,18,18,.07);border-radius:8px;background:var(--paper-2);
+    box-shadow:0 1px 2px rgba(18,18,18,.06),0 22px 44px -24px rgba(18,18,18,.5);animation:none;will-change:transform;
     transform:translate(calc(100vw - 300px),-60px) rotate(16deg);transition:transform .85s cubic-bezier(.16,1.18,.36,1),box-shadow .85s}
   #beliefs.pr-js .thesis-head{font-size:30px}
   #beliefs.pr-js .thesis-text{font-size:15px}
@@ -482,5 +542,5 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 #beliefs.pr-complete .spin,#beliefs.pr-complete .dial-count{opacity:0;filter:blur(8px);transform:scale(.92);height:0;margin-top:-18px}
 @media (max-width:760px){
   #beliefs .split-list{flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;border-bottom:0;margin:0 calc(-1 * var(--gutter));padding:0 var(--gutter) 8px}
-  #beliefs .thesis{flex:0 0 82%;scroll-snap-align:start;border:2px solid var(--ink);border-radius:8px;background:var(--paper-2);padding:22px}
+  #beliefs .thesis{flex:0 0 82%;scroll-snap-align:start;border:1px solid rgba(18,18,18,.07);box-shadow:0 18px 36px -24px rgba(18,18,18,.4);border-radius:8px;background:var(--paper-2);padding:22px}
 }

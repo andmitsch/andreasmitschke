@@ -14,7 +14,7 @@ class Component extends DCLogic {
         const id = a.getAttribute('href').slice(1); if (!id) return; const el = document.getElementById(id); if (!el) return;
         e.preventDefault();
         const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const y0 = window.scrollY || document.documentElement.scrollTop; const hd = document.querySelector('.site-head'); const off = hd && getComputedStyle(hd).position === 'sticky' && el.getBoundingClientRect().top < 0 ? hd.offsetHeight : 0; /* scrolling down hides the mobile bar, so only leave room for it when going up */ const y1 = y0 + el.getBoundingClientRect().top - off - (parseFloat(el.getAttribute('data-scroll-offset')) || 0);
+        const y0 = window.scrollY || document.documentElement.scrollTop; const hd = document.querySelector('.site-head'); const off = hd && getComputedStyle(hd).position === 'sticky' && el.getBoundingClientRect().top < 0 ? hd.offsetHeight : 0; /* the header hides when scrolling down, so only leave room for it when going up */ const y1 = y0 + el.getBoundingClientRect().top - off - (parseFloat(el.getAttribute('data-scroll-offset')) || 0);
         const dist = Math.abs(y1 - y0); if (reduce || dist < 2) { window.scrollTo(0, y1); return; }
         const D = Math.min(2000, 900 + dist * 0.3); const t0 = performance.now();
         const ease = (x) => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
@@ -209,7 +209,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initPrinciples(); this.initTalks(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
+    this.initPrinciples(); this.initTalks(); this.initRowFill(); this.initSharpen(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -366,6 +366,60 @@ class Component extends DCLogic {
     /* fallback: a click throws the next card (and starts over after the last one) */
     sec.addEventListener('click', (e) => { if (e.target.closest('a')) return; manual = true; spin && spin.classList.add('dial'); show(k >= n ? 0 : k + 1); });
   }
+  initSharpen() {
+    /* the blur theme for the parts that otherwise just sit there: section headings and the book title sharpen word by word,
+       the book comes into focus, the copy beside it and the list below fade up out of a blur; once, as each comes into view (see the CSS) */
+    if (!('IntersectionObserver' in window)) return;
+    const words = [...document.querySelectorAll('.h2-display, #releases .book-title')];
+    const blocks = [['#releases .book-desc', '.15s'], ['#releases .btn-group', '.3s'], ['#releases .rlA', '0s']].map(([q, d]) => { const e = document.querySelector(q); if (e) { e.classList.add('sh-block'); e.style.setProperty('--d', d); } return e; });
+    const book = document.querySelector('#releases .book-stage-wrap'); if (book) book.classList.add('sh-book');
+    words.forEach((h) => { let i = 0;
+      [...h.childNodes].forEach((x) => { if (x.nodeType === 3) { const f = document.createDocumentFragment();
+          x.textContent.split(/(\s+)/).forEach((t) => { if (!t) return; if (/^\s+$/.test(t)) f.appendChild(document.createTextNode(t));
+            else { const s = document.createElement('span'); s.className = 'shw'; s.style.setProperty('--i', i++); s.textContent = t; f.appendChild(s); } });
+          x.replaceWith(f); } else if (x.nodeType === 1) { x.classList.add('shw'); x.style.setProperty('--i', i++); } });
+      h.classList.add('sh-words'); });
+    document.documentElement.classList.add('sh-js');
+    const els = [...words, ...blocks, book].filter(Boolean);
+    /* the design canvas shows boards as still pictures: show everything there */
+    if (!this.__site) { els.forEach((e) => e.classList.add('sh-on')); return; }
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('sh-on'); io.unobserve(e.target); } }), { threshold: .3, rootMargin: '0px 0px -8% 0px' });
+    els.forEach((e) => io.observe(e));
+  }
+  initRowFill() {
+    /* Off my desk: one ink shape for the whole list. Entering the list it grows out of the cursor like the pill buttons;
+       moving to another row it flows there like a drop of ink, stretching across both rows and settling into the new one;
+       leaving the list it shrinks back into the point where the cursor left. */
+    const list = document.querySelector('.rlA'); if (!list) return;
+    const rows = [...list.querySelectorAll('.rA')], ink = document.createElement('span'); ink.className = 'rlA-ink'; ink.setAttribute('aria-hidden', 'true'); list.prepend(ink); list.classList.add('ink-js');
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let cur = null, move = null;
+    const box = (row) => ({ t: row.offsetTop, h: row.offsetHeight });
+    const set = (b) => { ink.style.top = b.t + 'px'; ink.style.height = b.h + 'px'; };
+    const at = (e) => { const r = ink.getBoundingClientRect(); return [(e.clientX - r.left).toFixed(1) + 'px', (e.clientY - r.top).toFixed(1) + 'px']; };
+    const go = (row, e) => {
+      const b = box(row);
+      if (!cur) { set(b); ink.classList.add('on'); if (reduce) { cur = b; return; } const [x, y] = at(e);
+        ink.animate([{ clipPath: 'circle(0px at ' + x + ' ' + y + ')' }, { clipPath: 'circle(150% at ' + x + ' ' + y + ')' }], { duration: 1100, easing: 'cubic-bezier(.33,1,.68,1)' });
+        cur = b; return; }
+      if (b.t === cur.t) return;
+      const a = cur; cur = b; set(b); if (reduce) return;
+      const top = Math.min(a.t, b.t), bottom = Math.max(a.t + a.h, b.t + b.h);
+      move && move.cancel();
+      move = ink.animate([
+        { top: a.t + 'px', height: a.h + 'px', borderRadius: '0px', transform: 'scaleX(1)' },
+        { top: top + 'px', height: (bottom - top) + 'px', borderRadius: '34px', transform: 'scaleX(.985)', offset: .42 },
+        { top: b.t + 'px', height: b.h + 'px', borderRadius: '0px', transform: 'scaleX(1)' }
+      ], { duration: 720, easing: 'cubic-bezier(.45,0,.25,1)' });
+    };
+    rows.forEach((row) => { row.addEventListener('pointerenter', (e) => go(row, e));
+      row.addEventListener('focus', () => { const r = row.getBoundingClientRect(); go(row, { clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }); }); });
+    list.addEventListener('focusout', (e) => { if (!list.contains(e.relatedTarget) && !list.matches(':hover')) { cur = null; ink.classList.remove('on'); } });
+    list.addEventListener('pointerleave', (e) => { if (!cur) return; cur = null; move && move.cancel();
+      if (reduce) { ink.classList.remove('on'); return; } const [x, y] = at(e);
+      const a = ink.animate([{ clipPath: 'circle(150% at ' + x + ' ' + y + ')' }, { clipPath: 'circle(0px at ' + x + ' ' + y + ')' }], { duration: 700, easing: 'cubic-bezier(.5,0,.75,0)' });
+      a.onfinish = () => { if (!cur) ink.classList.remove('on'); }; });
+  }
   initTalks() {
     /* talk topics: four panels, one open at a time. A click, the keyboard, or resting the pointer for 0.75 s opens one;
        ink spreads from the pointer, the title hands over to the headline and its words rise one by one */
@@ -428,10 +482,13 @@ class Component extends DCLogic {
     const p = Math.max(0, Math.min(1, (vh * 0.45 - r.top) / Math.max(1, r.height - vh * 0.35)));
     el.style.setProperty('--p', p.toFixed(4));
     const inView = r.top < vh * 0.6 && r.bottom > vh * 0.4; el.classList.toggle('tracking', inView);
-    const focus = vh * 0.45, span = vh * 0.32;
+    const focus = vh * 0.62, span = vh * 0.26;   /* the reading line: a group comes into focus once its top passes 62% of the screen */
+    /* a group is in focus anywhere in the reading band, from just below the header down to the reading line, so text
+       read near the top of the screen stays sharp; it only goes soft once it has left the band */
+    const band = vh * 0.12;
     el.querySelectorAll('.pgrp').forEach((g) => { const b = g.getBoundingClientRect();
-      const d = b.top <= focus && b.bottom >= focus ? 0 : Math.min(Math.abs(b.top - focus), Math.abs(b.bottom - focus));
-      const floor = b.bottom < focus ? 0.68 : 0.4; const k = Math.min(1, d / span); const e = k * k * (3 - 2 * k);
+      const d = b.bottom >= band && b.top <= focus ? 0 : (b.bottom < band ? band - b.bottom : b.top - focus);
+      const floor = b.bottom < band ? 0.68 : 0.4; const k = Math.min(1, d / span); const e = k * k * (3 - 2 * k);
       g.style.setProperty('--go', inView ? (1 - (1 - floor) * e).toFixed(3) : '1'); });
     const near = vh * 0.2;
     el.querySelectorAll('.prow').forEach((row) => { const b = row.getBoundingClientRect(); const c = b.top + b.height / 2; const d = Math.abs(c - focus);
@@ -785,7 +842,7 @@ class Component extends DCLogic {
     mn.addEventListener('click', (e) => set(false, e.detail ? e.clientX : null, e.detail ? e.clientY : null));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
   }
-  /* mobile: the bar slides away while scrolling down and comes back on any scroll up */
+  /* the header: on screen over the hero; past it, it hides while scrolling down and returns on scroll up (glass, see the CSS) */
   const hd = document.querySelector('.site-head'), mq = window.matchMedia && window.matchMedia('(max-width:760px)');
   if (hd && mq) {
     let ly = window.scrollY, busy = false;
@@ -794,7 +851,11 @@ class Component extends DCLogic {
       requestAnimationFrame(() => {
         busy = false; const y = Math.max(0, window.scrollY), d = y - ly;
         if (document.body.classList.contains('menu-open')) { ly = y; return; }
-        if (!mq.matches || y < hd.offsetHeight) { hd.classList.remove('head-up'); ly = y; return; }
+        hd.classList.toggle('head-float', y > 2);           /* .head-float marks it floating over the page */
+        /* the header stays while the hero is on screen. Once the journey reaches the top (on phones: as soon as the page
+           moves), it slides away while scrolling down and comes back on any scroll up */
+        const path = document.getElementById('path'), hero = !mq.matches && path && path.getBoundingClientRect().top > hd.offsetHeight;
+        if (hero || y < hd.offsetHeight) { hd.classList.remove('head-up'); ly = y; return; }
         if (d > 6) { hd.classList.add('head-up'); ly = y; } else if (d < -6) { hd.classList.remove('head-up'); ly = y; }
       });
     }, { passive: true });
