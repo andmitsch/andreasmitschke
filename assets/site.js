@@ -209,7 +209,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
+    this.initPrinciples(); this.initTalks(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -219,22 +219,141 @@ class Component extends DCLogic {
     if (zoom < 0.75) this.setState({ struck: true });
     else if (!this.fxStill()) {
       const [a, b] = this.line; this.setState({ c1: this.noise(a), c2: this.noise(b) });
-      this.hlT = setTimeout(() => this.build(), 450);
+      this.hlT = setTimeout(() => this.build(), 300);
     }
   }
   componentWillUnmount() { document.removeEventListener('pointermove', this.bNear); document.removeEventListener('pointermove', this.onPtr); window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); clearTimeout(this.hlT); cancelAnimationFrame(this.hlRaf); }
+  initPrinciples() {
+    /* My principles: the cards are thrown onto a pile, one per scroll step, and the spinner turns into a progress dial.
+       On the site the section pins (sticky) while the window scrolls. The design canvas never scrolls a board, so there
+       the pin is imitated: the visible part of the section (from IntersectionObserver) moves the stage down with the view. */
+    const sec = document.getElementById('beliefs'), list = sec && sec.querySelector('.split-list'); if (!list || !window.matchMedia) return;
+    const inner = sec.querySelector('.split-inner'), cards = [...list.querySelectorAll('.thesis')], n = cards.length;
+    sec.classList.add('pr-js');
+    const PILE = 26, TILT = [-2.2, 1.6, -1.1, 2.4, -1.7, .9], STEPH = 100, VH = 800;
+    const spin = sec.querySelector('.spin'), ticks = spin ? [...spin.querySelectorAll('line')] : [];
+    const count = document.createElement('span'); count.className = 'dial-count'; spin && spin.after(count);
+    /* each headline is split into words so it can sharpen word by word as its card lands (the struck word stays whole) */
+    cards.forEach((c) => { const h = c.querySelector('.thesis-head'); let i = 0; if (!h) return;
+      [...h.childNodes].forEach((x) => { if (x.nodeType === 3) { const f = document.createDocumentFragment();
+          x.textContent.split(/(\s+)/).forEach((t) => { if (!t) return; if (/^\s+$/.test(t)) f.appendChild(document.createTextNode(t));
+            else { const s = document.createElement('span'); s.className = 'w'; s.style.setProperty('--i', i++); s.textContent = t; f.appendChild(s); } });
+          x.replaceWith(f); } else if (x.nodeType === 1) { x.classList.add('w'); x.style.setProperty('--i', i++); } }); });
+    const order = ticks.map((_, j) => ticks[(9 + j) % ticks.length]);   /* clockwise from 12 o'clock */
+    let k = -1, on = false;
+    const show = (m) => { if (m === k) return; k = m;
+      cards.forEach((c, i) => { const l = i < m; c.classList.toggle('landed', l); if (l) c.classList.add('seen'); c.style.zIndex = String(10 + i);
+        c.style.transform = l ? 'translate(' + (i * PILE) + 'px,0) rotate(' + TILT[i] + 'deg)' : ''; });
+      const lit = Math.round(m / n * order.length);
+      order.forEach((t, j) => { t.style.opacity = j < lit ? '1' : '.16'; t.style.stroke = j < lit ? 'var(--accent)' : ''; });
+      count.textContent = String(m).padStart(2, '0') + ' / ' + String(n).padStart(2, '0');
+      if (nav) { prev.disabled = m <= 1; next.disabled = m >= n; } };
+    /* after the first full pass, two buttons under the pile take a card back off the stack or throw it on again,
+       so the principles can be read again without scrolling the whole section */
+    const ico = (d) => '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const nav = document.createElement('div'); nav.className = 'pr-nav';
+    const prev = document.createElement('button'), next = document.createElement('button');
+    prev.type = next.type = 'button'; prev.className = next.className = 'pr-btn';
+    prev.setAttribute('aria-label', 'Previous principle'); next.setAttribute('aria-label', 'Next principle');
+    prev.innerHTML = ico('M15 5l-7 7 7 7'); next.innerHTML = ico('M9 5l7 7-7 7');
+    nav.append(prev, next); list.appendChild(nav);
+    /* the stage clips the flying cards; never let focus or scrollIntoView scroll it sideways */
+    inner && inner.addEventListener('scroll', () => { if (inner.scrollLeft || inner.scrollTop) { inner.scrollLeft = 0; inner.scrollTop = 0; } });
+    prev.addEventListener('click', () => show(Math.max(1, k - 1))); next.addEventListener('click', () => show(Math.min(n, k + 1)));
+    /* once the whole stack has been thrown, it stays a stack: scrolling back up passes over the finished pile */
+    let done = false;
+    /* once complete, scrolling no longer moves the cards; the buttons do */
+    const at = (s) => { if (done) return; const m = Math.max(0, Math.min(n, Math.floor(s / STEPH + 1)));
+      if (m >= n) { done = true; sec.classList.add('pr-complete'); } show(m); };
+    /* a window the height of a screen scrolls like the site (the live site, and a board opened full-window in the canvas);
+       a frame as tall as the whole page (a board on the canvas) never scrolls, so the pin is imitated below */
+    if (this.__site || innerHeight < 2000) {
+      /* after the first full pass the pin is released: the section shrinks to one screen and the page scrolls past the
+         finished pile normally. Leaving at the bottom, the scroll position is corrected by the height removed, so nothing jumps. */
+      let freed = false;
+      const free = (fix) => { freed = true; const y = window.scrollY, h0 = sec.offsetHeight; sec.style.height = ''; sec.classList.add('pr-free');
+        if (fix) window.scrollTo({ top: y - (h0 - sec.offsetHeight), behavior: 'instant' }); };
+      const upd = () => { if (!on || freed) return; const r = sec.getBoundingClientRect();
+        spin && spin.classList.toggle('dial', r.top < innerHeight * 0.5); at(-r.top);
+        if (done && r.bottom <= innerHeight + 1) free(true); else if (done && r.top > 0) free(false); };
+      const size = () => { on = matchMedia('(min-width:761px)').matches;
+        if (!on || freed) { sec.style.height = ''; return; } sec.style.height = (innerHeight + n * STEPH) + 'px'; upd(); };
+      addEventListener('scroll', upd, { passive: true }); addEventListener('resize', size); size(); document.fonts && document.fonts.ready.then(size);
+      return;
+    }
+    /* design canvas */
+    sec.classList.add('pr-canvas'); sec.style.height = (VH + n * STEPH) + 'px'; inner.style.height = VH + 'px';
+    let manual = false;
+    const place = (s) => { inner.style.transform = 'translateY(' + Math.max(0, Math.min(n * STEPH, s)) + 'px)'; };
+    show(0);
+    if ('IntersectionObserver' in window) {
+      /* thin invisible strips down the section: the topmost visible strip tells how far the view has moved into it */
+      const G = 12, rail = document.createElement('div'), vis = new Set(); rail.className = 'pr-rail'; rail.setAttribute('aria-hidden', 'true');
+      const strips = []; for (let y = 0; y < VH + n * STEPH; y += G) { const d = document.createElement('i'); d.style.top = y + 'px'; d.dataset.y = y; rail.appendChild(d); strips.push(d); }
+      sec.appendChild(rail); let raf = 0;
+      const upd = () => { raf = 0; if (!vis.size) return; let s = Infinity; vis.forEach((y) => { if (y < s) s = y; });
+        if (s < G && vis.size * G < 260) { if (!manual && !done) show(0); return; }
+        manual = false; place(s); spin && spin.classList.add('dial'); at(s); };
+      const io = new IntersectionObserver((es) => { es.forEach((e) => { const y = +e.target.dataset.y; if (e.isIntersecting) vis.add(y); else vis.delete(y); });
+        if (!raf) raf = requestAnimationFrame(upd); });
+      strips.forEach((d) => io.observe(d));
+    }
+    /* fallback: a click throws the next card (and starts over after the last one) */
+    sec.addEventListener('click', (e) => { if (e.target.closest('a')) return; manual = true; spin && spin.classList.add('dial'); show(k >= n ? 0 : k + 1); });
+  }
+  initTalks() {
+    /* talk topics: four panels, one open at a time. A click, the keyboard, or resting the pointer for 0.75 s opens one;
+       ink spreads from the pointer, the title hands over to the headline and its words rise one by one */
+    const list = document.querySelector('#talks .tpanels'); if (!list || !window.matchMedia) return;
+    const ps = [...list.querySelectorAll('.tpan')], wide = () => matchMedia('(min-width:761px)').matches;
+    list.classList.add('tp-js');
+    let cur = -1, dwell = 0;
+    ps.forEach((c) => { const h = c.querySelector('.tpan-head'); let i = 0;
+      if (h) { const f = document.createDocumentFragment();
+        h.textContent.split(/(\s+)/).forEach((t) => { if (!t) return; if (/^\s+$/.test(t)) f.appendChild(document.createTextNode(t));
+          else { const s = document.createElement('span'); s.className = 'w'; s.style.setProperty('--i', i++); s.textContent = t; f.appendChild(s); } });
+        h.textContent = ''; h.appendChild(f); }
+      const dot = document.createElement('span'); dot.className = 'pdot'; dot.setAttribute('aria-hidden', 'true'); c.prepend(dot);
+      c.addEventListener('pointermove', (e) => { if (c.classList.contains('act')) return; const r = c.getBoundingClientRect();
+        c.style.setProperty('--x', (e.clientX - r.left) + 'px'); c.style.setProperty('--y', (e.clientY - r.top) + 'px'); }); });
+    const set = (i) => { if (i === cur) return; cur = i;
+      ps.forEach((c, k) => { c.classList.toggle('act', k === i); c.setAttribute('aria-expanded', String(k === i)); });
+      if (!wide()) ps.forEach((c, k) => c.style.setProperty('--h', k === i ? (c.querySelector('.tpan-body').scrollHeight + 'px') : '')); };
+    /* desktop: the open panel's text gets a fixed width (no reflow while it opens) and the row fits the longest text */
+    const size = () => { if (!wide()) { list.style.removeProperty('--ph'); const k = cur; cur = -1; set(k < 0 ? 0 : k); return; }
+      const bw = Math.max(300, list.clientWidth - (ps.length - 1) * (64 + 10) - 76); list.style.setProperty('--bw', bw + 'px');
+      let mx = 0; ps.forEach((c) => { mx = Math.max(mx, c.querySelector('.tpan-body').scrollHeight); });
+      list.style.setProperty('--ph', Math.max(mx + 72, 420) + 'px');
+      /* the ink circle is big enough to cover the opened panel from any starting point */
+      list.style.setProperty('--fd', Math.ceil(2 * Math.hypot(bw + 80, Math.max(mx + 72, 420))) + 'px'); };
+    ps.forEach((c, i) => {
+      c.addEventListener('click', (e) => { if (e.target.closest('a')) return; set(i); });
+      c.addEventListener('keydown', (e) => { if (e.target !== c) return;
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); set(i); }
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); ps[(i + 1) % ps.length].focus(); }
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); ps[(i - 1 + ps.length) % ps.length].focus(); } });
+      c.addEventListener('pointerenter', (e) => { if (e.pointerType !== 'mouse' || !wide()) return; clearTimeout(dwell); dwell = setTimeout(() => set(i), 750); });
+      c.addEventListener('pointerleave', () => clearTimeout(dwell)); });
+    set(0); size(); window.addEventListener('resize', size); document.fonts && document.fonts.ready.then(size);
+  }
   plain(w) { return Array.from(w).map((t) => ({ t, cls: '' })); }
   glyph() { return this.pool[Math.floor(Math.random() * this.pool.length)]; }
   noise(w) { return Array.from(w).map(() => ({ t: this.glyph(), cls: 'gl' })); }
   build() {
-    /* resolve the line letter by letter out of symbols, then strike "approving." */
-    const [n1, n2] = this.line, IN = 140 * Math.max(n1.length, n2.length), t0 = performance.now(); let last = 0;
-    const mk = (n, t) => { const per = IN / n.length, keep = Math.floor(t / per); return Array.from(n).map((ch, i) => i < keep ? { t: ch, cls: '' } : { t: this.glyph(), cls: 'gl' }); };
+    /* the line resolves letter by letter out of frosted-glass symbols: each new letter lands blurred and sharpens
+       over six quick steps (classes b6 … b1), then "approving." gets struck through */
+    const [n1, n2] = this.line, STEP = 130, SWAP = 190, IN = STEP * Math.max(n1.length, n2.length), END = IN + STEP * 3, t0 = performance.now(); let last = 0;
+    const mk = (n, t) => { const per = IN / n.length;
+      return Array.from(n).map((ch, i) => { const age = t - (i + 1) * per;
+        /* a symbol holds for SWAP ms before it changes, so the line flickers calmly instead of boiling */
+        if (age < 0) { const h = Math.imul(i + 1 + n.length * 31, 2654435761) ^ Math.imul(Math.floor(t / SWAP) + 1, 40503); return { t: this.pool[(h >>> 0) % this.pool.length], cls: 'gl' }; }
+        const k = Math.floor(age / (STEP / 2)); return { t: ch, cls: k < 6 ? 'lt b' + (6 - k) : '' }; }); };
     const step = (now) => {
       const t = now - t0;
-      if (t >= IN) { this.setState({ c1: this.plain(n1), c2: this.plain(n2) });
-        this.hlT = setTimeout(() => this.setState({ struck: true }), 160); return; }
-      if (now - last >= 90) { last = now; this.setState({ c1: mk(n1, t), c2: mk(n2, t) }); }
+      /* the strike starts while the last letters of "approving." are still landing, so the brush sweeps in as the word forms */
+      if (!this.state.struck && t >= IN - STEP * 2) this.setState({ struck: true });
+      if (t >= END) { this.setState({ c1: this.plain(n1), c2: this.plain(n2) }); return; }
+      if (now - last >= 40) { last = now; this.setState({ c1: mk(n1, t), c2: mk(n2, t) }); }
       this.hlRaf = requestAnimationFrame(step);
     };
     this.hlRaf = requestAnimationFrame(step);
