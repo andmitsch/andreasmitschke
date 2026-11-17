@@ -92,7 +92,8 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 .hero-lead{margin:0;font-size:clamp(19px, 1.8vw, 23px);line-height:1.45;text-wrap:pretty}
 .btn-row{display:flex}
 /* background: flowing lines that bend under the cursor and around the portrait */
-.memo-paper{position:absolute;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;overflow:hidden}
+/* the line field reaches up under the header, so the waves run beneath the glass bar right from the top of the page */
+.memo-paper{position:absolute;top:-120px;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;overflow:hidden}
 .memo-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;color:var(--accent)}
 /* portrait: cut-out standing on the hero's bottom edge; colour fades in as it scrolls fully into view.
    Its width on narrower screens is set by initPortraitFit (site.js). */
@@ -418,14 +419,17 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 /* hiding glides out with a soft start and stop; coming back is a little quicker and settles gently */
 .site-head.head-up{transform:translateY(calc(-100% - 40px));transition:transform .75s cubic-bezier(.65,0,.35,1)}
 .site-head::before,.site-head::after{content:"";position:absolute;left:0;right:0;top:0;z-index:-1;pointer-events:none;transition:opacity .3s}
-/* the glass settings live in custom properties, so they can be tuned in one place (values chosen with the tuning panel) */
+/* the glass settings live in custom properties, so they can be tuned in one place (values chosen with the tuning panel).
+   At the very top of the page the glass is clearer, brighter and more saturated (--hg0-*), so the waves show through;
+   from the first scroll it blends into the chosen values (--hgm goes 0 → 1, set by site.js). */
+.site-head{--hg0-blur:1.6px;--hg0-soft:1.2px;--hg0-tint:26%;--hg0-tint2:12%;--hg0-sat:3.2;--hg0-bright:1.08}
 .site-head{--hg-blur:3px;--hg-sat:2.5;--hg-bright:1.02;--hg-sheen:.48;--hg-tint:42%;--hg-tint2:18%;--hg-soft:4px;--hg-ext:24px;
   --hg-grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .12 0 0 0 -.024'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-.site-head::before{bottom:calc(var(--hg-ext) * -.45);-webkit-backdrop-filter:blur(var(--hg-blur)) saturate(var(--hg-sat)) brightness(var(--hg-bright));backdrop-filter:blur(var(--hg-blur)) saturate(var(--hg-sat)) brightness(var(--hg-bright));
+.site-head::before{bottom:calc(var(--hg-ext) * -.45);-webkit-backdrop-filter:blur(calc(var(--hg0-blur) + (var(--hg-blur) - var(--hg0-blur)) * var(--hgm,1))) saturate(calc(var(--hg0-sat) + (var(--hg-sat) - var(--hg0-sat)) * var(--hgm,1))) brightness(calc(var(--hg0-bright) + (var(--hg-bright) - var(--hg0-bright)) * var(--hgm,1)));backdrop-filter:blur(calc(var(--hg0-blur) + (var(--hg-blur) - var(--hg0-blur)) * var(--hgm,1))) saturate(calc(var(--hg0-sat) + (var(--hg-sat) - var(--hg0-sat)) * var(--hgm,1))) brightness(calc(var(--hg0-bright) + (var(--hg-bright) - var(--hg0-bright)) * var(--hgm,1)));
   background:var(--hg-grain),linear-gradient(to bottom,rgba(255,255,255,var(--hg-sheen)),rgba(255,255,255,calc(var(--hg-sheen) * .18)) 55%,rgba(255,255,255,0));
   -webkit-mask:linear-gradient(to bottom,#000 0,#000 70%,transparent);mask:linear-gradient(to bottom,#000 0,#000 70%,transparent)}
-.site-head::after{bottom:calc(var(--hg-ext) * -1);-webkit-backdrop-filter:blur(var(--hg-soft));backdrop-filter:blur(var(--hg-soft));
-  background:linear-gradient(to bottom,color-mix(in srgb,var(--paper) var(--hg-tint),transparent),color-mix(in srgb,var(--paper) var(--hg-tint2),transparent) 60%,transparent);
+.site-head::after{bottom:calc(var(--hg-ext) * -1);-webkit-backdrop-filter:blur(calc(var(--hg0-soft) + (var(--hg-soft) - var(--hg0-soft)) * var(--hgm,1)));backdrop-filter:blur(calc(var(--hg0-soft) + (var(--hg-soft) - var(--hg0-soft)) * var(--hgm,1)));
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--paper) calc(var(--hg0-tint) + (var(--hg-tint) - var(--hg0-tint)) * var(--hgm,1)),transparent),color-mix(in srgb,var(--paper) calc(var(--hg0-tint2) + (var(--hg-tint2) - var(--hg0-tint2)) * var(--hgm,1)),transparent) 60%,transparent);
   -webkit-mask:linear-gradient(to bottom,#000 0,#000 50%,transparent);mask:linear-gradient(to bottom,#000 0,#000 50%,transparent)}
 body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
 /* sharpen-in on scroll, the site's blur theme: section headings and the book title sharpen word by word, the book
@@ -442,8 +446,13 @@ body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
 /* Off my desk: the other work as a list in the site's language. Each row is the link. One ink shape serves the whole list
    (site.js, initRowFill): it grows out of the cursor, flows from row to row and shrinks back out; the other rows go soft */
 .rlA{position:relative;display:flex;flex-direction:column;border-bottom:1px solid var(--rule);margin-top:72px}
-.rlA-ink{position:absolute;left:0;right:0;top:0;height:0;z-index:0;background:var(--ink);pointer-events:none;opacity:0;will-change:top,height}
+.rlA-ink{position:absolute;left:0;right:0;top:0;height:0;z-index:0;overflow:hidden;pointer-events:none;opacity:0;will-change:top,height}
 .rlA-ink.on{opacity:1}
+.rlA-ink.full{background:var(--ink)}
+/* the circle that grows and shrinks, with the pill buttons' timing: in .8s easing out, out .55s */
+.rlA-ink i{position:absolute;border-radius:50%;background:var(--ink);transform:scale(0);transition:transform .55s cubic-bezier(.4,0,.2,1)}
+.rlA-ink i.in{transform:scale(1);transition-duration:.8s;transition-timing-function:var(--ease-out)}
+.rlA-ink i.now{transition:none}
 .rA{z-index:1}
 .rA-fill{display:none}
 .rA{position:relative;overflow:hidden;isolation:isolate;display:grid;grid-template-columns:200px minmax(0,1fr) auto;gap:8px 40px;align-items:center;padding:30px 24px;border-top:1px solid var(--rule);color:var(--ink);text-decoration:none;transition:color .6s .08s}

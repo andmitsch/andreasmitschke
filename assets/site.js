@@ -387,23 +387,31 @@ class Component extends DCLogic {
     els.forEach((e) => io.observe(e));
   }
   initRowFill() {
-    /* Off my desk: one ink shape for the whole list. Entering the list it grows out of the cursor like the pill buttons;
-       moving to another row it flows there like a drop of ink, stretching across both rows and settling into the new one;
-       leaving the list it shrinks back into the point where the cursor left. */
+    /* Off my desk: one ink shape for the whole list. Entering the list it grows out of the cursor exactly like the pill
+       buttons (a circle sized to the farthest corner, scaled up from the cursor); moving to another row it flows there
+       like a drop of ink, stretching across both rows and settling into the new one; leaving the list it shrinks back
+       into the point where the cursor left, again like the buttons. */
     const list = document.querySelector('.rlA'); if (!list) return;
-    const rows = [...list.querySelectorAll('.rA')], ink = document.createElement('span'); ink.className = 'rlA-ink'; ink.setAttribute('aria-hidden', 'true'); list.prepend(ink); list.classList.add('ink-js');
+    const rows = [...list.querySelectorAll('.rA')];
+    const ink = document.createElement('span'), dot = document.createElement('i');
+    ink.className = 'rlA-ink'; ink.setAttribute('aria-hidden', 'true'); ink.appendChild(dot); list.prepend(ink); list.classList.add('ink-js');
     const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     let cur = null, move = null;
     const box = (row) => ({ t: row.offsetTop, h: row.offsetHeight });
     const set = (b) => { ink.style.top = b.t + 'px'; ink.style.height = b.h + 'px'; };
-    const at = (e) => { const r = ink.getBoundingClientRect(); return [(e.clientX - r.left).toFixed(1) + 'px', (e.clientY - r.top).toFixed(1) + 'px']; };
+    /* the circle: centred on the pointer, its diameter reaching the farthest corner of the ink box */
+    const place = (e) => { const r = ink.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      const d = 2 * Math.ceil(Math.hypot(Math.max(x, r.width - x), Math.max(y, r.height - y))) + 4;
+      dot.style.left = x.toFixed(1) + 'px'; dot.style.top = y.toFixed(1) + 'px'; dot.style.width = dot.style.height = d + 'px'; dot.style.margin = (-d / 2) + 'px 0 0 ' + (-d / 2) + 'px'; };
+    const grow = (on) => { ink.classList.toggle('full', false); dot.classList.toggle('in', on); };
+    dot.addEventListener('transitionend', () => { if (dot.classList.contains('in')) ink.classList.add('full'); else if (!cur) ink.classList.remove('on'); });
     const go = (row, e) => {
       const b = box(row);
-      if (!cur) { set(b); ink.classList.add('on'); if (reduce) { cur = b; return; } const [x, y] = at(e);
-        ink.animate([{ clipPath: 'circle(0px at ' + x + ' ' + y + ')' }, { clipPath: 'circle(150% at ' + x + ' ' + y + ')' }], { duration: 1100, easing: 'cubic-bezier(.33,1,.68,1)' });
-        cur = b; return; }
+      if (!cur) { set(b); cur = b; ink.classList.add('on'); if (reduce) { ink.classList.add('full'); return; }
+        place(e); dot.classList.add('now'); dot.classList.remove('in'); ink.classList.remove('full');
+        void dot.offsetWidth; dot.classList.remove('now'); grow(true); return; }
       if (b.t === cur.t) return;
-      const a = cur; cur = b; set(b); if (reduce) return;
+      const a = cur; cur = b; ink.classList.add('full'); set(b); if (reduce) return;   /* while it flows, the whole box is ink */
       const top = Math.min(a.t, b.t), bottom = Math.max(a.t + a.h, b.t + b.h);
       move && move.cancel();
       move = ink.animate([
@@ -414,12 +422,13 @@ class Component extends DCLogic {
     };
     rows.forEach((row) => { row.addEventListener('pointerenter', (e) => go(row, e));
       row.addEventListener('focus', () => { const r = row.getBoundingClientRect(); go(row, { clientX: r.left + r.width / 2, clientY: r.top + r.height / 2 }); }); });
-    list.addEventListener('focusout', (e) => { if (!list.contains(e.relatedTarget) && !list.matches(':hover')) { cur = null; ink.classList.remove('on'); } });
+    list.addEventListener('focusout', (e) => { if (!list.contains(e.relatedTarget) && !list.matches(':hover')) { cur = null; ink.classList.remove('on', 'full'); dot.classList.remove('in'); } });
     list.addEventListener('pointerleave', (e) => { if (!cur) return; cur = null; move && move.cancel();
-      if (reduce) { ink.classList.remove('on'); return; } const [x, y] = at(e);
-      const a = ink.animate([{ clipPath: 'circle(150% at ' + x + ' ' + y + ')' }, { clipPath: 'circle(0px at ' + x + ' ' + y + ')' }], { duration: 700, easing: 'cubic-bezier(.5,0,.75,0)' });
-      a.onfinish = () => { if (!cur) ink.classList.remove('on'); }; });
+      if (reduce) { ink.classList.remove('on', 'full'); return; }
+      /* hand over from the full box to a full circle at the exit point, then shrink it there */
+      place(e); dot.classList.add('now', 'in'); ink.classList.remove('full'); void dot.offsetWidth; dot.classList.remove('now'); grow(false); });
   }
+
   initTalks() {
     /* talk topics: four panels, one open at a time. A click, the keyboard, or resting the pointer for 0.75 s opens one;
        ink spreads from the pointer, the title hands over to the headline and its words rise one by one */
@@ -846,12 +855,15 @@ class Component extends DCLogic {
   const hd = document.querySelector('.site-head'), mq = window.matchMedia && window.matchMedia('(max-width:760px)');
   if (hd && mq) {
     let ly = window.scrollY, busy = false;
+    /* the glass blends from its clear top-of-page look into the chosen values over the first 360px of scrolling */
+    const glass = () => { const k = Math.min(1, Math.max(0, window.scrollY / 360)); hd.style.setProperty('--hgm', (k * k * (3 - 2 * k)).toFixed(3)); };
+    glass();
     window.addEventListener('scroll', () => {
       if (busy) return; busy = true;
       requestAnimationFrame(() => {
         busy = false; const y = Math.max(0, window.scrollY), d = y - ly;
         if (document.body.classList.contains('menu-open')) { ly = y; return; }
-        hd.classList.toggle('head-float', y > 2);           /* .head-float marks it floating over the page */
+        glass(); hd.classList.toggle('head-float', y > 2);           /* .head-float marks it floating over the page */
         /* the header stays while the hero is on screen. Once the journey reaches the top (on phones: as soon as the page
            moves), it slides away while scrolling down and comes back on any scroll up */
         const path = document.getElementById('path'), hero = !mq.matches && path && path.getBoundingClientRect().top > hd.offsetHeight;
