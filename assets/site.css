@@ -440,6 +440,8 @@ body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
 .sh-js .sh-words.sh-on .shw{opacity:1;filter:none;transform:none}
 .sh-js .sh-block{opacity:0;filter:blur(8px);transform:translateY(18px);transition:opacity .7s var(--d,0s),filter .8s var(--d,0s),transform 1s var(--d,0s) cubic-bezier(.22,1,.36,1)}
 .sh-js .sh-block.sh-on{opacity:1;filter:none;transform:none}
+.sh-js .sh-row{transition:opacity .5s var(--d,0s),filter .55s var(--d,0s),transform .7s var(--d,0s) cubic-bezier(.22,1,.36,1)}
+.sh-js .sh-block:not(.sh-on){pointer-events:none}
 .sh-js .sh-book{opacity:0;filter:blur(14px);transform:translateY(16px) scale(.94);transition:opacity .8s,filter 1s,transform 1.2s cubic-bezier(.22,1,.36,1)}
 .sh-js .sh-book.sh-on{opacity:1;filter:none;transform:none}
 

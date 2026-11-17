@@ -371,7 +371,7 @@ class Component extends DCLogic {
        the book comes into focus, the copy beside it and the list below fade up out of a blur; once, as each comes into view (see the CSS) */
     if (!('IntersectionObserver' in window)) return;
     const words = [...document.querySelectorAll('.h2-display, #releases .book-title')];
-    const blocks = [['#releases .book-desc', '.15s'], ['#releases .btn-group', '.3s'], ['#releases .rlA', '0s']].map(([q, d]) => { const e = document.querySelector(q); if (e) { e.classList.add('sh-block'); e.style.setProperty('--d', d); } return e; });
+    const blocks = [['#releases .book-desc', '.15s'], ['#releases .btn-group', '.3s']].map(([q, d]) => { const e = document.querySelector(q); if (e) { e.classList.add('sh-block'); e.style.setProperty('--d', d); } return e; });
     const book = document.querySelector('#releases .book-stage-wrap'); if (book) book.classList.add('sh-book');
     words.forEach((h) => { let i = 0;
       [...h.childNodes].forEach((x) => { if (x.nodeType === 3) { const f = document.createDocumentFragment();
@@ -385,6 +385,13 @@ class Component extends DCLogic {
     if (!this.__site) { els.forEach((e) => e.classList.add('sh-on')); return; }
     const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('sh-on'); io.unobserve(e.target); } }), { threshold: .3, rootMargin: '0px 0px -8% 0px' });
     els.forEach((e) => io.observe(e));
+    /* the rows of the list below the book come in one by one as each enters the screen, early and quickly, so nothing
+       appears under a resting cursor; once in, they drop the effect so the hover focus pull reacts at once */
+    const rows = [...document.querySelectorAll('#releases .rA')];
+    rows.forEach((r, i) => { r.classList.add('sh-block', 'sh-row'); r.style.setProperty('--d', (i % 4) * 0.07 + 's');
+      r.addEventListener('transitionend', (e) => { if (e.propertyName === 'transform' && r.classList.contains('sh-on')) { r.classList.remove('sh-block', 'sh-row', 'sh-on'); r.style.removeProperty('--d'); } }); });
+    const io2 = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('sh-on'); io2.unobserve(e.target); } }), { threshold: 0, rootMargin: '0px 0px -4% 0px' });
+    rows.forEach((r) => io2.observe(r));
   }
   initRowFill() {
     /* Off my desk: one ink shape for the whole list. Entering the list it grows out of the cursor exactly like the pill
