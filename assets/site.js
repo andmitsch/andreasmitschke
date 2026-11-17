@@ -209,7 +209,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initPrinciples(); this.initTalks(); this.initRowFill(); this.initSharpen(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
+    this.initPrinciples(); this.initTalks(); this.initRowFill(); this.initBookHint(); this.initSharpen(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -365,6 +365,12 @@ class Component extends DCLogic {
     }
     /* fallback: a click throws the next card (and starts over after the last one) */
     sec.addEventListener('click', (e) => { if (e.target.closest('a')) return; manual = true; spin && spin.classList.add('dial'); show(k >= n ? 0 : k + 1); });
+  }
+  initBookHint() {
+    /* the small turning book in front of "Drag to turn the book" (see the CSS) */
+    const h = document.querySelector('.kbhint'); if (!h || h.querySelector('.kb-ic')) return;
+    const ic = document.createElement('span'); ic.className = 'kb-ic'; ic.setAttribute('aria-hidden', 'true'); ic.appendChild(document.createElement('i'));
+    h.prepend(ic);
   }
   initSharpen() {
     /* the blur theme for the parts that otherwise just sit there: section headings and the book title sharpen word by word,
