@@ -454,6 +454,20 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
   #beliefs.pr-js .pr-btn:last-child:hover:not(:disabled){transform:translateX(3px)}
   #beliefs.pr-js .pr-btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   #beliefs.pr-js .pr-btn:disabled{opacity:.18;cursor:default}
+  /* the hint above the arrows: appears with them, the dot slides to and fro, and it fades once the deck has been used */
+  #beliefs.pr-js .pr-hint{position:absolute;left:0;width:530px;bottom:-2px;z-index:40;display:flex;align-items:center;justify-content:center;gap:8px;
+    font:500 11px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);pointer-events:none;
+    opacity:0;filter:blur(8px);transform:translateY(8px);transition:opacity .6s 1.7s,filter .6s 1.7s,transform .8s 1.7s cubic-bezier(.22,1,.36,1)}
+  #beliefs.pr-js.pr-complete .pr-hint{opacity:1;filter:none;transform:none}
+  #beliefs.pr-js.pr-complete.pr-used .pr-hint{opacity:0;filter:blur(6px);transition:opacity .5s,filter .5s}
+  #beliefs.pr-js .pr-hint-dot{animation:pr-swipe 2.4s cubic-bezier(.45,0,.2,1) infinite}
+  @keyframes pr-swipe{0%,100%{transform:translateX(0)}25%{transform:translateX(-9px)}75%{transform:translateX(9px)}}
+  /* the finished pile is a deck you can flick (site.js) */
+  #beliefs.pr-js.pr-complete .split-list{touch-action:pan-y}
+  #beliefs.pr-js.pr-complete .thesis{-webkit-user-select:none;user-select:none}
+  #beliefs.pr-js.pr-complete .thesis.front{cursor:grab}
+  #beliefs.pr-js .thesis.dragging{transition:none;cursor:grabbing}
+  #beliefs.pr-js .thesis.flying{transition:none}
 }
 #beliefs .pr-nav{display:none}
 @media (min-width:761px){#beliefs .pr-nav{display:flex}}

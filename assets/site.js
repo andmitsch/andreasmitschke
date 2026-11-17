@@ -247,9 +247,8 @@ class Component extends DCLogic {
       const lit = Math.round(m / n * order.length);
       order.forEach((t, j) => { t.style.opacity = j < lit ? '1' : '.16'; t.style.stroke = j < lit ? 'var(--accent)' : ''; });
       count.textContent = String(m).padStart(2, '0') + ' / ' + String(n).padStart(2, '0');
-      if (nav) { prev.disabled = m <= 1; next.disabled = m >= n; } };
-    /* after the first full pass, two buttons under the pile take a card back off the stack or throw it on again,
-       so the principles can be read again without scrolling the whole section */
+      if (nav) { prev.disabled = !done && m <= 1; next.disabled = !done && m >= n; } };
+    /* after the first full pass, two arrows appear under the pile (see the deck below) */
     const ico = (d) => '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="' + d + '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     const nav = document.createElement('div'); nav.className = 'pr-nav';
     const prev = document.createElement('button'), next = document.createElement('button');
@@ -257,14 +256,80 @@ class Component extends DCLogic {
     prev.setAttribute('aria-label', 'Previous principle'); next.setAttribute('aria-label', 'Next principle');
     prev.innerHTML = ico('M15 5l-7 7 7 7'); next.innerHTML = ico('M9 5l7 7-7 7');
     nav.append(prev, next); list.appendChild(nav);
+    /* a small hint above the arrows that the finished pile can be flicked; it goes once someone has used the deck */
+    const hint = document.createElement('div'); hint.className = 'pr-hint'; hint.setAttribute('aria-hidden', 'true');
+    hint.innerHTML = '<svg width="34" height="14" viewBox="0 0 34 14"><path d="M5 7h24M8 4 5 7l3 3M26 4l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><circle class="pr-hint-dot" cx="17" cy="7" r="3.2" fill="currentColor"/></svg><span>Drag or flick the cards</span>';
+    list.appendChild(hint);
     /* the stage clips the flying cards; never let focus or scrollIntoView scroll it sideways */
     inner && inner.addEventListener('scroll', () => { if (inner.scrollLeft || inner.scrollTop) { inner.scrollLeft = 0; inner.scrollTop = 0; } });
-    prev.addEventListener('click', () => show(Math.max(1, k - 1))); next.addEventListener('click', () => show(Math.min(n, k + 1)));
+    /* after the first full pass the finished pile becomes an endless deck, like the quote deck on the talks page: flick the
+       top card (drag, swipe or tap) and it flies off the way you threw it, then tucks under the pile, so the card beneath is
+       on top. The left arrow does the same (the card leaves to the right, where it came from); the right arrow pulls the
+       bottom card out and lays it on top, so from the last principle you come round to the first. */
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const OUT = 'cubic-bezier(.2,.7,.3,1)', TUCK = 'cubic-bezier(.22,1,.36,1)';
+    let top = n - 1, busy = false;                                    /* the card on top of the pile */
+    const slot = (q) => 'translate(' + (q * PILE) + 'px,0) rotate(' + TILT[q] + 'deg)';
+    const tfx = (x, y, r) => 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) rotate(' + r.toFixed(2) + 'deg)';
+    const deal = () => { cards.forEach((c, i) => { const q = n - 1 - ((top - i + n) % n);
+      c.style.zIndex = String(10 + q); c.style.transform = slot(q); c.classList.toggle('front', i === top); }); };
+    const throwTop = (ux, uy, from, speed) => { if (busy) return;
+      const c = cards[top]; c.classList.remove('dragging');
+      if (reduce) { top = (top - 1 + n) % n; deal(); return; }
+      busy = true; c.classList.add('flying');
+      const L = Math.hypot(ux, uy) || 1; ux /= L; uy /= L;
+      const w = c.offsetWidth, h = c.offsetHeight, ax = Math.abs(ux), ay = Math.abs(uy), x0 = (n - 1) * PILE;
+      const t = Math.min(ax > .05 ? w * 1.04 / ax : 1e9, ay > .05 ? h * 1.08 / ay : 1e9);
+      const out = tfx(x0 + ux * t, uy * t, (ux >= 0 ? 1 : -1) * (9 + 9 * ax) + uy * 4);
+      const a1 = c.animate([{ transform: from || slot(n - 1) }, { transform: out }], { duration: Math.max(200, Math.min(380, speed ? t / (speed * 1.6) : 340)), easing: OUT, fill: 'forwards' });
+      a1.onfinish = () => { top = (top - 1 + n) % n; deal();          /* it is the bottom card now; the rest move up a place */
+        const a2 = c.animate([{ transform: out }, { transform: slot(0) }], { duration: 620, easing: TUCK });
+        a1.cancel(); busy = false; a2.onfinish = a2.oncancel = () => c.classList.remove('flying'); }; };
+    const pullBottom = () => { if (busy) return;
+      const j = (top + 1) % n, c = cards[j];
+      if (reduce) { top = j; deal(); return; }
+      busy = true; c.classList.add('flying');
+      const out = tfx((n - 1) * PILE + c.offsetWidth * 1.04, -c.offsetHeight * .08, 14);
+      const a1 = c.animate([{ transform: slot(0) }, { transform: out }], { duration: 320, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' });
+      a1.onfinish = () => { top = j; deal();
+        const a2 = c.animate([{ transform: out }, { transform: slot(n - 1) }], { duration: 560, easing: TUCK });
+        a1.cancel(); a2.onfinish = a2.oncancel = () => { c.classList.remove('flying'); busy = false; }; }; };
+    let used = false;
+    const use = () => { if (!used) { used = true; sec.classList.add('pr-used'); } };
+    const back = () => { if (done) { use(); throwTop(.94, -.34); } }, fwd = () => { if (done) { use(); pullBottom(); } };
+    prev.addEventListener('click', back); next.addEventListener('click', fwd);
+    sec.addEventListener('keydown', (e) => { if (!done) return;
+      if (e.key === 'ArrowLeft') { back(); e.preventDefault(); } else if (e.key === 'ArrowRight') { fwd(); e.preventDefault(); } });
+    /* drag: the top card follows the pointer, tilting around where you hold it; let go fast or far and it is thrown */
+    let drag = null, sx = 0, sy = 0, dx = 0, dy = 0, gy = 0, trail = [];
+    const dragTf = () => tfx((n - 1) * PILE + dx, dy, TILT[n - 1] + Math.max(-16, Math.min(16, dx * .045 * (gy < .5 ? 1 : -.7))));
+    list.addEventListener('pointerdown', (e) => { if (!done || busy || e.button > 0) return; const c = e.target.closest('.thesis.front'); if (!c) return;
+      const r = c.getBoundingClientRect(); drag = c; sx = e.clientX; sy = e.clientY; dx = dy = 0; gy = (e.clientY - r.top) / (r.height || 1); trail = [[e.timeStamp, 0, 0]];
+      c.classList.add('dragging'); try { c.setPointerCapture(e.pointerId); } catch (_) {} });
+    list.addEventListener('pointermove', (e) => { if (!drag) return;
+      dx = e.clientX - sx; dy = (e.pointerType === 'touch' ? .35 : 1) * (e.clientY - sy);
+      trail.push([e.timeStamp, dx, dy]); while (trail.length > 2 && e.timeStamp - trail[0][0] > 90) trail.shift();
+      if (Math.abs(dx) > 6) use(); drag.style.transform = dragTf(); });
+    const end = (e, cancelled) => { if (!drag) return; const c = drag; drag = null;
+      const dist = Math.hypot(dx, dy), t0 = trail[0], dt = Math.max(1, (e ? e.timeStamp : 0) - t0[0]);
+      const vx = (dx - t0[1]) / dt, vy = (dy - t0[2]) / dt, speed = Math.hypot(vx, vy);
+      if (!cancelled && dist < 6) { c.classList.remove('dragging'); back(); return; }           /* a tap flicks it away */
+      if (!cancelled && (dist > Math.min(150, c.offsetWidth * .24) || (speed > .45 && dist > 24))) {
+        const from = dragTf(); c.classList.remove('dragging');
+        if (speed > .3) throwTop(vx, vy, from, speed); else throwTop(dx, dy, from, 0); return; }
+      c.classList.remove('dragging'); deal(); };                                                /* not enough: it settles back */
+    list.addEventListener('pointerup', (e) => end(e, false)); list.addEventListener('pointercancel', (e) => end(e, true));
     /* once the whole stack has been thrown, it stays a stack: scrolling back up passes over the finished pile */
     let done = false;
     /* once complete, scrolling no longer moves the cards; the buttons do */
     const at = (s) => { if (done) return; const m = Math.max(0, Math.min(n, Math.floor(s / STEPH + 1)));
-      if (m >= n) { done = true; sec.classList.add('pr-complete'); } show(m); };
+      if (m >= n) { done = true; sec.classList.add('pr-complete'); nudge(); } show(m); if (done) deal(); };
+    /* the moment the pile is complete, the top card lifts a corner once, so it reads as something you can throw */
+    function nudge() { if (reduce) return; setTimeout(() => { if (used || busy || drag) return; const c = cards[top], base = slot(n - 1);
+      c.classList.add('flying');
+      const a = c.animate([{ transform: base }, { transform: tfx((n - 1) * PILE + 22, -10, TILT[n - 1] + 3.2), offset: .38 }, { transform: tfx((n - 1) * PILE - 4, 1, TILT[n - 1] - .6), offset: .72 }, { transform: base }],
+        { duration: 1100, easing: 'cubic-bezier(.45,0,.2,1)' });
+      a.onfinish = a.oncancel = () => c.classList.remove('flying'); }, 2300); }
     /* a window the height of a screen scrolls like the site (the live site, and a board opened full-window in the canvas);
        a frame as tall as the whole page (a board on the canvas) never scrolls, so the pin is imitated below */
     if (this.__site || innerHeight < 2000) {
