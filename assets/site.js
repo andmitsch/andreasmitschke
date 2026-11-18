@@ -878,24 +878,34 @@ class Component extends DCLogic {
     mn.addEventListener('click', (e) => set(false, e.detail ? e.clientX : null, e.detail ? e.clientY : null));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
   }
-  /* the header: on screen over the hero; past it, it hides while scrolling down and returns on scroll up (glass, see the CSS) */
-  const hd = document.querySelector('.site-head'), mq = window.matchMedia && window.matchMedia('(max-width:760px)');
-  if (hd && mq) {
-    let ly = window.scrollY, busy = false;
+  /* the header: on screen through the hero; past it, it leaves while scrolling down and comes back on scroll up, then
+     holds for half a screen before it can leave again (the motion itself is in the CSS, see .head-up) */
+  const hd = document.querySelector('.site-head');
+  if (hd) {
+    const BACK = 6;                                                     /* px of scrolling up that bring it back */
+    const hold = () => Math.max(320, window.innerHeight * .5);          /* px it stays after coming back */
+    let ly = Math.max(0, window.scrollY), lo = ly, hi = -Infinity, busy = false;   /* lo: lowest point while hidden; hi: highest point while shown (-Infinity: no hold) */
     /* the glass blends from its clear top-of-page look into the chosen values over the first 360px of scrolling */
     const glass = () => { const k = Math.min(1, Math.max(0, window.scrollY / 360)); hd.style.setProperty('--hgm', (k * k * (3 - 2 * k)).toFixed(3)); };
     glass();
+    const show = (y) => { hd.classList.remove('head-up'); hi = y; };
+    const hide = (y) => { hd.classList.add('head-up'); lo = y; };
     window.addEventListener('scroll', () => {
       if (busy) return; busy = true;
       requestAnimationFrame(() => {
-        busy = false; const y = Math.max(0, window.scrollY), d = y - ly;
-        if (document.body.classList.contains('menu-open')) { ly = y; return; }
+        busy = false; const y = Math.max(0, window.scrollY), d = y - ly; ly = y;
+        if (document.body.classList.contains('menu-open')) return;
         glass(); hd.classList.toggle('head-float', y > 2);           /* .head-float marks it floating over the page */
-        /* the header stays while the hero is on screen. Once the journey reaches the top (on phones: as soon as the page
-           moves), it slides away while scrolling down and comes back on any scroll up */
-        const path = document.getElementById('path'), hero = !mq.matches && path && path.getBoundingClientRect().top > hd.offsetHeight;
-        if (hero || y < hd.offsetHeight) { hd.classList.remove('head-up'); ly = y; return; }
-        if (d > 6) { hd.classList.add('head-up'); ly = y; } else if (d < -6) { hd.classList.remove('head-up'); ly = y; }
+        /* above the journey (the first section after the hero) it is always there, with no hold pending */
+        const path = document.getElementById('path');
+        if (y < hd.offsetHeight || (path && path.getBoundingClientRect().top > hd.offsetHeight)) { hd.classList.remove('head-up'); hi = -Infinity; return; }
+        if (hd.classList.contains('head-up')) {
+          lo = Math.max(lo, y);                                         /* measured from the lowest point, so slow scrolling up still counts */
+          if (lo - y >= BACK) show(y);
+        } else {
+          hi = Math.min(hi, y);                                         /* scrolling up further while it is back resets the hold */
+          if (d > 0 && y - hi >= hold()) hide(y);
+        }
       });
     }, { passive: true });
   }
