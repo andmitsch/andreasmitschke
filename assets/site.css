@@ -447,8 +447,8 @@ body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
    the bar stays sharp and is gently magnified, and the bottom rim bends in what lies just below the bar, with fine
    colour fringes. The bending is an SVG filter inside backdrop-filter, built by assets/navlens.js; only Chromium renders
    that, so html.ng-cr (set in the page head) switches this on, and html.ng-lens adds the filter once its map has loaded.
-   Safari and Firefox keep the frosted glass above. Values: "Pick 1", chosen in the glass playground. */
-.site-head{--lq-thick:38px;--lq-refr:42px;--lq-mag:8;--lq-ca:1;--lq-clar:1.2px;--lq-tint:52%;--lq-sat:1.2;--lq-bright:1.05;--lq-spec:.42;--lq-depth:0;--lq-shadow:0;
+   Safari and Firefox keep the frosted glass above. Values: "Pick 1" with the colour fringing raised to 3, chosen in the glass playground. */
+.site-head{--lq-thick:38px;--lq-refr:42px;--lq-mag:8;--lq-ca:3;--lq-clar:1.2px;--lq-tint:52%;--lq-sat:1.2;--lq-bright:1.05;--lq-spec:.42;--lq-depth:0;--lq-shadow:0;
   --lq-reach:calc(var(--lq-refr) + 2px)}
 /* the layer reaches below the bar (so the rim has something to bend) and is masked back to the bar's height */
 html.ng-cr .site-head::before{bottom:calc(var(--lq-reach) * -1);
@@ -616,17 +616,16 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 #beliefs.pr-canvas{position:relative}
 #beliefs .pr-rail{position:absolute;left:0;top:0;width:1px;height:100%;pointer-events:none;visibility:hidden}
 #beliefs .pr-rail i{position:absolute;left:0;width:1px;height:12px}
-/* My principles on phones: the same pinned stack. The title and dial sit above the pile, the cards fill the width and
-   pile up with small offsets, and each one flies in from the right edge. The pile's height follows the tallest card
-   (--pr-h, measured by site.js), so every card is the same size. */
+/* My principles on phones: the same pile and deck, but not pinned (a pinned section is too easy to scroll past on a
+   phone and fights the browser bars). The cards are dealt onto the pile by themselves when the section comes into view
+   (site.js); the title sits above the pile, the cards fill the width and each flies in from the right edge. The pile's
+   height follows the tallest card (--pr-h, measured by site.js), so every card is the same size. */
 @media (max-width:760px){
-  #beliefs.pr-js .split-inner{height:100vh;height:100svh;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:center;gap:0;padding:0 var(--gutter)}
-  #beliefs.pr-js .split-aside{min-width:0;margin:0 0 22px;align-self:stretch;flex:none;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;align-items:center;column-gap:16px;row-gap:0;box-shadow:none;background:none}
+  #beliefs.pr-js .split-inner{position:relative;top:auto;height:auto;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0;padding:64px var(--gutter) 24px}
+  #beliefs.pr-js .split-aside{min-width:0;margin:0 0 22px;align-self:stretch;flex:none;display:block;box-shadow:none;background:none}
   #beliefs.pr-js .split-aside::before{display:none}
-  #beliefs.pr-js .aside-title{grid-row:1 / span 2;font-size:clamp(34px, 10vw, 44px)}
-  #beliefs.pr-js .spin{width:36px;height:36px;justify-self:end}
-  #beliefs.pr-js .dial-count{margin-top:6px;font-size:11px}
-  #beliefs.pr-js.pr-complete .spin,#beliefs.pr-js.pr-complete .dial-count{margin-top:0}
+  #beliefs.pr-js .aside-title{font-size:clamp(34px, 10vw, 44px)}
+  #beliefs.pr-js .spin,#beliefs.pr-js .dial-count{display:none}
   #beliefs.pr-js .split-list{flex:none;height:calc(var(--pr-h, 420px) + 64px);margin-bottom:44px}
   #beliefs.pr-js .thesis{top:0;width:calc(100% - var(--pr-spread, 40px));min-height:var(--pr-h, 420px);padding:22px;
     transform:translate(calc(100vw + 130px),60px) rotate(14deg)}
@@ -634,15 +633,6 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
   #beliefs.pr-js .thesis-text{font-size:15px;line-height:1.5}
   #beliefs.pr-js .pr-nav{display:flex;width:100%;bottom:-44px}
   #beliefs.pr-js .pr-hint{width:100%;bottom:6px}
-}
-/* short phones (iPhone SE and similar): a little tighter, so the arrows under the pile stay on screen */
-@media (max-width:760px) and (max-height:720px){
-  #beliefs.pr-js .split-aside{margin-bottom:10px}
-  #beliefs.pr-js .aside-title{font-size:32px}
-  #beliefs.pr-js .thesis{padding:18px}
-  #beliefs.pr-js .thesis .thesis-head{font-size:24px}
-  #beliefs.pr-js .thesis-text{font-size:14px;line-height:1.45}
-  #beliefs.pr-js .split-list{height:calc(var(--pr-h, 400px) + 52px);margin-bottom:40px}
 }
 /* when the pile is complete, the dial and counter blur and fade, then their space closes and the title glides to the centre
    (the -18px cancels the column gap) */

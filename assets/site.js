@@ -231,8 +231,7 @@ class Component extends DCLogic {
     const inner = sec.querySelector('.split-inner'), cards = [...list.querySelectorAll('.thesis')], n = cards.length;
     sec.classList.add('pr-js');
     const TILT = [-2.2, 1.6, -1.1, 2.4, -1.7, .9], VH = 800;
-    /* desktop: 26px between the cards on the pile, 100px of scrolling per card; phones: 8px, and 140px per card so a
-       flick of the thumb does not throw them all at once */
+    /* 26px between the cards on the pile on desktop, 8px on phones; 100px of scrolling per card while the section is pinned (desktop) */
     const phone = () => !!(window.matchMedia && matchMedia('(max-width:760px)').matches);
     let PILE = 26, STEPH = 100;
     const spin = sec.querySelector('.spin'), ticks = spin ? [...spin.querySelectorAll('line')] : [];
@@ -352,11 +351,20 @@ class Component extends DCLogic {
         const h = Math.max(...cards.map((c) => { const b = c.querySelector('.thesis-body'); return b ? b.offsetHeight : 0; })) + 44;
         list.style.setProperty('--pr-h', Math.ceil(h) + 'px'); };
       let lw = 0;
-      /* the section is one screen (100svh: the screen with the browser bars shown, so it does not jump as they hide)
-         plus one scroll step per card */
-      const size = () => { on = true; const p = phone(); PILE = p ? 8 : 26; STEPH = p ? 140 : 100;
-        if (freed) { sec.style.height = ''; return; }
+      /* phones: no pin. Scrolling a pinned section on a phone is too easy to overshoot and fights the browser bars, so
+         there the pile is dealt by itself the first time the section comes into view (the cards land one after another,
+         nothing tied to the scroll), and it is a deck you can swipe from then on */
+      let dealt = false;
+      const dealIn = () => { if (dealt) return; dealt = true; done = true; freed = true; sec.classList.add('pr-complete', 'pr-flat'); prev.disabled = next.disabled = false;
+        if (reduce) { deal(); return; }
+        cards.forEach((c, i) => setTimeout(() => { c.classList.add('landed', 'seen'); c.style.zIndex = String(10 + i); c.style.transform = slot(i);
+          if (i === n - 1) { deal(); nudge(); } }, 120 + i * 130)); };
+      const io = 'IntersectionObserver' in window ? new IntersectionObserver((es) => { if (phone() && es.some((e) => e.isIntersecting)) { io.disconnect(); dealIn(); } }, { threshold: .35 }) : null;
+      /* desktop: the section is one screen plus one scroll step per card (100svh: the screen with any browser bars shown) */
+      const size = () => { const p = phone(); PILE = p ? 8 : 26; STEPH = 100; on = !p;
         if (innerWidth !== lw) { lw = innerWidth; fit(); if (done) deal(); else { const m = k; k = -1; show(Math.max(0, m)); } }
+        if (p) { sec.style.height = ''; if (!dealt) { if (io) io.observe(sec); else dealIn(); } return; }
+        if (freed) { sec.style.height = ''; return; }
         sec.style.height = (innerHeight + n * STEPH) + 'px'; sec.style.height = 'calc(100svh + ' + (n * STEPH) + 'px)'; upd(); };
       addEventListener('scroll', upd, { passive: true }); addEventListener('resize', size); size(); document.fonts && document.fonts.ready.then(() => { lw = 0; size(); });
       return;
