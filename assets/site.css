@@ -81,8 +81,10 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 .mnav{display:none}
 
 /* ---- 5 Hero + portrait ---- */
-.hero{max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto;position:relative;isolation:isolate;padding:24px var(--gutter) 78px;display:flex;flex-direction:column;gap:40px}
-.hl{position:relative;z-index:1;font-size:clamp(56px, 15vw, 232px)}
+.hero{max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto;position:relative;isolation:isolate;padding:10px var(--gutter) 78px;display:flex;flex-direction:column;gap:40px}
+/* the headline scales with the window's width and, on wide but short screens (laptops), with its height too, so all
+   four lines fit on landing: it ends at about 85% of the window height (78px = the bar plus the hero's top padding) */
+.hl{position:relative;z-index:1;font-size:clamp(56px, 15vw, 232px);font-size:clamp(56px, min(15vw, calc(24.7svh - 23px)), 232px)}
 .hl-h1{margin:0;font-size:1em;font-weight:900;font-stretch:68%;text-transform:uppercase;line-height:.86}
 .hl-line{display:block}
 .hl-line-word{display:block;white-space:nowrap}
@@ -433,6 +435,24 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
   background:linear-gradient(to bottom,color-mix(in srgb,var(--paper) calc(var(--hg0-tint) + (var(--hg-tint) - var(--hg0-tint)) * var(--hgm,1)),transparent),color-mix(in srgb,var(--paper) calc(var(--hg0-tint2) + (var(--hg-tint2) - var(--hg0-tint2)) * var(--hgm,1)),transparent) 60%,transparent);
   -webkit-mask:linear-gradient(to bottom,#000 0,#000 50%,transparent);mask:linear-gradient(to bottom,#000 0,#000 50%,transparent)}
 body.menu-open .site-head::before,body.menu-open .site-head::after{opacity:0}
+/* LIQUID GLASS (Chrome, Edge, Opera, Brave). A slab of clear glass instead of the frosted glass above: what is behind
+   the bar stays sharp and is gently magnified, and the bottom rim bends in what lies just below the bar, with fine
+   colour fringes. The bending is an SVG filter inside backdrop-filter, built by assets/navlens.js; only Chromium renders
+   that, so html.ng-cr (set in the page head) switches this on, and html.ng-lens adds the filter once its map has loaded.
+   Safari and Firefox keep the frosted glass above. Values: "Pick 1", chosen in the glass playground. */
+.site-head{--lq-thick:38px;--lq-refr:42px;--lq-mag:8;--lq-ca:1;--lq-clar:1.2px;--lq-tint:52%;--lq-sat:1.2;--lq-bright:1.05;--lq-spec:.42;--lq-depth:0;--lq-shadow:0;
+  --lq-reach:calc(var(--lq-refr) + 2px)}
+/* the layer reaches below the bar (so the rim has something to bend) and is masked back to the bar's height */
+html.ng-cr .site-head::before{bottom:calc(var(--lq-reach) * -1);
+  -webkit-mask:linear-gradient(to bottom,#000 calc(100% - var(--lq-reach)),transparent calc(100% - var(--lq-reach)));mask:linear-gradient(to bottom,#000 calc(100% - var(--lq-reach)),transparent calc(100% - var(--lq-reach)));
+  -webkit-backdrop-filter:saturate(var(--lq-sat)) brightness(var(--lq-bright));backdrop-filter:saturate(var(--lq-sat)) brightness(var(--lq-bright));
+  background:color-mix(in srgb,var(--paper) var(--lq-tint),transparent)}
+html.ng-cr.ng-lens .site-head::before{-webkit-backdrop-filter:url(#ng-lens) saturate(var(--lq-sat)) brightness(var(--lq-bright));backdrop-filter:url(#ng-lens) saturate(var(--lq-sat)) brightness(var(--lq-bright))}
+/* light on the glass: a top highlight and sheen, a bright rim along the bottom edge and a glow over the bevel */
+html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filter:none;-webkit-mask:none;mask:none;
+  background:linear-gradient(to bottom,rgba(255,255,255,calc(var(--lq-spec) * .7)) 0 1px,rgba(255,255,255,calc(var(--lq-spec) * .16)) 1px,rgba(255,255,255,0) 46%),
+    linear-gradient(to top,rgba(255,255,255,calc(var(--lq-spec) * .95)) 0 1px,rgba(17,17,17,calc(var(--lq-depth) * .5)) 1px 2px,rgba(17,17,17,calc(var(--lq-depth) * .14)) 2px,rgba(255,255,255,calc(var(--lq-spec) * .22)) calc(var(--lq-thick) * .45),rgba(255,255,255,0) var(--lq-thick));
+  box-shadow:0 1px 0 rgba(17,17,17,calc(var(--lq-depth) * .3)),0 3px 6px -3px rgba(17,17,17,calc(var(--lq-shadow) * .8)),0 16px 30px -16px rgba(17,17,17,var(--lq-shadow))}
 /* sharpen-in on scroll, the site's blur theme: section headings and the book title sharpen word by word, the book
    comes into focus, and the copy beside it fades up out of a blur, once, as each comes into view (site.js, initSharpen).
    It all waits for .sh-js on <html>; without JavaScript everything is simply there. */
