@@ -230,7 +230,11 @@ class Component extends DCLogic {
     const sec = document.getElementById('beliefs'), list = sec && sec.querySelector('.split-list'); if (!list || !window.matchMedia) return;
     const inner = sec.querySelector('.split-inner'), cards = [...list.querySelectorAll('.thesis')], n = cards.length;
     sec.classList.add('pr-js');
-    const PILE = 26, TILT = [-2.2, 1.6, -1.1, 2.4, -1.7, .9], STEPH = 100, VH = 800;
+    const TILT = [-2.2, 1.6, -1.1, 2.4, -1.7, .9], VH = 800;
+    /* desktop: 26px between the cards on the pile, 100px of scrolling per card; phones: 8px, and 140px per card so a
+       flick of the thumb does not throw them all at once */
+    const phone = () => !!(window.matchMedia && matchMedia('(max-width:760px)').matches);
+    let PILE = 26, STEPH = 100;
     const spin = sec.querySelector('.spin'), ticks = spin ? [...spin.querySelectorAll('line')] : [];
     const count = document.createElement('span'); count.className = 'dial-count'; spin && spin.after(count);
     /* each headline is split into words so it can sharpen word by word as its card lands (the struck word stays whole) */
@@ -258,7 +262,7 @@ class Component extends DCLogic {
     nav.append(prev, next); list.appendChild(nav);
     /* a small hint above the arrows that the finished pile can be flicked; it goes once someone has used the deck */
     const hint = document.createElement('div'); hint.className = 'pr-hint'; hint.setAttribute('aria-hidden', 'true');
-    hint.innerHTML = '<span class="pr-hint-ic"><i></i><i></i><i></i></span><span>Drag or flick the cards</span>';
+    hint.innerHTML = '<span class="pr-hint-ic"><i></i><i></i><i></i></span><span>' + (matchMedia('(hover: none)').matches ? 'Swipe the cards' : 'Drag or flick the cards') + '</span>';
     list.appendChild(hint);
     /* the stage clips the flying cards; never let focus or scrollIntoView scroll it sideways */
     inner && inner.addEventListener('scroll', () => { if (inner.scrollLeft || inner.scrollTop) { inner.scrollLeft = 0; inner.scrollTop = 0; } });
@@ -337,13 +341,24 @@ class Component extends DCLogic {
          finished pile normally. Leaving at the bottom, the scroll position is corrected by the height removed, so nothing jumps. */
       let freed = false;
       const free = (fix) => { freed = true; const y = window.scrollY, h0 = sec.offsetHeight; sec.style.height = ''; sec.classList.add('pr-free');
-        if (fix) window.scrollTo({ top: y - (h0 - sec.offsetHeight), behavior: 'instant' }); };
+        /* the correction is not the reader scrolling up, so the header is told to ignore it (data-scroll-fix) */
+        if (fix) { document.documentElement.dataset.scrollFix = '1'; window.scrollTo({ top: y - (h0 - sec.offsetHeight), behavior: 'instant' }); } };
       const upd = () => { if (!on || freed) return; const r = sec.getBoundingClientRect();
         spin && spin.classList.toggle('dial', r.top < innerHeight * 0.5); at(-r.top);
         if (done && r.bottom <= innerHeight + 1) free(true); else if (done && r.top > 0) free(false); };
-      const size = () => { on = matchMedia('(min-width:761px)').matches;
-        if (!on || freed) { sec.style.height = ''; return; } sec.style.height = (innerHeight + n * STEPH) + 'px'; upd(); };
-      addEventListener('scroll', upd, { passive: true }); addEventListener('resize', size); size(); document.fonts && document.fonts.ready.then(size);
+      /* on phones every card gets the height of the tallest one, so the pile is even */
+      const fit = () => { if (!phone()) { list.style.removeProperty('--pr-h'); return; }
+        list.style.setProperty('--pr-spread', ((n - 1) * PILE) + 'px'); list.style.removeProperty('--pr-h');
+        const h = Math.max(...cards.map((c) => { const b = c.querySelector('.thesis-body'); return b ? b.offsetHeight : 0; })) + 44;
+        list.style.setProperty('--pr-h', Math.ceil(h) + 'px'); };
+      let lw = 0;
+      /* the section is one screen (100svh: the screen with the browser bars shown, so it does not jump as they hide)
+         plus one scroll step per card */
+      const size = () => { on = true; const p = phone(); PILE = p ? 8 : 26; STEPH = p ? 140 : 100;
+        if (freed) { sec.style.height = ''; return; }
+        if (innerWidth !== lw) { lw = innerWidth; fit(); if (done) deal(); else { const m = k; k = -1; show(Math.max(0, m)); } }
+        sec.style.height = (innerHeight + n * STEPH) + 'px'; sec.style.height = 'calc(100svh + ' + (n * STEPH) + 'px)'; upd(); };
+      addEventListener('scroll', upd, { passive: true }); addEventListener('resize', size); size(); document.fonts && document.fonts.ready.then(() => { lw = 0; size(); });
       return;
     }
     /* design canvas */
@@ -895,6 +910,7 @@ class Component extends DCLogic {
       requestAnimationFrame(() => {
         busy = false; const y = Math.max(0, window.scrollY), d = y - ly; ly = y;
         if (document.body.classList.contains('menu-open')) return;
+        if (document.documentElement.dataset.scrollFix) { delete document.documentElement.dataset.scrollFix; lo = y; hi = y; return; }   /* a jump the page made itself, not the reader */
         glass(); hd.classList.toggle('head-float', y > 2);           /* .head-float marks it floating over the page */
         /* above the journey (the first section after the hero) it is always there, with no hold pending */
         const path = document.getElementById('path');

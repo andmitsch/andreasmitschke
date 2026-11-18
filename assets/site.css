@@ -534,9 +534,9 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 @media (prefers-reduced-motion:reduce){*,*::after{animation:none !important;transition:none !important}}
 /* My principles. On desktop the section pins while the six cards are thrown onto a pile, one per scroll step (site.js,
    initPrinciples). The spinner turns into a progress dial; once the pile is complete the dial fades out, the title glides
-   to the centre and two buttons take cards off the pile and back on. Phones get a row of cards to swipe through.
-   All of it waits for .pr-js (set by site.js), so without JavaScript the principles stay a plain list. */
-@media (min-width:761px){
+   to the centre and two buttons take cards off the pile and back on. Phones get the same stack, laid out for a narrow
+   screen (below). All of it waits for .pr-js (set by site.js), so without JavaScript the principles stay a plain list. */
+@media all{   /* (all widths; the phone layout is set further down) */
   #beliefs.pr-js .split-inner{position:sticky;top:0;height:100vh;max-width:none;flex-wrap:nowrap;align-items:center;overflow:hidden;padding-top:0;padding-bottom:0;box-sizing:border-box;padding-left:max(var(--gutter), calc(50vw - 592px))}
   #beliefs.pr-js .split-aside{position:relative;z-index:2;flex:0 0 auto;min-width:300px;align-self:stretch;display:flex;flex-direction:column;justify-content:center;margin-right:28px;background:var(--paper);box-shadow:24px 0 24px -8px var(--paper)}
   #beliefs.pr-js .split-aside::before{content:"";position:absolute;right:100%;top:0;bottom:0;width:100vw;background:var(--paper)}
@@ -616,6 +616,34 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 #beliefs.pr-canvas{position:relative}
 #beliefs .pr-rail{position:absolute;left:0;top:0;width:1px;height:100%;pointer-events:none;visibility:hidden}
 #beliefs .pr-rail i{position:absolute;left:0;width:1px;height:12px}
+/* My principles on phones: the same pinned stack. The title and dial sit above the pile, the cards fill the width and
+   pile up with small offsets, and each one flies in from the right edge. The pile's height follows the tallest card
+   (--pr-h, measured by site.js), so every card is the same size. */
+@media (max-width:760px){
+  #beliefs.pr-js .split-inner{height:100vh;height:100svh;flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:center;gap:0;padding:0 var(--gutter)}
+  #beliefs.pr-js .split-aside{min-width:0;margin:0 0 22px;align-self:stretch;flex:none;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;align-items:center;column-gap:16px;row-gap:0;box-shadow:none;background:none}
+  #beliefs.pr-js .split-aside::before{display:none}
+  #beliefs.pr-js .aside-title{grid-row:1 / span 2;font-size:clamp(34px, 10vw, 44px)}
+  #beliefs.pr-js .spin{width:36px;height:36px;justify-self:end}
+  #beliefs.pr-js .dial-count{margin-top:6px;font-size:11px}
+  #beliefs.pr-js.pr-complete .spin,#beliefs.pr-js.pr-complete .dial-count{margin-top:0}
+  #beliefs.pr-js .split-list{flex:none;height:calc(var(--pr-h, 420px) + 64px);margin-bottom:44px}
+  #beliefs.pr-js .thesis{top:0;width:calc(100% - var(--pr-spread, 40px));min-height:var(--pr-h, 420px);padding:22px;
+    transform:translate(calc(100vw + 130px),60px) rotate(14deg)}
+  #beliefs.pr-js .thesis .thesis-head{font-size:clamp(25px, 7.4vw, 30px)}
+  #beliefs.pr-js .thesis-text{font-size:15px;line-height:1.5}
+  #beliefs.pr-js .pr-nav{display:flex;width:100%;bottom:-44px}
+  #beliefs.pr-js .pr-hint{width:100%;bottom:6px}
+}
+/* short phones (iPhone SE and similar): a little tighter, so the arrows under the pile stay on screen */
+@media (max-width:760px) and (max-height:720px){
+  #beliefs.pr-js .split-aside{margin-bottom:10px}
+  #beliefs.pr-js .aside-title{font-size:32px}
+  #beliefs.pr-js .thesis{padding:18px}
+  #beliefs.pr-js .thesis .thesis-head{font-size:24px}
+  #beliefs.pr-js .thesis-text{font-size:14px;line-height:1.45}
+  #beliefs.pr-js .split-list{height:calc(var(--pr-h, 400px) + 52px);margin-bottom:40px}
+}
 /* when the pile is complete, the dial and counter blur and fade, then their space closes and the title glides to the centre
    (the -18px cancels the column gap) */
 #beliefs .spin{height:48px}
@@ -623,6 +651,6 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 #beliefs .spin,#beliefs .dial-count{transition:opacity .7s .6s,filter .7s .6s,transform .7s .6s cubic-bezier(.22,1,.36,1),height .9s 1.25s cubic-bezier(.65,0,.35,1),margin-top .9s 1.25s cubic-bezier(.65,0,.35,1)}
 #beliefs.pr-complete .spin,#beliefs.pr-complete .dial-count{opacity:0;filter:blur(8px);transform:scale(.92);height:0;margin-top:-18px}
 @media (max-width:760px){
-  #beliefs .split-list{flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;border-bottom:0;margin:0 calc(-1 * var(--gutter));padding:0 var(--gutter) 8px}
-  #beliefs .thesis{flex:0 0 82%;scroll-snap-align:start;border:1px solid rgba(18,18,18,.07);box-shadow:0 18px 36px -24px rgba(18,18,18,.4);border-radius:8px;background:var(--paper-2);padding:22px}
+  #beliefs:not(.pr-js) .split-list{flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;border-bottom:0;margin:0 calc(-1 * var(--gutter));padding:0 var(--gutter) 8px}
+  #beliefs:not(.pr-js) .thesis{flex:0 0 82%;scroll-snap-align:start;border:1px solid rgba(18,18,18,.07);box-shadow:0 18px 36px -24px rgba(18,18,18,.4);border-radius:8px;background:var(--paper-2);padding:22px}
 }
