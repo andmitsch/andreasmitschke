@@ -18,25 +18,56 @@
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization",
-      "@id": "#imprint",
+      "@type": "WebPage",
+      "@id": "https://andreasmitschke.com/grant-and-bear-publishing/#webpage",
+      "url": "https://andreasmitschke.com/grant-and-bear-publishing/",
       "name": "Grant & Bear Publishing",
+      "about": {
+        "@id": "https://andreasmitschke.com/grant-and-bear-publishing/#imprint"
+      },
+      "isPartOf": {
+        "@id": "https://andreasmitschke.com/#website"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://andreasmitschke.com/grant-and-bear-publishing/#imprint",
+      "name": "Grant & Bear Publishing",
+      "url": "https://andreasmitschke.com/grant-and-bear-publishing/",
       "foundingDate": "2026",
-      "foundingLocation": "Germany",
-      "founder": {"@type": "Person", "name": "Andreas Mitschke"},
+      "foundingLocation": {
+        "@type": "Place",
+        "name": "Mannheim, Germany"
+      },
+      "founder": {
+        "@id": "https://andreasmitschke.com/#person"
+      },
       "email": "publishing@andreasmitschke.com"
     },
     {
       "@type": "Book",
+      "@id": "https://knownbeforebuilt.com/#book",
       "name": "Known Before Built",
       "alternativeHeadline": "How Established Enterprises Build Scalable Growth By Productizing Their Expertise",
-      "author": {"@type": "Person", "name": "Andreas Mitschke"},
-      "publisher": {"@id": "#imprint"},
-      "datePublished": "2026",
+      "isbn": "9783000897276",
+      "author": {
+        "@id": "https://andreasmitschke.com/#person"
+      },
+      "publisher": {
+        "@id": "https://andreasmitschke.com/grant-and-bear-publishing/#imprint"
+      },
+      "datePublished": "2026-12-01",
       "inLanguage": "en",
       "bookFormat": "https://schema.org/Paperback",
       "numberOfPages": 318,
-      "url": "https://knownbeforebuilt.com"
+      "url": "https://knownbeforebuilt.com/",
+      "image": "https://knownbeforebuilt.com/assets/book-front.jpg"
+    },
+    {
+      "@type": "Person",
+      "@id": "https://andreasmitschke.com/#person",
+      "name": "Andreas Mitschke",
+      "url": "https://andreasmitschke.com/"
     }
   ]
 }
