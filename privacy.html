@@ -22,25 +22,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Privacy - Known Before Built</title>
+<title>Privacy · Andreas Mitschke</title>
 
 <meta name="robots" content="index,follow">
+<meta name="description" content="How andreasmitschke.com handles personal data: no cookies, no tracking, no advertising profiles.">
+<link rel="canonical" href="https://andreasmitschke.com/privacy.html">
 <meta name="theme-color" content="#ECE8E5">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<style>@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/archivo-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
-@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/archivo-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
-@font-face{font-family:'Archivo';font-style:italic;font-weight:100 900;font-display:swap;src:url(fonts/archivo-latin-wght-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
-@font-face{font-family:'Archivo';font-style:italic;font-weight:100 900;font-display:swap;src:url(fonts/archivo-latin-ext-wght-italic.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
-@font-face{font-family:'Hanken Grotesk';font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/hanken-grotesk-latin-wght-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
-@font-face{font-family:'Hanken Grotesk';font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/hanken-grotesk-latin-ext-wght-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
-@font-face{font-family:'Hanken Grotesk';font-style:italic;font-weight:100 900;font-display:swap;src:url(fonts/hanken-grotesk-latin-wght-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
-@font-face{font-family:'Hanken Grotesk';font-style:italic;font-weight:100 900;font-display:swap;src:url(fonts/hanken-grotesk-latin-ext-wght-italic.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
-@font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/bodoni-moda-latin-opsz-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
-@font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/bodoni-moda-latin-ext-opsz-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
-@font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/bodoni-moda-math-opsz-normal.woff2) format('woff2');unicode-range:U+0302-0303,U+0305,U+0307-0308,U+0310,U+0312,U+0315,U+031A,U+0326-0327,U+032C,U+032F-0330,U+0332-0333,U+0338,U+033A,U+0346,U+034D,U+0391-03A1,U+03A3-03A9,U+03B1-03C9,U+03D1,U+03D5-03D6,U+03F0-03F1,U+03F4-03F5,U+2016-2017,U+2034-2038,U+203C,U+2040,U+2043,U+2047,U+2050,U+2057,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20D0-20DC,U+20E1,U+20E5-20EF,U+2100-2112,U+2114-2115,U+2117-2121,U+2123-214F,U+2190,U+2192,U+2194-21AE,U+21B0-21E5,U+21F1-21F2,U+21F4-2211,U+2213-2214,U+2216-22FF,U+2308-230B,U+2310,U+2319,U+231C-2321,U+2336-237A,U+237C,U+2395,U+239B-23B7,U+23D0,U+23DC-23E1,U+2474-2475,U+25AF,U+25B3,U+25B7,U+25BD,U+25C1,U+25CA,U+25CC,U+25FB,U+266D-266F,U+27C0-27FF,U+2900-2AFF,U+2B0E-2B11,U+2B30-2B4C,U+2BFE,U+3030,U+FF5B,U+FF5D,U+1D400-1D7FF,U+1EE00-1EEFF;}
-@font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url(fonts/bodoni-moda-latin-opsz-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
-@font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url(fonts/bodoni-moda-latin-ext-opsz-italic.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;}
-@font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url(fonts/bodoni-moda-math-opsz-italic.woff2) format('woff2');unicode-range:U+0302-0303,U+0305,U+0307-0308,U+0310,U+0312,U+0315,U+031A,U+0326-0327,U+032C,U+032F-0330,U+0332-0333,U+0338,U+033A,U+0346,U+034D,U+0391-03A1,U+03A3-03A9,U+03B1-03C9,U+03D1,U+03D5-03D6,U+03F0-03F1,U+03F4-03F5,U+2016-2017,U+2034-2038,U+203C,U+2040,U+2043,U+2047,U+2050,U+2057,U+205F,U+2070-2071,U+2074-208E,U+2090-209C,U+20D0-20DC,U+20E1,U+20E5-20EF,U+2100-2112,U+2114-2115,U+2117-2121,U+2123-214F,U+2190,U+2192,U+2194-21AE,U+21B0-21E5,U+21F1-21F2,U+21F4-2211,U+2213-2214,U+2216-22FF,U+2308-230B,U+2310,U+2319,U+231C-2321,U+2336-237A,U+237C,U+2395,U+239B-23B7,U+23D0,U+23DC-23E1,U+2474-2475,U+25AF,U+25B3,U+25B7,U+25BD,U+25C1,U+25CA,U+25CC,U+25FB,U+266D-266F,U+27C0-27FF,U+2900-2AFF,U+2B0E-2B11,U+2B30-2B4C,U+2BFE,U+3030,U+FF5B,U+FF5D,U+1D400-1D7FF,U+1EE00-1EEFF;}
+<style>@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;font-display:swap;src:url(assets/fonts/archivo-latin-wdth-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;font-display:swap;src:url(assets/fonts/archivo-latin-ext-wdth-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url(assets/fonts/bodoni-moda-latin-opsz-normal.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;font-display:swap;src:url(assets/fonts/bodoni-moda-latin-ext-opsz-normal.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url(assets/fonts/bodoni-moda-latin-opsz-italic.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url(assets/fonts/bodoni-moda-latin-ext-opsz-italic.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
 </style>
 <style>
 *{font-optical-sizing:none;font-variation-settings:"opsz" 11}/* Page transitions (Chrome/Edge 126+, Safari 18.2+; other browsers simply load the page) */
@@ -64,7 +58,7 @@
 :root{--paper:#ECE8E5;--ink:#111111;--muted:#5E5954;--orange:#F57106}
 *{box-sizing:border-box}
 html{background:var(--paper);-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 'Hanken Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 'Archivo',sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--ink);text-decoration-color:var(--orange);text-decoration-thickness:2px;text-underline-offset:4px}
 a:hover{text-decoration-thickness:3px}
 .top{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;padding:28px 24px}
@@ -85,8 +79,6 @@ a:hover{text-decoration-thickness:3px}
 .foot a:hover{text-decoration:underline}
 </style>
 
-<!-- GoatCounter: cookie-free visitor stats. Replace [GOATCOUNTER-CODE] with your GoatCounter code. -->
-<script data-goatcounter="https://[GOATCOUNTER-CODE].goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <script>
 /* hello, developer */
 (function(){try{console.log("%c"+"                     .-'''''''''''''-.\n                 .-'                   '-.\n               .'                         '.\n              /       .-.          .-.      \\\n             /       ( o )        ( o )      \\\n            |         '-'          '-'        |\n            |                                 |\n            |     \\                     /     |\n             \\     '.                 .'     /\n              \\      '-._         _.-'      /\n               '.        '''''''''        .'\n                 '-.                   .-'\n                    '-.._____________..-'\n\n          Thanks for the interest in the code.\n          The animations are great, right?","font:600 13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#F57106");}catch(e){}})();
@@ -97,11 +89,11 @@ a:hover{text-decoration-thickness:3px}
 <header class="top"><a class="brand" href="./">ANDREAS MITSCHKE</a></header>
 <main class="wrap legal">
 <h1>Privacy</h1>
-<p>This policy explains what personal data is processed when you visit this website or sign up for the launch notification, why, and what rights you have. In short: no cookies, no advertising trackers, no profiles. Your name and email address are only stored if you sign up yourself — and only to tell you when the book launches.</p>
+<p>This policy explains what personal data is processed when you visit this website, why, and what rights you have. In short: no cookies, no trackers, no profiles.</p>
 
 <h2>1. Controller</h2>
 <p>Controller within the meaning of the General Data Protection Regulation (GDPR):</p>
-<address>Andreas Mitschke<br> <span></span><span></span>, Gontardstr.13, 68163 Mannheim, Germany<br>
+<address>Andreas Mitschke<br>Gontardstr. 13, 68163 Mannheim, Germany<br>
 Email: <a href="mailto:andreas@andreasmitschke.com">andreas@andreasmitschke.com</a></address>
 <p>A data protection officer is not required and has not been appointed.</p>
 
@@ -112,29 +104,13 @@ Email: <a href="mailto:andreas@andreasmitschke.com">andreas@andreasmitschke.com<
 <h2>3. Fonts</h2>
 <p>All fonts are served from this website itself. No connection is made to Google Fonts or any other font provider.</p>
 
-<h2>4. Visitor statistics (GoatCounter)</h2>
-<p>To understand how many people visit the site, where they come from (e.g. a link in an email signature) and which buttons are used, I use GoatCounter, operated by Martin Tournoij, Ireland. The data is stored on servers of Hetzner Online GmbH in Germany and Finland.</p>
-<p>GoatCounter sets no cookies, does not store IP addresses or full browser identifiers, and creates no profiles: only aggregated figures are recorded — the page visited, the referring site and campaign tags (such as <code>utm_source</code>), browser, operating system, screen size, approximate country and anonymous button clicks. The counting script is loaded from <code>gc.zgo.at</code>; for this, your IP address is technically transmitted but not stored.</p>
-<p>Legal basis: Art. 6(1)(f) GDPR — my legitimate interest in anonymous reach statistics to improve the website. As no information is stored on or read from your device beyond what is strictly necessary to display the page, no consent banner is required. More: <a href="https://www.goatcounter.com/help/privacy" rel="noopener">GoatCounter privacy</a>.</p>
-
-<h2>5. Launch notification (Kit)</h2>
-<p>On the pre-launch page you can leave your first name and email address to be told when the book is published.</p>
-<ul>
-<li><b>Purpose:</b> one email on the day the book launches. Nothing else is sent unless you separately agree to it.</li>
-<li><b>Data:</b> first name, email address, the time of sign-up and confirmation, and the IP address used for both (to be able to prove your consent), and from which button you came (book or Signal).</li>
-<li><b>Double opt-in:</b> after signing up you receive an email asking you to confirm your address. Only after you click the confirmation link are you added to the list.</li>
-<li><b>Legal basis:</b> your consent, Art. 6(1)(a) GDPR. You can withdraw consent at any time with effect for the future — via the unsubscribe link in every email or by emailing me. The lawfulness of processing up to that point is unaffected.</li>
-<li><b>Storage period:</b> until you unsubscribe or ask for deletion. Consent records are kept for as long as needed to demonstrate consent.</li>
-<li><b>Service provider:</b> the list is managed with Kit (formerly ConvertKit), USA, as a processor under a data processing agreement (Art. 28 GDPR). Kit is certified under the EU-U.S. Data Privacy Framework and additionally uses the EU Standard Contractual Clauses. More: <a href="https://kit.com/privacy" rel="noopener">Kit Privacy Policy</a>.</li>
-</ul>
-
-<h2>6. Contact by email</h2>
+<h2>4. Contact by email</h2>
 <p>If you email me, I process your email address and the content of your message to answer your enquiry. Legal basis: Art. 6(1)(b) GDPR where your enquiry relates to a contract (e.g. bulk orders, speaking), otherwise Art. 6(1)(f) GDPR — my legitimate interest in answering enquiries. I delete these emails once your enquiry has been dealt with, unless statutory retention periods apply.</p>
 
-<h2>7. Links to other websites</h2>
+<h2>5. Links to other websites</h2>
 <p>This site links to other websites, for example LinkedIn or the publisher's page. Data is only transmitted to those providers if you click such a link; their own privacy policies then apply.</p>
 
-<h2>8. Your rights</h2>
+<h2>6. Your rights</h2>
 <p>Under the GDPR you have the right to:</p>
 <ul>
 <li>access the personal data stored about you (Art. 15),</li>
@@ -147,10 +123,10 @@ Email: <a href="mailto:andreas@andreasmitschke.com">andreas@andreasmitschke.com<
 </ul>
 <p>To exercise these rights, an email to <a href="mailto:andreas@andreasmitschke.com">andreas@andreasmitschke.com</a> is enough.</p>
 
-<h2>9. No automated decisions</h2>
+<h2>7. No automated decisions</h2>
 <p>No automated decision-making or profiling within the meaning of Art. 22 GDPR takes place.</p>
 
-<p class="meta">Last updated: October 2026. I will update this policy if the website or the services used change.</p>
+<p class="meta">Last updated: November 2026. I will update this policy if the website or the services used change.</p>
 </main>
 <footer class="foot"><nav><a href="grant-and-bear-publishing/">Grant &amp; Bear Publishing</a></nav></footer>
 </body>
