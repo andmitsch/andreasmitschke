@@ -447,7 +447,7 @@ class Component extends DCLogic {
           dot.setAttribute('cx', m.ax.toFixed(1)); dot.setAttribute('cy', m.ay.toFixed(1)); dot.setAttribute('fill', on ? '#121212' : 'rgba(18,18,18,.5)'); }); }
       requestAnimationFrame(tick); };
     const onScroll = () => { const rr = rv.getBoundingClientRect(), tr = txt.getBoundingClientRect(), on = rr.bottom < 170 && tr.bottom > 200;
-      bar.classList.toggle('on', on);
+      bar.classList.toggle('on', on); sec.classList.toggle('jr-baron', on);
       if (on && !mini && window.Prism3D) { mini = window.Prism3D.mount(bar.querySelector('.jr-mini'), { vary: true, bg: 1, zoom: 1.2, dof: 0, white: .3 }); mini.focus(sel); all('.jr-chips', bar).forEach(fades); } };
     window.addEventListener('scroll', onScroll, { passive: true });
     const go = () => { if (!window.Prism3D) return; api = window.Prism3D.mount(rv.querySelector('.jr-gl'), { vary: true, bg: 1 }); api.focus(sel);
@@ -945,6 +945,10 @@ class Component extends DCLogic {
         /* above the journey (the first section after the hero) it is always there, with no hold pending */
         const path = document.getElementById('path');
         if (y < hd.offsetHeight || (path && path.getBoundingClientRect().top > hd.offsetHeight)) { hd.classList.remove('head-up'); hi = -Infinity; return; }
+        /* while the journey's reading bar is out (the chapter text is being read) the header stays up, so the two never
+           stack; above the river and everywhere else it comes and goes as usual */
+        const jbar = document.querySelector('.jr-bar');
+        if (jbar && jbar.classList.contains('on')) { if (!hd.classList.contains('head-up')) hide(y); else lo = Math.max(lo, y); return; }
         if (hd.classList.contains('head-up')) {
           lo = Math.max(lo, y);                                         /* measured from the lowest point, so slow scrolling up still counts */
           if (lo - y >= BACK) show(y);

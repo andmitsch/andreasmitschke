@@ -540,7 +540,8 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 .jr-mk.on .n{transform:scale(1.14)}
 .jr-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
 .jr-chips::-webkit-scrollbar{display:none}
-.jr-chips.jr-row{display:none}
+.jr-chips.jr-row{display:none;transition:opacity .35s,filter .35s}
+#path.jr-baron .jr-chips.jr-row{opacity:0;filter:blur(6px);pointer-events:none}
 .jr-chips button{flex:none;display:flex;align-items:baseline;gap:8px;padding:8px 12px;border-radius:99px;border:0;box-shadow:inset 0 0 0 1px rgba(18,18,18,.16);background:rgba(242,243,246,.9);font:700 14px 'Archivo',sans-serif;color:var(--ink);cursor:pointer}
 .jr-chips button i{font-family:'Bodoni Moda',serif;font-size:15px}
 .jr-chips button.on{background:var(--ink);color:var(--paper-2);box-shadow:none}
