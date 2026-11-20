@@ -209,7 +209,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initPrinciples(); this.initTalks(); this.initRowFill(); this.initBookHint(); this.initSharpen(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initHeroOut();
+    this.initPrinciples(); this.initTalks(); this.initRowFill(); this.initBookHint(); this.initSharpen(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initJourney();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -388,6 +388,71 @@ class Component extends DCLogic {
     }
     /* fallback: a click throws the next card (and starts over after the last one) */
     sec.addEventListener('click', (e) => { if (e.target.closest('a')) return; manual = true; spin && spin.classList.add('dial'); show(k >= n ? 0 : k + 1); });
+  }
+  initJourney() {
+    /* THE JOURNEY: six streams merging into one river (assets/river.js). A black number floats over each stream on a
+       fine line whose end is held to the stream by a spring, so it stretches a little as the stream ripples. Picking a
+       stream (its number, the stream itself, or a name in the row or the bar) switches the chapter below with a blur and
+       glides down to it. Reading on, a bar with a small river and the six chapters stays under the header. */
+    const sec = document.getElementById('path'), rv = sec && sec.querySelector('.jr-rv'); if (!rv) return;
+    const all = (s, r) => [...(r || document).querySelectorAll(s)];
+    const txt = sec.querySelector('.jr-txt'), arts = all('.jc', txt), bar = sec.querySelector('.jr-bar'), svg = rv.querySelector('svg'), hd = document.querySelector('.site-head');
+    const NAMES = arts.map((a) => a.dataset.name), N = NAMES.length, NS = 'http://www.w3.org/2000/svg';
+    let sel = 0, hov = -1, api = null, mini = null, M = [], tid = 0;
+    const MK = NAMES.map((n, g) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'jr-mk' + (g ? '' : ' on'); b.dataset.g = g;
+      b.innerHTML = '<span class="n">0' + (g + 1) + '</span><span class="t">' + n + '</span>'; rv.appendChild(b); return b; });
+    const LN = NAMES.map(() => { const p = document.createElementNS(NS, 'path'), d = document.createElementNS(NS, 'circle'); p.setAttribute('fill', 'none'); d.setAttribute('r', '2.6'); svg.append(p, d); return [p, d]; });
+    const fades = (el) => { const l = el.scrollLeft > 2, r = el.scrollLeft + el.clientWidth < el.scrollWidth - 2; el.style.setProperty('--fl', l ? '36px' : '0px'); el.style.setProperty('--fr', r ? '36px' : '0px'); };
+    all('.jr-chips', sec).forEach((el) => { el.addEventListener('scroll', () => fades(el), { passive: true }); fades(el); });
+    const toText = () => { const top = txt.getBoundingClientRect().top + window.scrollY - (window.innerWidth < 761 ? 120 : 150); window.scrollTo({ top, behavior: 'smooth' }); };
+    const select = (g, from) => {
+      if (g < 0 || g >= N) return; const changed = g !== sel; sel = g;
+      all('.jr-mk, .jr-chips button', sec).forEach((b) => b.classList.toggle('on', +b.dataset.g === g));
+      if (api) api.focus(hov >= 0 ? hov : g); if (mini) mini.focus(g);
+      if (changed) { clearTimeout(tid); txt.classList.remove('swap'); txt.classList.add('out');
+        tid = setTimeout(() => { arts.forEach((a) => a.classList.toggle('on', +a.dataset.g === g)); txt.classList.remove('out'); void txt.offsetWidth; txt.classList.add('swap'); }, 280); }
+      if (from === 'pick') toText();
+      else if (from === 'next' || from === 'bar') { const r = txt.getBoundingClientRect(); if (r.top < 70 || r.top > window.innerHeight * .6) toText(); }
+      all('.jr-chips', sec).forEach((el) => { const b = el.querySelector('.on'); if (b) el.scrollTo({ left: b.getBoundingClientRect().left - el.getBoundingClientRect().left + el.scrollLeft - 8, behavior: 'smooth' }); });
+    };
+    const hover = (g) => { hov = g; MK.forEach((m) => m.classList.toggle('hv', +m.dataset.g === g)); if (api) api.focus(g >= 0 ? g : sel); };
+    sec.addEventListener('click', (e) => {
+      const t = e.target.closest('[data-go]'); if (t) { select(+t.dataset.go, 'next'); return; }
+      if (e.target.closest('.jr-mini')) { rv.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+      const b = e.target.closest('.jr-mk, .jr-chips button'); if (b) { select(+b.dataset.g, b.closest('.jr-bar') ? 'bar' : 'pick'); return; }
+      if (api && e.target.closest('.jr-rv')) { const r = rv.getBoundingClientRect(), g = api.pick(e.clientX - r.left, e.clientY - r.top); if (g >= 0) select(g, 'pick'); }
+    });
+    MK.forEach((b) => { b.addEventListener('pointerenter', () => hover(+b.dataset.g)); b.addEventListener('pointerleave', () => hover(-1)); });
+    rv.addEventListener('pointermove', (e) => { if (!api || e.pointerType === 'touch' || e.target.closest('.jr-mk')) return; const r = rv.getBoundingClientRect(); hover(api.pick(e.clientX - r.left, e.clientY - r.top)); });
+    rv.addEventListener('pointerleave', () => hover(-1));
+    const place = () => { if (!api) return; const W = rv.clientWidth, H = rv.clientHeight, small = W < 600;
+      M = NAMES.map((n, g) => { const tx = W * ((small ? .1 : .09) + g * (small ? .14 : .1)); let u = .03, p = api.at(g, u);
+        for (let k = 0; k < 200 && !(p.x >= tx && p.y > H * .14 && p.y < H * .9); k++) { u += .003; p = api.at(g, u); }
+        const lift = (small ? 40 : 58) + (g % 2) * (small ? 14 : 44) + (small ? 0 : 30);
+        return { g, u, ax: p.x, ay: p.y, vx: 0, vy: 0, rx: p.x, ry: Math.max(small ? 30 : 40, p.y - lift), nx: p.x, ny: p.y - lift, nvx: 0, nvy: 0 }; }); };
+    let last = performance.now();
+    const tick = (now) => { const dt = Math.min(.05, (now - last) / 1000); last = now;
+      if (bar.classList.contains('on') && hd) bar.style.top = Math.max(0, hd.getBoundingClientRect().bottom) + 'px';
+      const r = rv.getBoundingClientRect();
+      if (api && M.length && r.bottom > 0 && r.top < window.innerHeight) { const t = now / 1000;
+        M.forEach((m, i) => { const p = api.at(m.g, m.u);
+          m.vx += ((p.x - m.ax) * 90 - m.vx * 11) * dt; m.vy += ((p.y - m.ay) * 90 - m.vy * 11) * dt; m.ax += m.vx * dt; m.ay += m.vy * dt;
+          const tx = m.rx + Math.sin(t * .7 + i * 1.3) * 2.5, ty = m.ry + Math.sin(t * .9 + i * 2.1) * 3.5;
+          m.nvx += ((tx - m.nx) * 40 - m.nvx * 7) * dt; m.nvy += ((ty - m.ny) * 40 - m.nvy * 7) * dt; m.nx += m.nvx * dt; m.ny += m.nvy * dt;
+          MK[i].style.transform = 'translate(' + (m.nx - 18) + 'px,' + (m.ny - (MK[i].offsetHeight || 60) + 4) + 'px)';
+          const x0 = m.nx, y0 = m.ny + 2, bend = (m.vx - m.nvx) * .06, cx = (x0 + m.ax) / 2 + bend + m.vy * .03, cy = (y0 + m.ay) / 2 - Math.abs(bend) * .3;
+          const on = i === sel || i === hov, [path, dot] = LN[i];
+          path.setAttribute('d', 'M' + x0.toFixed(1) + ' ' + y0.toFixed(1) + ' Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ' ' + m.ax.toFixed(1) + ' ' + m.ay.toFixed(1));
+          path.setAttribute('stroke', on ? '#121212' : 'rgba(18,18,18,.42)'); path.setAttribute('stroke-width', on ? '1.3' : '.9');
+          dot.setAttribute('cx', m.ax.toFixed(1)); dot.setAttribute('cy', m.ay.toFixed(1)); dot.setAttribute('fill', on ? '#121212' : 'rgba(18,18,18,.5)'); }); }
+      requestAnimationFrame(tick); };
+    const onScroll = () => { const rr = rv.getBoundingClientRect(), tr = txt.getBoundingClientRect(), on = rr.bottom < 170 && tr.bottom > 200;
+      bar.classList.toggle('on', on);
+      if (on && !mini && window.Prism3D) { mini = window.Prism3D.mount(bar.querySelector('.jr-mini'), { vary: true, bg: 1, zoom: 1.2, dof: 0, white: .3 }); mini.focus(sel); all('.jr-chips', bar).forEach(fades); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    const go = () => { if (!window.Prism3D) return; api = window.Prism3D.mount(rv.querySelector('.jr-gl'), { vary: true, bg: 1 }); api.focus(sel);
+      requestAnimationFrame(() => { place(); requestAnimationFrame(tick); }); new ResizeObserver(() => requestAnimationFrame(place)).observe(rv); onScroll(); };
+    if (window.Prism3D) go(); else { const s = document.createElement('script'); s.src = rv.dataset.src; s.onload = go; document.head.appendChild(s); }
   }
   initBookHint() {
     /* the small turning book in front of "Drag to turn the book" (see the CSS) */
@@ -835,49 +900,6 @@ class Component extends DCLogic {
     window.addEventListener('scroll', kick, { passive: true });
     window.addEventListener('resize', kick);
     upd();
-  }
-  initHeroOut() {
-    /* leaving the hero: the page scrolls normally until the hero copy ("I help ...") reaches the middle of the screen.
-       From there the hero stays put, eases back and fades a little, while the next section slides over it
-       like the next sheet of paper. AT sets that trigger line (0.5 = middle of the screen). */
-    /* live site only: the design canvas shows boards as fixed pictures that never scroll */
-    if (!this.__site) return;
-    const top = document.getElementById('top'), next = top && top.nextElementSibling;
-    if (!top || !next || !window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const anchor = top.querySelector('.hero-copy');
-    const AT = 0.5;
-    let raf = 0, anchorY = 0, heroH = 0;
-    /* only on real screens: a full-height preview (like the design canvas, where the "screen" is the whole page)
-       must never pin or fade the hero */
-    const fits = () => (window.innerHeight || 0) < top.offsetHeight * 1.6;
-    const measure = () => {
-      heroH = top.offsetHeight;
-      let y = heroH;
-      if (anchor) { y = anchor.offsetHeight / 2; for (let e = anchor; e && e !== top; e = e.offsetParent) y += e.offsetTop; }
-      anchorY = Math.min(heroH, Math.max(0, y));
-      top.style.setProperty('--oy', anchorY.toFixed(0) + 'px');
-    };
-    const upd = () => {
-      raf = 0;
-      heroH = top.offsetHeight;
-      const vh = window.innerHeight || 1, r = next.getBoundingClientRect();
-      const on = fits();
-      document.documentElement.classList.toggle('hero-out', on);
-      if (!on) { top.style.setProperty('--out', '0'); top.classList.remove('hero-gone'); return; }
-      /* where the hero sticks, relative to the screen top: once the intro text is mid-screen, but never before the
-         whole hero (incl. a portrait stacked under the text) has scrolled into view */
-      const pin = Math.min(0, vh * AT - anchorY, vh - heroH);
-      top.style.setProperty('--pin', pin.toFixed(0) + 'px');
-      const s = Math.max(1, Math.min(vh, pin + heroH));      /* where the next section is when the hero sticks */
-      const p = Math.min(1, Math.max(0, (s - r.top) / s));
-      top.style.setProperty('--out', (p * p * (3 - 2 * p)).toFixed(4));
-      top.classList.toggle('hero-gone', p >= 1);
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(upd); };
-    measure(); upd();
-    window.addEventListener('scroll', kick, { passive: true });
-    window.addEventListener('resize', () => { measure(); kick(); });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); kick(); });
   }
   initMenu() {
   const mb = document.querySelector('.menu-btn'), mn = document.getElementById('mnav');
