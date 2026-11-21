@@ -398,7 +398,7 @@ class Component extends DCLogic {
     const all = (s, r) => [...(r || document).querySelectorAll(s)];
     const txt = sec.querySelector('.jr-txt'), arts = all('.jc', txt), bar = sec.querySelector('.jr-bar'), svg = rv.querySelector('svg'), hd = document.querySelector('.site-head');
     const NAMES = arts.map((a) => a.dataset.name), N = NAMES.length, NS = 'http://www.w3.org/2000/svg';
-    let sel = 0, hov = -1, api = null, mini = null, M = [], tid = 0;
+    let sel = 0, hov = -1, api = null, mini = null, M = [], tid = 0, gid = 0;
     const MK = NAMES.map((n, g) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'jr-mk' + (g ? '' : ' on'); b.dataset.g = g;
       b.innerHTML = '<span class="n">0' + (g + 1) + '</span><span class="t">' + n + '</span>'; rv.appendChild(b); return b; });
     const LN = NAMES.map(() => { const p = document.createElementNS(NS, 'path'), d = document.createElementNS(NS, 'circle'); p.setAttribute('fill', 'none'); d.setAttribute('r', '2.6'); svg.append(p, d); return [p, d]; });
@@ -409,13 +409,25 @@ class Component extends DCLogic {
       if (g < 0 || g >= N) return; const changed = g !== sel; sel = g;
       all('.jr-mk, .jr-chips button', sec).forEach((b) => b.classList.toggle('on', +b.dataset.g === g));
       if (api) api.focus(hov >= 0 ? hov : g); if (mini) mini.focus(g);
-      if (changed) { clearTimeout(tid); txt.classList.remove('swap'); txt.classList.add('out');
-        tid = setTimeout(() => { arts.forEach((a) => a.classList.toggle('on', +a.dataset.g === g)); txt.classList.remove('out'); void txt.offsetWidth; txt.classList.add('swap'); }, 280); }
+      if (changed) { const sl = window.getSelection && window.getSelection(); if (sl && sl.rangeCount && txt.contains(sl.anchorNode)) sl.removeAllRanges(); clearTimeout(tid); clearTimeout(gid); const prev = arts.find((x) => x.classList.contains('on')), next = arts[g];
+        const h0 = txt.offsetHeight;                                   /* the height now, mid-glide included */
+        arts.forEach((x) => { if (x !== prev) x.classList.remove('leave'); x.classList.remove('in'); });
+        if (prev) { prev.classList.remove('on'); prev.classList.add('leave'); }
+        void txt.offsetWidth; next.classList.add('on', 'in');
+        tid = setTimeout(() => arts.forEach((x) => x.classList.remove('leave')), 600);
+        /* the height glides from the old chapter's to the new one's, so what follows slides into place instead of jumping */
+        const h1 = next.offsetHeight;
+        txt.classList.remove('jr-gliding'); txt.style.height = h0 + 'px'; void txt.offsetWidth;
+        txt.classList.add('jr-gliding'); txt.style.height = h1 + 'px';
+        gid = setTimeout(() => { txt.classList.remove('jr-gliding'); txt.style.height = ''; }, 760); }
       if (from === 'pick') toText();
       else if (from === 'next' || from === 'bar') { const r = txt.getBoundingClientRect(); if (r.top < 70 || r.top > window.innerHeight * .6) toText(); }
       all('.jr-chips', sec).forEach((el) => { const b = el.querySelector('.on'); if (b) el.scrollTo({ left: b.getBoundingClientRect().left - el.getBoundingClientRect().left + el.scrollLeft - 8, behavior: 'smooth' }); });
     };
     const hover = (g) => { hov = g; MK.forEach((m) => m.classList.toggle('hv', +m.dataset.g === g)); if (api) api.focus(g >= 0 ? g : sel); };
+    /* a double click on a control would select the text beside it: stop that, and clear any selection inside the chapter
+       when it switches */
+    sec.addEventListener('mousedown', (e) => { if (e.detail > 1 && e.target.closest('.jr-rv, .jr-mk, .jr-chips, .jr-pn, .jr-bar')) e.preventDefault(); });
     sec.addEventListener('click', (e) => {
       const t = e.target.closest('[data-go]'); if (t) { select(+t.dataset.go, 'next'); return; }
       if (e.target.closest('.jr-mini')) { rv.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
@@ -432,7 +444,7 @@ class Component extends DCLogic {
         return { g, u, ax: p.x, ay: p.y, vx: 0, vy: 0, rx: p.x, ry: Math.max(small ? 30 : 40, p.y - lift), nx: p.x, ny: p.y - lift, nvx: 0, nvy: 0 }; }); };
     let last = performance.now();
     const tick = (now) => { const dt = Math.min(.05, (now - last) / 1000); last = now;
-      if (bar.classList.contains('on') && hd) bar.style.top = Math.max(0, hd.getBoundingClientRect().bottom) + 'px';
+      if (bar.classList.contains('on') && hd) { bar.style.top = Math.max(0, hd.getBoundingClientRect().bottom) + 'px'; const hh = hd.offsetHeight + 'px'; if (bar.style.height !== hh) bar.style.height = hh; }
       const r = rv.getBoundingClientRect();
       if (api && M.length && r.bottom > 0 && r.top < window.innerHeight) { const t = now / 1000;
         M.forEach((m, i) => { const p = api.at(m.g, m.u);
