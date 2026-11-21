@@ -395,11 +395,15 @@ class Component extends DCLogic {
        stream (its number, the stream itself, or a name in the row or the bar) switches the chapter below with a blur and
        glides down to it. Reading on, a bar with a small river and the six chapters stays under the header. */
     const sec = document.getElementById('path'), rv = sec && sec.querySelector('.jr-rv'); if (!rv) return;
+    sec.classList.add('jr-js');   /* without JavaScript every chapter is simply shown, one after the other (see the CSS) */
+    const calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /* no WebGL (old devices, some locked-down browsers) or the river failed to load: no river, the row of names does the work */
+    const flat = () => { sec.classList.add('jr-flat'); api = null; };
     const all = (s, r) => [...(r || document).querySelectorAll(s)];
     const txt = sec.querySelector('.jr-txt'), arts = all('.jc', txt), bar = sec.querySelector('.jr-bar'), svg = rv.querySelector('svg'), hd = document.querySelector('.site-head');
     const NAMES = arts.map((a) => a.dataset.name), N = NAMES.length, NS = 'http://www.w3.org/2000/svg';
     let sel = 0, hov = -1, api = null, mini = null, M = [], tid = 0, gid = 0;
-    const MK = NAMES.map((n, g) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'jr-mk' + (g ? '' : ' on'); b.dataset.g = g;
+    const MK = NAMES.map((n, g) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'jr-mk' + (g ? '' : ' on'); b.dataset.g = g; b.setAttribute('aria-label', n); b.setAttribute('aria-pressed', g ? 'false' : 'true');
       b.innerHTML = '<span class="n">0' + (g + 1) + '</span><span class="t">' + n + '</span>'; rv.appendChild(b); return b; });
     const LN = NAMES.map(() => { const p = document.createElementNS(NS, 'path'), d = document.createElementNS(NS, 'circle'); p.setAttribute('fill', 'none'); d.setAttribute('r', '2.6'); svg.append(p, d); return [p, d]; });
     const fades = (el) => { const l = el.scrollLeft > 2, r = el.scrollLeft + el.clientWidth < el.scrollWidth - 2; el.style.setProperty('--fl', l ? '36px' : '0px'); el.style.setProperty('--fr', r ? '36px' : '0px'); };
@@ -427,10 +431,10 @@ class Component extends DCLogic {
       s.tl = L; s.tr = R; s.w0 = Math.min(s.r - s.l, R - L); s.h = b.offsetHeight; s.y = b.offsetTop; s.wait = .07;
       if (!praf) praf = requestAnimationFrame(pillTick); });
     placePills(true); if ('ResizeObserver' in window) all('.jr-chips', sec).forEach((el) => new ResizeObserver(() => placePills(true)).observe(el));
-    const toText = () => { const top = txt.getBoundingClientRect().top + window.scrollY - (window.innerWidth < 761 ? 120 : 150); window.scrollTo({ top, behavior: 'smooth' }); };
+    const toText = () => { const top = txt.getBoundingClientRect().top + window.scrollY - (window.innerWidth < 761 ? 120 : 150); window.scrollTo({ top, behavior: calm ? 'auto' : 'smooth' }); };
     const select = (g, from) => {
       if (g < 0 || g >= N) return; const changed = g !== sel; sel = g;
-      all('.jr-mk, .jr-chips button', sec).forEach((b) => b.classList.toggle('on', +b.dataset.g === g)); placePills();
+      all('.jr-mk, .jr-chips button', sec).forEach((b) => { b.classList.toggle('on', +b.dataset.g === g); b.setAttribute('aria-pressed', String(+b.dataset.g === g)); }); placePills();
       if (api) api.focus(hov >= 0 ? hov : g); if (mini) mini.focus(g);
       if (changed) { const sl = window.getSelection && window.getSelection(); if (sl && sl.rangeCount && txt.contains(sl.anchorNode)) sl.removeAllRanges(); clearTimeout(tid); clearTimeout(gid); const prev = arts.find((x) => x.classList.contains('on')), next = arts[g];
         const h0 = txt.offsetHeight;                                   /* the height now, mid-glide included */
@@ -483,13 +487,13 @@ class Component extends DCLogic {
           path.setAttribute('stroke', on ? '#121212' : 'rgba(18,18,18,.42)'); path.setAttribute('stroke-width', on ? '1.3' : '.9');
           dot.setAttribute('cx', m.ax.toFixed(1)); dot.setAttribute('cy', m.ay.toFixed(1)); dot.setAttribute('fill', on ? '#121212' : 'rgba(18,18,18,.5)'); }); }
       requestAnimationFrame(tick); };
-    const onScroll = () => { const rr = rv.getBoundingClientRect(), tr = txt.getBoundingClientRect(), on = rr.bottom < 170 && tr.bottom > 200;
+    const onScroll = () => { const rr = (sec.classList.contains('jr-flat') ? sec.querySelector('.jr-chips.jr-row') : rv).getBoundingClientRect(),   /* without the river, the row of names is the anchor */ tr = txt.getBoundingClientRect(), on = rr.bottom < 170 && tr.bottom > 200;
       bar.classList.toggle('on', on); sec.classList.toggle('jr-baron', on);
-      if (on && !mini && window.Prism3D) { mini = window.Prism3D.mount(bar.querySelector('.jr-mini'), { vary: true, bg: 1, zoom: 1.2, dof: 0, white: .3 }); mini.focus(sel); all('.jr-chips', bar).forEach(fades); } };
+      if (on && !mini && api && window.Prism3D) { try { mini = window.Prism3D.mount(bar.querySelector('.jr-mini'), { vary: true, bg: 1, zoom: 1.2, dof: 0, white: .3 }); } catch (e) { mini = { focus() {} }; bar.classList.add('jr-nomini'); } mini.focus(sel); all('.jr-chips', bar).forEach(fades); } };
     window.addEventListener('scroll', onScroll, { passive: true });
-    const go = () => { if (!window.Prism3D) return; api = window.Prism3D.mount(rv.querySelector('.jr-gl'), { vary: true, bg: 1, interact: { light: 1 } }); api.focus(sel);
+    const go = () => { if (!window.Prism3D) { flat(); return; } try { api = window.Prism3D.mount(rv.querySelector('.jr-gl'), { vary: true, bg: 1, interact: { light: 1 } }); } catch (e) { flat(); return; } api.focus(sel);
       requestAnimationFrame(() => { place(); requestAnimationFrame(tick); }); new ResizeObserver(() => requestAnimationFrame(place)).observe(rv); onScroll(); };
-    if (window.Prism3D) go(); else { const s = document.createElement('script'); s.src = rv.dataset.src; s.onload = go; document.head.appendChild(s); }
+    if (window.Prism3D) go(); else { const s = document.createElement('script'); s.src = rv.dataset.src; s.onload = go; s.onerror = flat; document.head.appendChild(s); }
   }
   initBookHint() {
     /* the small turning book in front of "Drag to turn the book" (see the CSS) */

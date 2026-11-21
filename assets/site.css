@@ -153,7 +153,7 @@ img.photo-trail{object-fit:cover;box-shadow:0 18px 40px -18px rgba(18,18,18,.35)
 .section-rule{border-top:2px solid var(--ink)}
 .split-inner{max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto;padding:96px var(--gutter);display:flex;flex-wrap:wrap;gap:32px 56px}
 .split-aside{flex:0 1 340px;display:flex;flex-direction:column;gap:18px}
-.aside-title{font-size:clamp(40px, 5vw, 64px);line-height:1.05;font-family:'Bodoni Moda','Didot',Georgia,serif;font-style:italic;font-weight:400}
+.aside-title{font-size:clamp(38px, 4vw, 56px);line-height:1.05;font-family:'Bodoni Moda','Didot',Georgia,serif;font-style:italic;font-weight:400}
 .split-list{flex:1 1 560px;display:flex;flex-direction:column;border-bottom:1px solid var(--rule);min-width:0}
 .thesis{display:block;padding:22px 0;border-top:1px solid var(--rule);align-items:baseline}
 .thesis-body{display:flex;flex-direction:column;gap:12px}
@@ -560,6 +560,16 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 /* switching chapters is a cross-fade: the old chapter blurs away while the new one already comes into focus in the same
    place (both share one grid cell), so there is never an empty moment */
 .jc{grid-area:1/1;display:none;min-width:0}.jc.on,.jc.leave{display:block}
+/* without JavaScript: no river or controls, all six chapters one after another */
+#path:not(.jr-js) .jr-rv,#path:not(.jr-js) .jr-chips,#path:not(.jr-js) .jr-pn,#path:not(.jr-js) .jr-bar{display:none}
+#path:not(.jr-js) .jr-txt{display:block}#path:not(.jr-js) .jc{display:block;margin-bottom:64px}
+/* no WebGL: no river; the row of names (otherwise the phone's) picks the chapter on every screen */
+#path.jr-flat .jr-rv{display:none}#path.jr-flat .jr-chips.jr-row,#path.jr-flat.jr-baron .jr-chips.jr-row{display:flex;flex-wrap:wrap;padding:20px 0 4px;opacity:1;filter:none;pointer-events:auto}
+.jr-bar.jr-nomini .jr-mini,.jr-bar.jr-nomini .jr-bar-in:after{display:none}
+#path.jr-flat .jr-bar .jr-mini,#path.jr-flat .jr-bar-in:after{display:none}
+/* keyboard focus, visible on every control */
+.jr-mk:focus-visible,.jr-chips button:focus-visible,.jr-pn button:focus-visible,.jr-mini:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+@media (prefers-reduced-motion:reduce){.jc.leave{display:none}.jc.in{animation:none}.jr-txt.jr-gliding{transition:none}.jr-mk .n{transition:none}}
 .jc.leave{animation:jr-out .55s cubic-bezier(.4,0,.2,1) both;pointer-events:none}
 .jc.in{animation:jr-sw 1s cubic-bezier(.22,1,.36,1) .1s both}
 @keyframes jr-out{to{opacity:0;filter:blur(8px);transform:translateY(-4px)}}
@@ -717,7 +727,7 @@ html.ng-cr .jr-bar::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filter:
   #beliefs.pr-js .split-inner{position:relative;top:auto;height:auto;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0;padding:64px var(--gutter) 24px}
   #beliefs.pr-js .split-aside{min-width:0;margin:0 0 22px;align-self:stretch;flex:none;display:block;box-shadow:none;background:none}
   #beliefs.pr-js .split-aside::before{display:none}
-  #beliefs.pr-js .aside-title{font-size:clamp(40px, 5vw, 64px)}
+  #beliefs.pr-js .aside-title{font-size:clamp(34px, 10vw, 44px)}
   #beliefs.pr-js .spin,#beliefs.pr-js .dial-count{display:none}
   #beliefs.pr-js .split-list{flex:none;height:calc(var(--pr-h, 420px) + 64px);margin-bottom:44px}
   #beliefs.pr-js .thesis{top:0;width:calc(100% - var(--pr-spread, 40px));min-height:var(--pr-h, 420px);padding:22px;
