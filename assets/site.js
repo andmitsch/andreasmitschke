@@ -436,7 +436,9 @@ class Component extends DCLogic {
     });
     MK.forEach((b) => { b.addEventListener('pointerenter', () => hover(+b.dataset.g)); b.addEventListener('pointerleave', () => hover(-1)); });
     rv.addEventListener('pointermove', (e) => { if (!api || e.pointerType === 'touch' || e.target.closest('.jr-mk')) return; const r = rv.getBoundingClientRect(); hover(api.pick(e.clientX - r.left, e.clientY - r.top)); });
-    rv.addEventListener('pointerleave', () => hover(-1));
+    /* the light: a soft lamp follows the pointer over the river (mouse only; set in assets/river.js, interact) */
+    rv.addEventListener('pointermove', (e) => { if (!api || !api.pointer || e.pointerType !== 'mouse') return; const r = rv.getBoundingClientRect(); api.pointer(e.clientX - r.left, e.clientY - r.top); });
+    rv.addEventListener('pointerleave', () => { hover(-1); if (api && api.pointer) api.pointer(null); });
     const place = () => { if (!api) return; const W = rv.clientWidth, H = rv.clientHeight, small = W < 600;
       M = NAMES.map((n, g) => { const tx = W * ((small ? .1 : .09) + g * (small ? .14 : .1)); let u = .03, p = api.at(g, u);
         for (let k = 0; k < 200 && !(p.x >= tx && p.y > H * .14 && p.y < H * .9); k++) { u += .003; p = api.at(g, u); }
@@ -462,7 +464,7 @@ class Component extends DCLogic {
       bar.classList.toggle('on', on); sec.classList.toggle('jr-baron', on);
       if (on && !mini && window.Prism3D) { mini = window.Prism3D.mount(bar.querySelector('.jr-mini'), { vary: true, bg: 1, zoom: 1.2, dof: 0, white: .3 }); mini.focus(sel); all('.jr-chips', bar).forEach(fades); } };
     window.addEventListener('scroll', onScroll, { passive: true });
-    const go = () => { if (!window.Prism3D) return; api = window.Prism3D.mount(rv.querySelector('.jr-gl'), { vary: true, bg: 1 }); api.focus(sel);
+    const go = () => { if (!window.Prism3D) return; api = window.Prism3D.mount(rv.querySelector('.jr-gl'), { vary: true, bg: 1, interact: { light: 1 } }); api.focus(sel);
       requestAnimationFrame(() => { place(); requestAnimationFrame(tick); }); new ResizeObserver(() => requestAnimationFrame(place)).observe(rv); onScroll(); };
     if (window.Prism3D) go(); else { const s = document.createElement('script'); s.src = rv.dataset.src; s.onload = go; document.head.appendChild(s); }
   }
