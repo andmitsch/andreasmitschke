@@ -404,10 +404,33 @@ class Component extends DCLogic {
     const LN = NAMES.map(() => { const p = document.createElementNS(NS, 'path'), d = document.createElementNS(NS, 'circle'); p.setAttribute('fill', 'none'); d.setAttribute('r', '2.6'); svg.append(p, d); return [p, d]; });
     const fades = (el) => { const l = el.scrollLeft > 2, r = el.scrollLeft + el.clientWidth < el.scrollWidth - 2; el.style.setProperty('--fl', l ? '36px' : '0px'); el.style.setProperty('--fr', r ? '36px' : '0px'); };
     all('.jr-chips', sec).forEach((el) => { el.addEventListener('scroll', () => fades(el), { passive: true }); fades(el); });
+    /* one pill per row of names, sliding to the current chapter */
+    const pills = all('.jr-chips', sec).map((el) => { const p = document.createElement('span'); p.className = 'jr-pill'; p.setAttribute('aria-hidden', 'true'); el.prepend(p); return p; });
+    /* the pill moves like a drop of ink: its leading edge springs ahead and overshoots a touch, the trailing edge lets go
+       a moment later and catches up, so it stretches on the way and squeezes a little thinner while stretched */
+    const PS = new Map(), still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; let praf = 0, plast = 0;
+    const drawPill = (p, s) => { const w = Math.max(4, s.r - s.l), st = Math.max(0, w - s.w0) / Math.max(1, s.w0);
+      p.style.width = w + 'px'; p.style.height = s.h + 'px'; p.style.transform = 'translate(' + s.l + 'px,' + s.y + 'px) scaleY(' + (1 - Math.min(.22, st * .16)) + ')'; };
+    const pillTick = (t) => { const dt = Math.min(.034, (t - (plast || t)) / 1000) || .016; plast = t; let busy = false;
+      PS.forEach((s, p) => { const fwd = s.tl > s.l ? 1 : -1;
+        [['l', 'vl', 'tl'], ['r', 'vr', 'tr']].forEach(([x, v, tg]) => { const lead = (x === 'r') === (fwd > 0);
+          if (!lead && s.wait > 0) return;
+          const k = lead ? 260 : 150, d = lead ? 19 : 20; s[v] += ((s[tg] - s[x]) * k - s[v] * d) * dt; s[x] += s[v] * dt; });
+        /* it stretches, but never more than about two names' worth: the trailing edge is towed along beyond that */
+        const span = s.r - s.l, MAXS = s.w0 + 200; if (span > MAXS) { if (fwd > 0) { s.l = s.r - MAXS; s.vl = Math.max(s.vl, 0); } else { s.r = s.l + MAXS; s.vr = Math.min(s.vr, 0); } }
+        s.wait -= dt; drawPill(p, s);
+        if (Math.abs(s.tl - s.l) + Math.abs(s.tr - s.r) + Math.abs(s.vl) + Math.abs(s.vr) > .3) busy = true; else { s.l = s.tl; s.r = s.tr; s.vl = s.vr = 0; drawPill(p, s); } });
+      praf = busy ? requestAnimationFrame(pillTick) : 0; if (!busy) plast = 0; };
+    const placePills = (now) => pills.forEach((p) => { const b = p.parentNode.querySelector('button.on'); if (!b || !b.offsetWidth) return;
+      const L = b.offsetLeft, R = L + b.offsetWidth; let s = PS.get(p);
+      if (!s || now || still) { s = { l: L, r: R, vl: 0, vr: 0, tl: L, tr: R, w0: R - L, h: b.offsetHeight, y: b.offsetTop, wait: 0 }; PS.set(p, s); drawPill(p, s); return; }
+      s.tl = L; s.tr = R; s.w0 = Math.min(s.r - s.l, R - L); s.h = b.offsetHeight; s.y = b.offsetTop; s.wait = .07;
+      if (!praf) praf = requestAnimationFrame(pillTick); });
+    placePills(true); if ('ResizeObserver' in window) all('.jr-chips', sec).forEach((el) => new ResizeObserver(() => placePills(true)).observe(el));
     const toText = () => { const top = txt.getBoundingClientRect().top + window.scrollY - (window.innerWidth < 761 ? 120 : 150); window.scrollTo({ top, behavior: 'smooth' }); };
     const select = (g, from) => {
       if (g < 0 || g >= N) return; const changed = g !== sel; sel = g;
-      all('.jr-mk, .jr-chips button', sec).forEach((b) => b.classList.toggle('on', +b.dataset.g === g));
+      all('.jr-mk, .jr-chips button', sec).forEach((b) => b.classList.toggle('on', +b.dataset.g === g)); placePills();
       if (api) api.focus(hov >= 0 ? hov : g); if (mini) mini.focus(g);
       if (changed) { const sl = window.getSelection && window.getSelection(); if (sl && sl.rangeCount && txt.contains(sl.anchorNode)) sl.removeAllRanges(); clearTimeout(tid); clearTimeout(gid); const prev = arts.find((x) => x.classList.contains('on')), next = arts[g];
         const h0 = txt.offsetHeight;                                   /* the height now, mid-glide included */

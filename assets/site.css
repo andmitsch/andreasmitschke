@@ -93,8 +93,8 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 .hero-copy{position:relative;z-index:1;max-width:660px;display:flex;flex-direction:column;gap:24px}
 .hero-lead{margin:0;max-width:560px;font-size:18px;line-height:1.45;text-wrap:pretty}
 .btn-row{display:flex}
-/* the hero button, a step smaller to sit with the 18px intro text */
-#top .btn-row .pbtn{min-height:48px;padding:0 22px;gap:12px;font-size:13px;letter-spacing:.07em}
+/* the large buttons (hero, book, talks), a step smaller to sit with the 18px text around them */
+#top .btn-row .pbtn,#releases .btn-group .pbtn,#talks .btn-group .pbtn{min-height:48px;padding:0 22px;gap:12px;font-size:13px;letter-spacing:.07em}
 /* background: flowing lines that bend under the cursor and around the portrait */
 /* the line field reaches up under the header, so the waves run beneath the glass bar right from the top of the page */
 .memo-paper{position:absolute;top:-120px;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;overflow:hidden}
@@ -143,7 +143,7 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 .pgrp-side{display:flex;flex-wrap:wrap;gap:16px 56px;padding-top:40px;border-top:2px solid var(--ink)}
 .side-grid{flex:1 1 520px;display:grid;grid-template-columns:repeat(auto-fit, minmax(min(240px, 100%), 1fr));gap:32px;min-width:0}
 .side{border-top:3px solid var(--ink);padding-top:18px;display:flex;flex-direction:column;gap:10px}
-.side-title{font-weight:900;font-stretch:78%;font-size:24px;line-height:1.05;text-transform:uppercase}
+.side-title{font-weight:900;font-stretch:78%;font-size:20px;line-height:1.05;text-transform:uppercase}
 .side-text{font-size:16px;line-height:1.55;color:var(--body)}
 /* street photo that follows the cursor (initPhotoTrail) */
 .photo-trail{position:fixed;left:0;top:0;z-index:30;pointer-events:none;opacity:0;will-change:transform,opacity;transform-origin:50% 50%}
@@ -153,7 +153,7 @@ img.photo-trail{object-fit:cover;box-shadow:0 18px 40px -18px rgba(18,18,18,.35)
 .section-rule{border-top:2px solid var(--ink)}
 .split-inner{max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto;padding:96px var(--gutter);display:flex;flex-wrap:wrap;gap:32px 56px}
 .split-aside{flex:0 1 340px;display:flex;flex-direction:column;gap:18px}
-.aside-title{font-size:clamp(38px, 4vw, 56px);line-height:1.05;font-family:'Bodoni Moda','Didot',Georgia,serif;font-style:italic;font-weight:400}
+.aside-title{font-size:clamp(40px, 5vw, 64px);line-height:1.05;font-family:'Bodoni Moda','Didot',Georgia,serif;font-style:italic;font-weight:400}
 .split-list{flex:1 1 560px;display:flex;flex-direction:column;border-bottom:1px solid var(--rule);min-width:0}
 .thesis{display:block;padding:22px 0;border-top:1px solid var(--rule);align-items:baseline}
 .thesis-body{display:flex;flex-direction:column;gap:12px}
@@ -525,7 +525,7 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
   86.25%{transform:rotateY(340deg);animation-timing-function:cubic-bezier(.3,0,.4,1)}
   91.25%,100%{transform:rotateY(332deg)}}
 
-/* ============ THE JOURNEY: six streams that merge into one river (assets/streams18.js, three.js). The number over each
+/* ============ THE JOURNEY: six streams that merge into one river (assets/river.js, three.js). The number over each
    stream picks its chapter; the chapter text sits under the river and switches with a blur. Reading on, a bar with a
    small river and the six chapters stays under the header. ============ */
 #path .jr{max-width:1280px;margin:0 auto;padding:96px var(--gutter) 24px;box-sizing:border-box}
@@ -543,13 +543,18 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 .jr-mk .t{display:block;max-width:96px;font:500 9.5px/1.35 'IBM Plex Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
 .jr-mk:not(.on):not(.hv){opacity:.42}
 .jr-mk.on .n{transform:scale(1.14)}
-.jr-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.jr-chips{position:relative;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+/* the current chapter's pill is one shape that slides from name to name (site.js); the names sit on top of it */
+.jr-pill{position:absolute;left:0;top:0;width:0;height:0;border-radius:99px;background:var(--ink);pointer-events:none;z-index:0;transform-origin:50% 50%;will-change:transform,width}
 .jr-chips::-webkit-scrollbar{display:none}
 .jr-chips.jr-row{display:none;transition:opacity .35s,filter .35s}
 #path.jr-baron .jr-chips.jr-row{opacity:0;filter:blur(6px);pointer-events:none}
 .jr-chips button{flex:none;display:flex;align-items:baseline;gap:8px;padding:8px 12px;border-radius:99px;border:0;box-shadow:inset 0 0 0 1px rgba(18,18,18,.16);background:rgba(242,243,246,.9);font:700 14px 'Archivo',sans-serif;color:var(--ink);cursor:pointer}
 .jr-chips button i{font-family:'Bodoni Moda',serif;font-size:15px}
-.jr-chips button.on{background:var(--ink);color:var(--paper-2);box-shadow:none}
+.jr-chips button{position:relative;z-index:1;transition:color .45s cubic-bezier(.22,1,.36,1),background-color .35s ease,box-shadow .35s ease}
+/* hovering a name: a light tint fades in behind it and the text darkens */
+@media (hover:hover){.jr-chips button:not(.on):hover{background-color:rgba(18,18,18,.07);color:var(--ink)}}
+.jr-chips button.on{background:transparent;color:var(--paper-2);box-shadow:none}
 .jr-txt{display:grid;align-items:start;max-width:820px;margin-top:28px}
 .jr-txt.jr-gliding{overflow:hidden;transition:height .7s cubic-bezier(.22,1,.36,1)}
 /* switching chapters is a cross-fade: the old chapter blurs away while the new one already comes into focus in the same
@@ -561,7 +566,7 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 @keyframes jr-sw{from{opacity:0;transform:translateY(8px);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
 .jr-ttl{margin:0;font-family:'Bodoni Moda',serif;font-style:italic;font-weight:400;font-size:clamp(40px,5vw,64px);line-height:1.02;letter-spacing:-.01em}
 .jr-it{margin-top:26px}
-.jr-it h4{margin:0 0 8px;font-weight:800;font-stretch:80%;text-transform:uppercase;font-size:17px;letter-spacing:.01em;line-height:1.1}
+.jr-it h4{margin:0 0 8px;font-weight:800;font-stretch:80%;text-transform:uppercase;font-size:20px;letter-spacing:.01em;line-height:1.1}
 .jr-it p{margin:0;font-size:17px;line-height:1.65;color:var(--body)}
 .jr-it p b{color:var(--ink);font-weight:800}
 .jr-it p a{color:inherit;text-decoration-color:var(--accent);text-underline-offset:3px}
@@ -584,7 +589,7 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 .jr-mini{order:0;position:relative;flex:none;width:150px;height:48px;padding:0;border:0;border-radius:9px;overflow:hidden;cursor:pointer;background:var(--paper-2);box-shadow:0 0 0 1px rgba(18,18,18,.1)}
 .jr-bar .jr-chips{order:2;min-width:0;flex:1;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 var(--fl,0px),#000 calc(100% - var(--fr,0px)),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 var(--fl,0px),#000 calc(100% - var(--fr,0px)),transparent 100%)}
 .jr-bar .jr-chips button{padding:7px 10px;box-shadow:none;background:none;font-size:13px;font-weight:600;color:var(--muted)}
-.jr-bar .jr-chips button.on{background:var(--ink);color:var(--paper-2)}
+.jr-bar .jr-chips button.on{background:transparent;color:var(--paper-2)}
 @media (max-width:760px){
   #path .jr{padding-top:64px}
   .jr-rv{height:300px}
@@ -712,7 +717,7 @@ html.ng-cr .jr-bar::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filter:
   #beliefs.pr-js .split-inner{position:relative;top:auto;height:auto;flex-direction:column;flex-wrap:nowrap;align-items:stretch;gap:0;padding:64px var(--gutter) 24px}
   #beliefs.pr-js .split-aside{min-width:0;margin:0 0 22px;align-self:stretch;flex:none;display:block;box-shadow:none;background:none}
   #beliefs.pr-js .split-aside::before{display:none}
-  #beliefs.pr-js .aside-title{font-size:clamp(34px, 10vw, 44px)}
+  #beliefs.pr-js .aside-title{font-size:clamp(40px, 5vw, 64px)}
   #beliefs.pr-js .spin,#beliefs.pr-js .dial-count{display:none}
   #beliefs.pr-js .split-list{flex:none;height:calc(var(--pr-h, 420px) + 64px);margin-bottom:44px}
   #beliefs.pr-js .thesis{top:0;width:calc(100% - var(--pr-spread, 40px));min-height:var(--pr-h, 420px);padding:22px;
