@@ -505,9 +505,10 @@ class Component extends DCLogic {
     /* the blur theme for the parts that otherwise just sit there: section headings and the book title sharpen word by word,
        the book comes into focus, the copy beside it and the list below fade up out of a blur; once, as each comes into view (see the CSS) */
     if (!('IntersectionObserver' in window)) return;
-    const words = [...document.querySelectorAll('.h2-display, #releases .book-title')];
-    const blocks = [['#releases .book-desc', '.15s'], ['#releases .btn-group', '.3s']].map(([q, d]) => { const e = document.querySelector(q); if (e) { e.classList.add('sh-block'); e.style.setProperty('--d', d); } return e; });
-    const book = document.querySelector('#releases .book-stage-wrap'); if (book) book.classList.add('sh-book');
+    const words = [...document.querySelectorAll('.h2-display')];
+    /* the book segment (the book and its copy) comes in as one: a single blur reveal, not piece by piece */
+    const blocks = [document.querySelector('#releases .book-row')].filter(Boolean); blocks.forEach((e) => e.classList.add('sh-block'));
+    const book = null;
     words.forEach((h) => { let i = 0;
       [...h.childNodes].forEach((x) => { if (x.nodeType === 3) { const f = document.createDocumentFragment();
           x.textContent.split(/(\s+)/).forEach((t) => { if (!t) return; if (/^\s+$/.test(t)) f.appendChild(document.createTextNode(t));
