@@ -923,15 +923,15 @@ class Component extends DCLogic {
     document.querySelectorAll('.pbtn').forEach((b) => { b.addEventListener('pointerenter', (e) => place(b, e)); b.addEventListener('pointerleave', (e) => place(b, e)); });
   }
   initPortraitFit() {
-    /* desktop and tablet: text on the left, a big portrait on the right standing on the hero's bottom edge.
-       The portrait is 480px wherever there is room. On narrower screens the text column gives way first (down to
+    /* desktop and tablet: text on the left, the portrait card on the right, its foot level with the button.
+       The card is 400px wherever there is room. On narrower screens the text column gives way first (down to
        MINCOPY), then the portrait shrinks a little (never below MINW). The intro text stays at 16px as its
        column narrows, which keeps the top of the head roughly level with the top of the text. Only when even that
        does not fit does the portrait move below the text (as on phones). */
     const top = this.topEl || document.getElementById('top'), fig = top && top.querySelector('.hp-cutb'), copy = top && top.querySelector('.hero-copy');
     const lead = copy && copy.querySelector('p');
     if (!fig || !copy || !lead || !window.matchMedia) return;
-    const W0 = 480, MINW = 340, GAP = 40, MINCOPY = 340, MAXCOPY = 660, FMAX = 16, FMIN = 16;
+    const W0 = 400, MINW = 300, GAP = 40, MINCOPY = 340, MAXCOPY = 660, FMAX = 16, FMIN = 16;
     const reset = () => { fig.style.width = ''; copy.style.maxWidth = ''; lead.style.removeProperty('font-size'); };
     const fit = () => {
       top.classList.remove('hp-stack');
@@ -978,9 +978,26 @@ class Component extends DCLogic {
         + ';font-weight:' + s.fontWeight + ';font-stretch:' + s.fontStretch + ';text-transform:' + s.textTransform + ';letter-spacing:' + s.letterSpacing;
       document.body.appendChild(m);
       const k = m.getBoundingClientRect().width / 100;
+      m.textContent = 'approving.';
+      const ka = m.getBoundingClientRect().width / 100;
       m.remove();
       const w = lead.getBoundingClientRect().width;
-      if (k > 0 && w > 0) hl.style.fontSize = (w / k).toFixed(2) + 'px';
+      if (!(k > 0 && w > 0)) return;
+      const fs = w / k;
+      hl.style.fontSize = fs.toFixed(2) + 'px';
+      /* the portrait card must not run into APPROVING. on narrower screens: if that line reaches over the card, the card
+         shrinks (staying right-aligned, its foot level with the button) until its top sits below the line.
+         Measured from the layout, not the animated letters, so it is right from the first frame. */
+      const fig = top.querySelector('.hp-cutb'), line = h1.querySelector('span');
+      if (!fig || !line || top.classList.contains('hp-stack')) return;
+      const H = top.getBoundingClientRect(), cs = getComputedStyle(top), h1r = h1.getBoundingClientRect();
+      const lineH = line.offsetHeight || fs * 0.86, appBottom = h1r.top + 2 * lineH, appRight = h1r.left + ka * fs;
+      const right = H.right - (parseFloat(cs.paddingRight) || 0), foot = H.bottom - (parseFloat(cs.paddingBottom) || 0);
+      const cw = parseFloat(fig.style.width) || fig.offsetWidth;
+      if (right - cw < appRight + 24) {
+        const ch = foot - appBottom - 28, nw = Math.max(240, Math.min(cw, ch * 0.8));
+        fig.style.width = nw.toFixed(1) + 'px';
+      }
     };
     fit();
     if ('ResizeObserver' in window) new ResizeObserver(fit).observe(lead);
