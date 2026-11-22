@@ -397,6 +397,10 @@ class Component extends DCLogic {
     const sec = document.getElementById('path'), rv = sec && sec.querySelector('.jr-rv'); if (!rv) return;
     sec.classList.add('jr-js');   /* without JavaScript every chapter is simply shown, one after the other (see the CSS) */
     const calm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /* every chapter is on the page as a list (see the CSS); the river is the index */
+    const LIST = true; sec.classList.add('jr-all');
+    const wide = () => window.innerWidth >= 1000 && !sec.classList.contains('jr-flat');
+    let spyLock = 0;
     /* no WebGL (old devices, some locked-down browsers) or the river failed to load: no river, the row of names does the work */
     const flat = () => { sec.classList.add('jr-flat'); api = null; };
     const all = (s, r) => [...(r || document).querySelectorAll(s)];
@@ -432,11 +436,14 @@ class Component extends DCLogic {
       if (!praf) praf = requestAnimationFrame(pillTick); });
     placePills(true); if ('ResizeObserver' in window) all('.jr-chips', sec).forEach((el) => new ResizeObserver(() => placePills(true)).observe(el));
     const toText = () => { const top = txt.getBoundingClientRect().top + window.scrollY - (window.innerWidth < 761 ? 120 : 150); window.scrollTo({ top, behavior: calm ? 'auto' : 'smooth' }); };
+    /* picking a chapter scrolls the list to it; while that scroll runs, the follow-along below waits */
+    const toArt = (g) => { const a = arts[g]; if (!a) return; spyLock = performance.now() + 1000;
+      const top = a.getBoundingClientRect().top + window.scrollY - (window.innerWidth < 761 ? 120 : 150); window.scrollTo({ top, behavior: calm ? 'auto' : 'smooth' }); };
     const select = (g, from) => {
       if (g < 0 || g >= N) return; const changed = g !== sel; sel = g;
       all('.jr-mk, .jr-chips button', sec).forEach((b) => { b.classList.toggle('on', +b.dataset.g === g); b.setAttribute('aria-pressed', String(+b.dataset.g === g)); }); placePills();
       if (api) api.focus(hov >= 0 ? hov : g); if (mini) mini.focus(g);
-      if (changed) { const sl = window.getSelection && window.getSelection(); if (sl && sl.rangeCount && txt.contains(sl.anchorNode)) sl.removeAllRanges(); clearTimeout(tid); clearTimeout(gid); const prev = arts.find((x) => x.classList.contains('on')), next = arts[g];
+      if (changed && !LIST) { const sl = window.getSelection && window.getSelection(); if (sl && sl.rangeCount && txt.contains(sl.anchorNode)) sl.removeAllRanges(); clearTimeout(tid); clearTimeout(gid); const prev = arts.find((x) => x.classList.contains('on')), next = arts[g];
         const h0 = txt.offsetHeight;                                   /* the height now, mid-glide included */
         arts.forEach((x) => { if (x !== prev) x.classList.remove('leave'); x.classList.remove('in'); });
         if (prev) { prev.classList.remove('on'); prev.classList.add('leave'); }
@@ -447,7 +454,8 @@ class Component extends DCLogic {
         txt.classList.remove('jr-gliding'); txt.style.height = h0 + 'px'; void txt.offsetWidth;
         txt.classList.add('jr-gliding'); txt.style.height = h1 + 'px';
         gid = setTimeout(() => { txt.classList.remove('jr-gliding'); txt.style.height = ''; }, 760); }
-      if (from === 'pick') toText();
+      if (LIST) { if (from !== 'spy') toArt(g); }
+      else if (from === 'pick') toText();
       else if (from === 'next' || from === 'bar') { const r = txt.getBoundingClientRect(); if (r.top < 70 || r.top > window.innerHeight * .6) toText(); }
       all('.jr-chips', sec).forEach((el) => { const b = el.querySelector('.on'); if (b) el.scrollTo({ left: b.getBoundingClientRect().left - el.getBoundingClientRect().left + el.scrollLeft - 8, behavior: 'smooth' }); });
     };
@@ -487,12 +495,28 @@ class Component extends DCLogic {
           path.setAttribute('stroke', on ? '#121212' : 'rgba(18,18,18,.42)'); path.setAttribute('stroke-width', on ? '1.3' : '.9');
           dot.setAttribute('cx', m.ax.toFixed(1)); dot.setAttribute('cy', m.ay.toFixed(1)); dot.setAttribute('fill', on ? '#121212' : 'rgba(18,18,18,.5)'); }); }
       requestAnimationFrame(tick); };
-    const onScroll = () => { const rr = (sec.classList.contains('jr-flat') ? sec.querySelector('.jr-chips.jr-row') : rv).getBoundingClientRect(),   /* without the river, the row of names is the anchor */ tr = txt.getBoundingClientRect(), on = rr.bottom < 170 && tr.bottom > 200;
+    /* follow along: the chapter whose title has passed 42% of the screen is the current one (river, numbers, pill, bar) */
+    const spy = () => { if (performance.now() < spyLock) return; const line = window.innerHeight * .42; let g = 0;
+      arts.forEach((a, i) => { if (a.getBoundingClientRect().top < line) g = i; }); if (g !== sel) select(g, 'spy'); };
+    let split = false, glideT = 0;
+    const sizeRiver = () => { const jr = sec.querySelector('.jr'), vh = window.innerHeight, W = jr.clientWidth, w = split ? W * .48 : W, h = split ? Math.min(vh - 190, Math.max(380, w / 1.2)) : Math.min(470, Math.max(300, W * .36));
+      jr.style.setProperty('--rw', Math.round(w) + 'px'); jr.style.setProperty('--rh', Math.round(h) + 'px'); jr.style.setProperty('--rt', Math.round(split ? Math.max(96, (vh - h) / 2 + 36) : 84) + 'px'); };
+    /* wide screens: one threshold with a little play either way, so it never flickers: the river moves aside once the
+       heading has scrolled away and comes back once it returns */
+    const glide = () => { const jr = sec.querySelector('.jr');
+      if (!wide()) { if (split) { split = false; sec.classList.remove('jr-split'); } ['--rw', '--rh', '--rt'].forEach((v) => jr.style.removeProperty(v)); return; }
+      const hb = sec.querySelector('.jr-head').getBoundingClientRect().bottom, want = split ? hb < 170 : hb < 70;
+      if (want !== split) { split = want; sec.classList.toggle('jr-split', split);
+        /* while it moves the river is drawn at half resolution (cheaper per frame), sharp again once it has landed */
+        if (api && api.lowRes && !calm) { api.lowRes(true); clearTimeout(glideT); glideT = setTimeout(() => api.lowRes(false), 820); } } sizeRiver(); };
+    window.addEventListener('scroll', () => { glide(); spy(); }, { passive: true }); window.addEventListener('resize', glide);
+    const onScroll = () => { const rr = (sec.classList.contains('jr-flat') ? sec.querySelector('.jr-chips.jr-row') : rv).getBoundingClientRect(),   /* without the river, the row of names is the anchor */ tr = txt.getBoundingClientRect(), on = wide() ? (split && tr.bottom > 200) : (rr.bottom < 170 && tr.bottom > 200);
       bar.classList.toggle('on', on); sec.classList.toggle('jr-baron', on);
-      if (on && !mini && api && window.Prism3D) { try { mini = window.Prism3D.mount(bar.querySelector('.jr-mini'), { vary: true, bg: 1, zoom: 1.2, dof: 0, white: .3 }); } catch (e) { mini = { focus() {} }; bar.classList.add('jr-nomini'); } mini.focus(sel); all('.jr-chips', bar).forEach(fades); } };
+      if (on && !mini && api && window.Prism3D && !wide()) { try { mini = window.Prism3D.mount(bar.querySelector('.jr-mini'), { vary: true, bg: 1, zoom: 1.2, dof: 0, white: .3 }); } catch (e) { mini = { focus() {} }; bar.classList.add('jr-nomini'); } mini.focus(sel); all('.jr-chips', bar).forEach(fades); } };
     window.addEventListener('scroll', onScroll, { passive: true });
     const go = () => { if (!window.Prism3D) { flat(); return; } try { api = window.Prism3D.mount(rv.querySelector('.jr-gl'), { vary: true, bg: 1, interact: { light: 1 } }); } catch (e) { flat(); return; } api.focus(sel);
-      requestAnimationFrame(() => { place(); requestAnimationFrame(tick); }); new ResizeObserver(() => requestAnimationFrame(place)).observe(rv); onScroll(); };
+      requestAnimationFrame(() => { place(); requestAnimationFrame(tick); }); new ResizeObserver(() => requestAnimationFrame(place)).observe(rv); onScroll(); glide(); spy(); };
+    glide();
     if (window.Prism3D) go(); else { const s = document.createElement('script'); s.src = rv.dataset.src; s.onload = go; s.onerror = flat; document.head.appendChild(s); }
   }
   initBookHint() {

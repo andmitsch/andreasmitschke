@@ -633,6 +633,36 @@ html.ng-cr .jr-bar::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filter:
   background:linear-gradient(to bottom,rgba(255,255,255,calc(var(--lq-spec) * .7)) 0 1px,rgba(255,255,255,calc(var(--lq-spec) * .16)) 1px,rgba(255,255,255,0) 46%),
     linear-gradient(to top,rgba(255,255,255,calc(var(--lq-spec) * .95)) 0 1px,rgba(17,17,17,calc(var(--lq-depth) * .5)) 1px 2px,rgba(17,17,17,calc(var(--lq-depth) * .14)) 2px,rgba(255,255,255,calc(var(--lq-spec) * .22)) calc(var(--lq-thick) * .45),rgba(255,255,255,0) var(--lq-thick));
   box-shadow:0 1px 0 rgba(17,17,17,calc(var(--lq-depth) * .3)),0 3px 6px -3px rgba(17,17,17,calc(var(--lq-shadow) * .8)),0 16px 30px -16px rgba(17,17,17,var(--lq-shadow))}
+
+/* ============ THE JOURNEY AS A LIST BESIDE THE RIVER. All six chapters are always on the page, one after another (for
+   readers who skim, for search in the page, and for anything that reads only what is visible). The river is their index:
+   it follows the chapter in view, and picking a stream scrolls to that chapter (site.js, initJourney). ============ */
+#path.jr-all .jr-txt{display:block;height:auto!important}
+#path.jr-all .jc{display:block;animation:none;margin-bottom:88px;scroll-margin-top:150px}
+#path.jr-all .jc:last-child{margin-bottom:24px}
+#path.jr-all .jc.leave{display:block}
+#path.jr-all .jr-pn{display:none}
+/* wide screens: the river first fills the width; once the heading has scrolled away it glides to the left in one
+   controlled move (a threshold, not tied to the scroll), and the list comes in on the right. Sizes set by site.js
+   (--rw, --rh, --rt) */
+@media (min-width:1000px){
+  #path.jr-all .jr{display:grid;grid-template-columns:minmax(0,1fr)}
+  #path.jr-all .jr-rv,#path.jr-all .jr-txt{grid-row:2;grid-column:1}
+  #path.jr-all .jr-head{grid-row:1}
+  #path.jr-all .jr-rv{position:sticky;top:var(--rt,84px);align-self:start;width:var(--rw,100%);height:var(--rh,470px);z-index:1;
+    transition:width .75s cubic-bezier(.65,0,.35,1),height .75s cubic-bezier(.65,0,.35,1),top .75s cubic-bezier(.65,0,.35,1)}
+  #path.jr-all .jr-txt{margin:0 0 0 52%;max-width:none;opacity:0;filter:blur(8px);transform:translateX(48px);pointer-events:none;
+    transition:opacity .45s ease,filter .45s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+  #path.jr-all.jr-split .jr-txt{opacity:1;filter:none;transform:none;pointer-events:auto;transition:opacity .6s ease .3s,filter .6s ease .3s,transform .85s cubic-bezier(.22,1,.36,1) .22s}
+  #path.jr-all .jr-chips.jr-row{display:none}
+  #path.jr-all.jr-split .jr-mk .t{display:none}
+  #path.jr-all .jr-bar .jr-mini,#path.jr-all .jr-bar .jr-bar-in:after{display:none}
+  /* no river (no WebGL): no glide, the list simply sits beside the row of names */
+  #path.jr-all.jr-flat .jr{display:block}
+  #path.jr-all.jr-flat .jr-txt{margin-left:0;max-width:820px;opacity:1;filter:none;transform:none;pointer-events:auto}
+  #path.jr-all.jr-flat .jr-chips.jr-row{display:flex}
+}
+@media (prefers-reduced-motion:reduce){#path.jr-all .jr-rv,#path.jr-all .jr-txt{transition:none!important}}
 /* reduced motion: no animations or transitions (except where marked !important above) */
 @media (prefers-reduced-motion:reduce){*,*::after{animation:none !important;transition:none !important}}
 /* My principles. On desktop the section pins while the six cards are thrown onto a pile, one per scroll step (site.js,
