@@ -953,14 +953,15 @@ class Component extends DCLogic {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   }
   initPortraitReveal() {
-    /* hero portrait: comes in out of a soft blur, after the headline has risen and once it is in view */
+    /* the portrait's blur-in is a CSS animation that plays on load (site.css, hp-in). When the portrait starts below the
+       screen (phones), that would play unseen: swap it for a reveal when it scrolls into view. Runs before the animation's
+       delay ends, while the portrait is still hidden, so nothing that was shown is ever hidden again. */
     const fig = document.querySelector('.hp-cutb');
     if (!fig || !('IntersectionObserver' in window)) return;
+    if (fig.getBoundingClientRect().top < window.innerHeight) return;
     fig.classList.add('hp-rv');
-    setTimeout(() => {
-      const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { fig.classList.add('hp-in'); io.disconnect(); } }, { threshold: 0.3 });
-      io.observe(fig);
-    }, 900);
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { fig.classList.add('hp-in'); io.disconnect(); } }, { threshold: 0.3 });
+    io.observe(fig);
   }
   initHeadFit() {
     /* desktop and tablet: the headline is sized so its last line, PROVING., is exactly as wide as the intro text below it.

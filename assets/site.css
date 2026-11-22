@@ -110,8 +110,11 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 .hero-portrait{position:absolute;margin:0;z-index:0}
 .hero-portrait img{display:block;width:100%;height:auto}
 .hp-cutb{right:var(--gutter);bottom:0;width:480px}
-/* the portrait comes in out of a soft blur once the headline has risen (class set by initPortraitReveal; without JS it simply shows) */
-.hp-cutb.hp-rv{opacity:0;filter:blur(18px);transform:translateY(16px) scale(1.025);
+/* the portrait comes in out of a soft blur once the headline has risen: a CSS animation, so it is hidden from the first paint.
+   When it starts below the screen (phones), initPortraitReveal swaps the animation for a reveal on scroll (.hp-rv, .hp-in). */
+@keyframes hp-in{from{opacity:0;filter:blur(18px);transform:translateY(16px) scale(1.025)}to{opacity:1;filter:blur(0);transform:none}}
+.hp-cutb{animation:hp-in 1.3s cubic-bezier(.2,.7,.2,1) .9s both}
+.hp-cutb.hp-rv{animation:none;opacity:0;filter:blur(18px);transform:translateY(16px) scale(1.025);
   transition:opacity .9s ease,filter 1.2s cubic-bezier(.2,.7,.2,1),transform 1.3s cubic-bezier(.2,.7,.2,1)}
 .hp-cutb.hp-rv.hp-in{opacity:1;filter:blur(0);transform:none}
 /* the river's light behind the head: soft, centred a little below the face, slowly changing shape */
