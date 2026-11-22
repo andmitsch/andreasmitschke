@@ -899,13 +899,13 @@ class Component extends DCLogic {
   initPortraitFit() {
     /* desktop and tablet: text on the left, a big portrait on the right standing on the hero's bottom edge.
        The portrait is 480px wherever there is room. On narrower screens the text column gives way first (down to
-       MINCOPY), then the portrait shrinks a little (never below MINW). The intro text eases from 18px to 16px as its
+       MINCOPY), then the portrait shrinks a little (never below MINW). The intro text stays at 16px as its
        column narrows, which keeps the top of the head roughly level with the top of the text. Only when even that
        does not fit does the portrait move below the text (as on phones). */
     const top = this.topEl || document.getElementById('top'), fig = top && top.querySelector('.hp-cutb'), copy = top && top.querySelector('.hero-copy');
     const lead = copy && copy.querySelector('p');
     if (!fig || !copy || !lead || !window.matchMedia) return;
-    const W0 = 480, MINW = 340, GAP = 40, MINCOPY = 340, MAXCOPY = 660, FMAX = 18, FMIN = 16;
+    const W0 = 480, MINW = 340, GAP = 40, MINCOPY = 340, MAXCOPY = 660, FMAX = 16, FMIN = 16;
     const reset = () => { fig.style.width = ''; copy.style.maxWidth = ''; lead.style.removeProperty('font-size'); };
     const fit = () => {
       top.classList.remove('hp-stack');
