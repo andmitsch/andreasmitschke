@@ -81,7 +81,7 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 .mnav{display:none}
 
 /* ---- 5 Hero + portrait ---- */
-.hero{max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto;position:relative;isolation:isolate;padding:10px var(--gutter) 78px;display:flex;flex-direction:column;gap:40px}
+.hero{max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto;position:relative;isolation:isolate;padding:10px var(--gutter) 40px;display:flex;flex-direction:column;gap:40px}
 /* the headline scales with the window's width and, on wide but short screens (laptops), with its height too, so all
    four lines fit on landing: it ends at about 85% of the window height (78px = the bar plus the hero's top padding) */
 .hl{position:relative;z-index:1;font-size:clamp(56px, 15vw, 232px);font-size:clamp(56px, min(15vw, calc(24.7svh - 23px)), 232px)}
