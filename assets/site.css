@@ -85,6 +85,9 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 /* the headline scales with the window's width and, on wide but short screens (laptops), with its height too, so all
    four lines fit on landing: it ends at about 85% of the window height (78px = the bar plus the hero's top padding) */
 .hl{position:relative;z-index:1;font-size:clamp(56px, 15vw, 232px);font-size:clamp(56px, min(15vw, calc(24.7svh - 23px)), 232px)}
+/* desktop and tablet: the headline is sized so PROVING. is exactly as wide as the intro text below it (500px wide: about 129px).
+   This is the close estimate for the first paint; initHeadFit (site.js) then measures and sets it exactly. */
+@media (min-width:761px){.hl{font-size:clamp(56px, min(129px, calc((min(100vw, 1280px) - 2 * var(--gutter) - 520px) / 3.876)), 129px)}}
 .hl-h1{margin:0;font-size:1em;font-weight:900;font-stretch:68%;text-transform:uppercase;line-height:.86}
 .hl-line{display:block}
 .hl-line-word{display:block;white-space:nowrap}
@@ -97,14 +100,21 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 #top .btn-row .pbtn,#releases .btn-group .pbtn,#talks .btn-group .pbtn{min-height:48px;padding:0 22px;gap:12px;font-size:13px;letter-spacing:.07em}
 /* background: flowing lines that bend under the cursor and around the portrait */
 /* the line field reaches up under the header, so the waves run beneath the glass bar right from the top of the page */
-.memo-paper{position:absolute;top:-120px;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;overflow:hidden}
-.memo-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;color:var(--accent)}
+/* the hero shares the river's tone: its bright paper, the lines in the river's blue, and a faint wash of its light */
+.memo-paper{position:absolute;top:-120px;bottom:0;left:50%;width:100vw;transform:translateX(-50%);z-index:-1;pointer-events:none;overflow:hidden;background:var(--paper-2)}
+.memo-paper::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(60% 55% at 78% 62%,rgba(95,230,247,.13),transparent 70%),radial-gradient(55% 50% at 22% 30%,rgba(61,127,232,.07),transparent 70%)}
+.memo-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;color:var(--accent);--wave:61,127,232;--wave-k:1.25}
 /* portrait: cut-out standing on the hero's bottom edge; colour fades in as it scrolls fully into view.
    Its width on narrower screens is set by initPortraitFit (site.js). */
 .hero-portrait{position:absolute;margin:0;z-index:0}
 .hero-portrait img{display:block;width:100%;height:auto}
 .hp-cutb{right:var(--gutter);bottom:0;width:480px}
-.hp-cutb img{filter:grayscale(var(--g,1)) contrast(calc(1 + .06 * var(--g,1)))}
+/* the portrait comes in out of a soft blur once the headline has risen (class set by initPortraitReveal; without JS it simply shows) */
+.hp-cutb.hp-rv{opacity:0;filter:blur(18px);transform:translateY(16px) scale(1.025);
+  transition:opacity .9s ease,filter 1.2s cubic-bezier(.2,.7,.2,1),transform 1.3s cubic-bezier(.2,.7,.2,1)}
+.hp-cutb.hp-rv.hp-in{opacity:1;filter:blur(0);transform:none}
+@media (prefers-reduced-motion:reduce){.hp-cutb.hp-rv{filter:none;transform:none;transition:opacity .3s ease}}
 /* stacked below the text when side by side would not fit (class set by initPortraitFit) */
 .hp-stack .hp-cutb{position:relative;right:auto;bottom:auto;order:10;width:min(72%,460px);margin:24px 0 -78px auto}
 

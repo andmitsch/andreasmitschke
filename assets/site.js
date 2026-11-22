@@ -185,8 +185,10 @@ class Component extends DCLogic {
         }
       }
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
-      ctx.lineWidth = 0.8; ctx.strokeStyle = 'rgb(18,18,18)';
-      for (let b = 0; b < BUCKETS; b++) if (paths[b]) { ctx.globalAlpha = Math.max(0.004, (b / (BUCKETS - 1)) * 0.085); ctx.stroke(paths[b]); }
+      /* line colour and strength from the canvas's CSS (--wave: r,g,b; --wave-k: alpha factor) */
+      const ccs = getComputedStyle(cv), wv = ccs.getPropertyValue('--wave').trim() || '18,18,18', wk = parseFloat(ccs.getPropertyValue('--wave-k')) || 1;
+      ctx.lineWidth = 0.8; ctx.strokeStyle = 'rgb(' + wv + ')';
+      for (let b = 0; b < BUCKETS; b++) if (paths[b]) { ctx.globalAlpha = Math.min(1, Math.max(0.004, (b / (BUCKETS - 1)) * 0.085) * wk); ctx.stroke(paths[b]); }
       ctx.lineWidth = 1; ctx.strokeStyle = accent;
       for (let k = 0; k < tint.length; k++) if (tint[k]) { ctx.globalAlpha = (k + 1) / 5 * 0.2; ctx.stroke(tint[k]); }
       ctx.globalAlpha = 1;
@@ -209,7 +211,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initPrinciples(); this.initTalks(); this.initRowFill(); this.initBookHint(); this.initSharpen(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitTone(); this.initJourney();
+    this.initPrinciples(); this.initTalks(); this.initRowFill(); this.initBookHint(); this.initSharpen(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initHeadFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitReveal(); this.initJourney();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -950,22 +952,39 @@ class Component extends DCLogic {
     window.addEventListener('resize', () => { lastW = top.clientWidth; fit(); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   }
-  initPortraitTone() {
-    /* hero portrait: black and white while it scrolls into view, full colour once it is completely visible */
+  initPortraitReveal() {
+    /* hero portrait: comes in out of a soft blur, after the headline has risen and once it is in view */
     const fig = document.querySelector('.hp-cutb');
-    if (!fig) return;
-    let raf = 0;
-    const upd = () => {
-      raf = 0;
-      const r = fig.getBoundingClientRect(), vh = window.innerHeight || 1;
-      const p = Math.min(1, Math.max(0, (vh - r.top) / (r.height || 1)));
-      const e = p * p * (3 - 2 * p);
-      fig.style.setProperty('--g', (1 - e).toFixed(3));
+    if (!fig || !('IntersectionObserver' in window)) return;
+    fig.classList.add('hp-rv');
+    setTimeout(() => {
+      const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { fig.classList.add('hp-in'); io.disconnect(); } }, { threshold: 0.3 });
+      io.observe(fig);
+    }, 900);
+  }
+  initHeadFit() {
+    /* desktop and tablet: the headline is sized so its last line, PROVING., is exactly as wide as the intro text below it.
+       Measured on a hidden copy of the word, because the real line is built letter by letter while the headline animates.
+       Refits whenever the intro text changes width (initPortraitFit narrows it on smaller screens). Phones keep the CSS size. */
+    const top = document.getElementById('top'), hl = top && top.querySelector('.hl'), h1 = top && top.querySelector('.hl-h1'), lead = top && top.querySelector('.hero-lead');
+    if (!hl || !h1 || !lead || !window.matchMedia) return;
+    const mq = window.matchMedia('(min-width:761px)');
+    const fit = () => {
+      if (!mq.matches) { hl.style.removeProperty('font-size'); return; }
+      const s = getComputedStyle(h1), m = document.createElement('span');
+      m.textContent = 'proving.';
+      m.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;white-space:nowrap;font-size:100px;font-family:' + s.fontFamily
+        + ';font-weight:' + s.fontWeight + ';font-stretch:' + s.fontStretch + ';text-transform:' + s.textTransform + ';letter-spacing:' + s.letterSpacing;
+      document.body.appendChild(m);
+      const k = m.getBoundingClientRect().width / 100;
+      m.remove();
+      const w = lead.getBoundingClientRect().width;
+      if (k > 0 && w > 0) hl.style.fontSize = (w / k).toFixed(2) + 'px';
     };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(upd); };
-    window.addEventListener('scroll', kick, { passive: true });
-    window.addEventListener('resize', kick);
-    upd();
+    fit();
+    if ('ResizeObserver' in window) new ResizeObserver(fit).observe(lead);
+    window.addEventListener('resize', fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   }
   initMenu() {
   const mb = document.querySelector('.menu-btn'), mn = document.getElementById('mnav');
