@@ -651,15 +651,17 @@ html.ng-cr .jr-bar::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filter:
   #path.jr-all .jr-head{grid-row:1}
   #path.jr-all .jr-rv{position:sticky;top:var(--rt,84px);align-self:start;width:var(--rw,100%);height:var(--rh,470px);z-index:1;
     transition:width .75s cubic-bezier(.65,0,.35,1),height .75s cubic-bezier(.65,0,.35,1),top .75s cubic-bezier(.65,0,.35,1)}
-  #path.jr-all .jr-txt{margin:0 0 0 52%;max-width:none;opacity:0;filter:blur(8px);transform:translateX(48px);pointer-events:none;
+  /* the list starts a third of a screen down, so at the moment of the split the first title sits mid-screen, beside the
+     river, with room to keep scrolling (a touchpad's glide would otherwise carry it under the bar before it was seen) */
+  #path.jr-all .jr-txt{margin:0 0 0 52%;padding-top:32vh;max-width:none;opacity:0;filter:blur(8px);transform:translateX(48px);pointer-events:none;
     transition:opacity .45s ease,filter .45s ease,transform .7s cubic-bezier(.22,1,.36,1)}
-  #path.jr-all.jr-split .jr-txt{opacity:1;filter:none;transform:none;pointer-events:auto;transition:opacity .6s ease .3s,filter .6s ease .3s,transform .85s cubic-bezier(.22,1,.36,1) .22s}
+  #path.jr-all.jr-split .jr-txt{opacity:1;filter:none;transform:none;pointer-events:auto;transition:opacity .5s ease .12s,filter .5s ease .12s,transform .8s cubic-bezier(.22,1,.36,1) .08s}
   #path.jr-all .jr-chips.jr-row{display:none}
   #path.jr-all.jr-split .jr-mk .t{display:none}
   #path.jr-all .jr-bar .jr-mini,#path.jr-all .jr-bar .jr-bar-in:after{display:none}
   /* no river (no WebGL): no glide, the list simply sits beside the row of names */
   #path.jr-all.jr-flat .jr{display:block}
-  #path.jr-all.jr-flat .jr-txt{margin-left:0;max-width:820px;opacity:1;filter:none;transform:none;pointer-events:auto}
+  #path.jr-all.jr-flat .jr-txt{margin-left:0;padding-top:0;max-width:820px;opacity:1;filter:none;transform:none;pointer-events:auto}
   #path.jr-all.jr-flat .jr-chips.jr-row{display:flex}
 }
 @media (prefers-reduced-motion:reduce){#path.jr-all .jr-rv,#path.jr-all .jr-txt{transition:none!important}}
