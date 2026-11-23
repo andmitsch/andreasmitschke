@@ -114,6 +114,8 @@ a:hover{color:#000000;text-decoration-thickness:4px}
 .hp-cutb img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
 /* a faint light rim along the top edge */
 .hp-cutb::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 0 0 1px rgba(255,255,255,.08)}
+/* the hero sits above the next section, so the card's shadow falls over the section line instead of stopping at it */
+#top{z-index:2}
 /* the portrait comes in out of a soft blur once the headline has risen: a CSS animation, so it is hidden from the first paint.
    When it starts below the screen (phones), initPortraitReveal swaps the animation for a reveal on scroll (.hp-rv, .hp-in). */
 @keyframes hp-in{from{opacity:0;filter:blur(18px);transform:translateY(16px) scale(1.025)}to{opacity:1;filter:blur(0);transform:none}}
@@ -519,9 +521,20 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
   .rlA.has-ink .rA:not(.is-ink){filter:blur(1.2px);opacity:.65}
 }
 @media (max-width:760px){.rA{grid-template-columns:1fr;padding:24px 4px}.rA-cta{margin-top:6px}}
-/* trial: the heavy black section lines become hairlines, to match the softer glass and blur language */
-.path,.section-rule,.releases{border-top:1px solid rgba(18,18,18,.14)}
-.pgrp-side{border-top:1px solid rgba(18,18,18,.14)}
+/* section breaks: a small V notch, centred (12px wide, 7px deep).
+   Hero to journey share a background: a hairline that dips into the V.
+   Elsewhere the background changes, so there is no line: the section above reaches down into the next as the same V,
+   drawn in its colour as two half-triangles at the top of the section below. */
+.path,.section-rule,.releases,.contact{border-top:0;background-repeat:no-repeat}
+.path{background-image:linear-gradient(rgba(18,18,18,.14),rgba(18,18,18,.14)),linear-gradient(rgba(18,18,18,.14),rgba(18,18,18,.14)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M0 .5 H1 L7 7.5 L13 .5 H14' fill='none' stroke='rgba(18,18,18,.3)' stroke-width='1'/%3E%3C/svg%3E");
+  background-size:calc(50% - 6px) 1px,calc(50% - 6px) 1px,14px 9px;background-position:0 0,100% 0,50% 0}
+#beliefs,#releases,#talks,#contact{--nv:var(--paper-2);
+  background-image:linear-gradient(to bottom left,var(--nv) 49%,transparent 51%),linear-gradient(to bottom right,var(--nv) 49%,transparent 51%);
+  background-size:6px 7px,6px 7px;background-position:calc(50% - 3px) 0,calc(50% + 3px) 0}
+#releases,#contact{--nv:var(--paper)}
+/* Side quests: no line above; the white space separates it */
+.pgrp-side{border-top:0}
 .side{border-top:1px solid rgba(18,18,18,.22)}
 /* the book's hint gets a small turning book in front of it, in the same grey and with the same sense of weight as the
    card shuffle under the principles: it rests, turns to one side, settles a hair past, rests, turns back, then gathers itself and spins once all the way round */
