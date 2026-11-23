@@ -234,7 +234,10 @@ img.photo-trail{object-fit:cover;box-shadow:0 18px 40px -18px rgba(18,18,18,.35)
 
 /* ---- 9 Talks ---- */
 .talks-inner{max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto;padding:96px var(--gutter);display:flex;flex-wrap:wrap;gap:40px 56px}
-.talks-label{display:block;padding-bottom:18px}
+.talks-label{display:block;padding-bottom:18px;line-height:17px}
+/* side by side (wide screens): the left part starts level with the top of the topic cards, not with the label above them.
+   35px = the label (17px) plus its 18px gap; the circle reaches .12em above the heading, so that is added too */
+@media (min-width:1000px){#talks .split-aside{margin-top:calc(35px + .12 * clamp(38px, 4vw, 56px))}}
 .talks-intro{margin:0;font-size:16px;line-height:1.6;color:var(--body)}
 #talks .split-list{align-self:flex-start}
 #talks .btn-group{margin-top:8px}
@@ -245,14 +248,17 @@ img.photo-trail{object-fit:cover;box-shadow:0 18px 40px -18px rgba(18,18,18,.35)
 a.trow,a.trow:hover{color:inherit;text-decoration:none}
 a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 /* round portrait with the looping stage video */
-.talks-id{display:flex;align-items:center;gap:22px;margin:0 0 6px 8px}
+/* the talks heading: the round portrait inline, left of "Also on stage.", level with its first line; one line, never wrapping */
+.talks-head{display:flex;align-items:flex-start;gap:18px}
+.talks-head .aside-title{white-space:nowrap}
+#talks .split-aside{flex:0 0 auto;width:min-content;max-width:100%}
+/* the circle is 1.25x the font size, centred on the middle of the capitals (between cap top and baseline) */
+.talks-head .portrait-wrap{width:1.25em;height:1.25em;flex:none;font-size:clamp(38px, 4vw, 56px);margin-top:-.12em}
 .portrait-wrap{position:relative;flex:0 0 auto;width:96px;height:96px}
 .portrait{display:block;width:100%;height:100%;border-radius:50%;object-fit:cover;background:#D6C8BA;transition:transform .9s var(--ease-out)}
-.portrait-ring{position:absolute;inset:-7px;border-radius:50%;border:1.5px dashed var(--accent);opacity:0;transform:rotate(-40deg) scale(.96);transition:opacity .35s var(--ease-out),transform 1.1s var(--ease-out);pointer-events:none}
 .portrait-vid{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover;opacity:0;pointer-events:none;transition:opacity 1.3s cubic-bezier(.45,0,.55,1),transform .9s var(--ease-out)}
 .portrait-wrap.vid-on .portrait-vid{opacity:1}
 .portrait-wrap:hover .portrait,.portrait-wrap:hover .portrait-vid{transform:scale(1.04) rotate(-2deg)}
-.portrait-wrap:hover .portrait-ring{opacity:1;transform:rotate(50deg) scale(1)}
 
 /* ---- 10 Contact + footer ---- */
 .contact{position:relative;overflow:hidden;background:var(--ink);color:var(--paper);flex-grow:1;box-sizing:border-box}
@@ -348,8 +354,9 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
   .rrow > span:first-child{flex-basis:100%}
   #talks .rrow{grid-template-columns:minmax(0,1fr)}
   #talks .rrow > span:last-child{grid-column:1;grid-row:auto;margin-top:4px}
-  .talks-id{margin-left:0;gap:18px}
-  .portrait-wrap{width:80px;height:80px}
+  .talks-head{gap:14px}
+  #talks .split-aside{width:auto}
+  .talks-head .portrait-wrap{font-size:clamp(34px, 10vw, 44px)}
   #contact{min-height:0}
   #contact > div{padding-top:72px;padding-bottom:72px;gap:28px}
   #contact h2{font-size:clamp(40px,11.5vw,56px)}
@@ -511,8 +518,8 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 .rA-sub{font-size:16px;line-height:1.5;color:var(--body);max-width:640px;transition:color .6s .08s}
 .rlA.ink-js .rA.is-ink .rA-sub{color:var(--n-b9)}
 .rA-cta{display:inline-flex;align-items:center;gap:10px;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
-.rA .rx-arr{transition:transform .35s cubic-bezier(.22,1,.36,1)}
-.rA:hover .rx-arr{transform:translateX(6px)}
+/* no arrows after the row links: arrows appear nowhere else on the site; the row's ink fill on hover is the cue */
+.rA .rx-arr{display:none}
 .rA-last .rA-cta{color:var(--accent)}
 .rlA.ink-js .rA-last.is-ink .rA-cta{color:var(--paper)}
 /* focus pull, the site's blur theme: while one row is under the cursor, the others go soft and quiet (desktop pointers only) */
@@ -609,8 +616,20 @@ html.ng-cr .site-head::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filt
 .jr-it h4{margin:0 0 8px;font-weight:800;font-stretch:80%;text-transform:uppercase;font-size:20px;letter-spacing:.01em;line-height:1.1}
 .jr-it p{margin:0;font-size:16px;line-height:1.65;color:var(--body)}
 .jr-it p b{color:var(--ink);font-weight:800}
-.jr-it p a{color:inherit;text-decoration-color:var(--accent);text-underline-offset:3px}
+.jr-it p a{position:relative;white-space:nowrap;color:inherit;text-decoration:underline;text-decoration-color:rgba(18,18,18,.3);text-decoration-thickness:1px;text-underline-offset:3px;transition:text-decoration-color .3s}
+.jr-it p a:is(:hover,:focus-visible){text-decoration-color:transparent}
 .jr-cta{margin-top:18px}
+/* the book link: an action set like the ones in Off my desk (small bold mono caps); where it goes, in grey */
+.jr-book{position:relative;display:inline-block;padding-bottom:8px;text-decoration:none;color:var(--ink);font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase}
+.jr-book-w{color:var(--muted);font-weight:500}
+/* hover: the main navigation's underline - an ink bar, then a blue one, in from the left and out to the right */
+.jr-book::before,.jr-book::after,.jr-it p a::before,.jr-it p a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;transform:scaleX(0);transform-origin:right center;pointer-events:none}
+.jr-it p a::before,.jr-it p a::after{bottom:-1px}
+.jr-book::before,.jr-it p a::before{background:var(--ink);transition:transform .5s var(--ease-io) .14s}
+.jr-book::after,.jr-it p a::after{background:var(--accent);transition:transform .5s var(--ease-io) 0s}
+.jr-book:is(:hover,:focus-visible)::before,.jr-it p a:is(:hover,:focus-visible)::before{transform:scaleX(1);transform-origin:left center;transition-delay:0s}
+.jr-book:is(:hover,:focus-visible)::after,.jr-it p a:is(:hover,:focus-visible)::after{transform:scaleX(1);transform-origin:left center;transition-delay:.18s}
+.jr-book:focus-visible{outline:none}
 .jr-pn{display:flex;justify-content:space-between;gap:24px;margin-top:40px}
 .jr-pn button{display:inline-flex;align-items:center;gap:6px;padding:4px 0;border:0;background:none;cursor:pointer;font:500 15px/1.3 'Archivo',sans-serif;color:rgba(18,18,18,.42);transition:color .7s cubic-bezier(.22,1,.36,1)}
 .jr-pn button:hover,.jr-pn button:focus-visible{color:var(--ink)}
