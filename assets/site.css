@@ -263,7 +263,10 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 /* ---- 10 Contact + footer ---- */
 .contact{position:relative;overflow:hidden;background:var(--ink);color:var(--paper);flex-grow:1;box-sizing:border-box}
 .contact a:hover{color:var(--paper)}
-.contact-inner{position:relative;z-index:1;max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto;padding:104px var(--gutter) 100px;display:flex;flex-direction:column;gap:44px}
+.contact-inner{position:relative;z-index:1;max-width:1280px;width:100%;box-sizing:border-box;margin:0 auto;padding:64px var(--gutter) 48px;display:flex;flex-direction:column;gap:44px}
+/* the job lines sit near the top and the footer links near the bottom, so the title and Let's talk get room around them */
+#contact .contact-spec{margin-bottom:40px}
+#contact .footer-row{margin-top:52px}
 .dotfield{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;z-index:0;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%);mask-image:linear-gradient(180deg,transparent 0,#000 30%)}
 .contact-spec{display:grid;grid-template-columns:max-content 1fr;gap:8px 24px;margin:0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.5;letter-spacing:.05em;text-transform:uppercase;color:var(--n-d6);max-width:920px}
 .contact-spec dt{color:var(--n-b9)}
@@ -364,6 +367,9 @@ a.trow:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
   .ct-br{display:none}
   .contact-spec{grid-template-columns:1fr;gap:2px}
   .contact-spec dd{margin-bottom:10px}
+  #contact .contact-inner{padding-top:44px;padding-bottom:32px}
+  #contact .contact-spec{margin-bottom:20px}
+  #contact .footer-row{margin-top:28px}
 }
 
 /* headline build: frosted-glass symbols; each letter drops in like a lens pulling focus:
