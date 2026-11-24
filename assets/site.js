@@ -211,7 +211,7 @@ class Component extends DCLogic {
     requestAnimationFrame(loop);
   }
   componentDidMount() {
-    this.initPrinciples(); this.initTalks(); this.initRowFill(); this.initBookHint(); this.initSharpen(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initHeadFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitReveal(); this.initJourney();
+    this.initPrinciples(); this.initPrCenter(); this.initTalks(); this.initRowFill(); this.initBookHint(); this.initSharpen(); this.initMenu(); this.initDots(); this.initPortraitFit(); this.initHeadFit(); this.initMemo(); this.initPortraitVid(); this.initPhotoTrail(); this.initBtnFill(); this.initPortraitReveal(); this.initJourney();
     document.addEventListener('pointermove', this.bNear, { passive: true }); document.addEventListener('pointermove', this.onPtr, { passive: true }); document.addEventListener('mouseout', this.onOut); window.addEventListener('blur', () => this.onOut({}));
     window.addEventListener('scroll', this.onScroll, { passive: true }); window.addEventListener('resize', this.onScroll, { passive: true });
     this.railUpdate();
@@ -225,6 +225,30 @@ class Component extends DCLogic {
     }
   }
   componentWillUnmount() { document.removeEventListener('pointermove', this.bNear); document.removeEventListener('pointermove', this.onPtr); window.removeEventListener('scroll', this.onScroll); window.removeEventListener('resize', this.onScroll); clearTimeout(this.hlT); cancelAnimationFrame(this.hlRaf); }
+  initPrCenter() {
+    /* My principles (desktop): the card pile sits on the centre of the window, not at the start of its column.
+       The pile spans about 542px from 8px left of the list's edge (the fanned cards); the arrows and hint below it are 530px wide from the edge, so their middle (265px) is put on the centre, which also centres the pile to within 2px.
+       It may float over the end of the heading by up to 24px; where centring would cut in further (narrower windows),
+       the section stays two columns: the heading on the left, the cards right after it. */
+    const sec = document.getElementById('beliefs'), list = sec && sec.querySelector('.split-list'), title = sec && sec.querySelector('.aside-title');
+    if (!list || !title || !window.matchMedia) return;
+    const mq = window.matchMedia("(min-width:761px)"), MID = 265, LEFT = 8, OVER = 24;
+    const fit = () => {
+      if (!mq.matches || !sec.classList.contains('pr-js')) { list.style.removeProperty('--pr-x'); return; }
+      list.style.setProperty('--pr-x', '0px');
+      const L = list.getBoundingClientRect().left, r = document.createRange(); r.selectNodeContents(title);
+      const minLeft = r.getBoundingClientRect().right - OVER;
+      /* the page's centre without the scrollbar (on a Mac with a mouse, or on Windows, the scrollbar takes ~15px of innerWidth),
+         the same centre the section notches use */
+      let x = document.documentElement.clientWidth / 2 - (L + MID);
+      /* too tight to centre without cutting into the heading: back to two columns, heading left, cards right */
+      if (L - LEFT + x < minLeft) x = 0;
+      list.style.setProperty('--pr-x', Math.round(x) + 'px');
+    };
+    fit();
+    window.addEventListener('resize', fit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  }
   initPrinciples() {
     /* My principles: the cards are thrown onto a pile, one per scroll step, and the spinner turns into a progress dial.
        On the site the section pins (sticky) while the window scrolls. The design canvas never scrolls a board, so there

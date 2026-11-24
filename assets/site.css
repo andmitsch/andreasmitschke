@@ -732,6 +732,8 @@ html.ng-cr .jr-bar::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filter:
   #beliefs.pr-js .split-aside::before{content:"";position:absolute;right:100%;top:0;bottom:0;width:100vw;background:var(--paper)}
   #beliefs.pr-js .aside-title{white-space:nowrap}
   #beliefs.pr-js .split-list{position:relative;display:block;flex:1 1 auto;height:520px;border-bottom:0}
+  /* desktop: the pile is moved onto the window's centre (initPrCenter sets --pr-x) and floats above the heading column */
+  @media (min-width:761px){#beliefs.pr-js .split-list{left:var(--pr-x,0px);z-index:3}}
   #beliefs.pr-js .thesis{position:absolute;left:0;top:10px;width:400px;min-height:440px;box-sizing:border-box;display:flex;flex-direction:column;padding:28px;border:1px solid rgba(18,18,18,.07);border-radius:8px;background:var(--paper-2);
     box-shadow:0 1px 2px rgba(18,18,18,.06),0 22px 44px -24px rgba(18,18,18,.5);animation:none;will-change:transform;
     transform:translate(calc(100vw - 300px),-60px) rotate(16deg);transition:transform .85s cubic-bezier(.16,1.18,.36,1),box-shadow .85s}
