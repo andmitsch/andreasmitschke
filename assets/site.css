@@ -734,6 +734,15 @@ html.ng-cr .jr-bar::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filter:
   #beliefs.pr-js .split-list{position:relative;display:block;flex:1 1 auto;height:520px;border-bottom:0}
   /* desktop: the pile is moved onto the window's centre (initPrCenter sets --pr-x) and floats above the heading column */
   @media (min-width:761px){#beliefs.pr-js .split-list{left:var(--pr-x,0px);z-index:3}}
+  /* while the cards are dealt, the first card sits on the centre and the others stack up on it to the right; once the
+     pile is complete (the dial goes and the heading settles), the whole pile glides onto the centre.
+     65px = half the pile's spread (5 cards x 26px / 2) */
+  @media (min-width:761px){
+    #beliefs.pr-js .split-list{translate:65px 0;transition:translate .9s cubic-bezier(.65,0,.35,1)}
+    /* in step with the heading: the dial collapses (height, margin) over .9s after 1.25s with the same curve, so both move together */
+    #beliefs.pr-js.pr-complete .split-list{translate:0 0;transition-delay:1.25s}
+    @media (prefers-reduced-motion:reduce){#beliefs.pr-js .split-list{transition:none}}
+  }
   #beliefs.pr-js .thesis{position:absolute;left:0;top:10px;width:400px;min-height:440px;box-sizing:border-box;display:flex;flex-direction:column;padding:28px;border:1px solid rgba(18,18,18,.07);border-radius:8px;background:var(--paper-2);
     box-shadow:0 1px 2px rgba(18,18,18,.06),0 22px 44px -24px rgba(18,18,18,.5);animation:none;will-change:transform;
     transform:translate(calc(100vw - 300px),-60px) rotate(16deg);transition:transform .85s cubic-bezier(.16,1.18,.36,1),box-shadow .85s}
@@ -836,3 +845,75 @@ html.ng-cr .jr-bar::after{bottom:0;-webkit-backdrop-filter:none;backdrop-filter:
   #beliefs:not(.pr-js) .split-list{flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;border-bottom:0;margin:0 calc(-1 * var(--gutter));padding:0 var(--gutter) 8px}
   #beliefs:not(.pr-js) .thesis{flex:0 0 82%;scroll-snap-align:start;border:1px solid rgba(18,18,18,.07);box-shadow:0 18px 36px -24px rgba(18,18,18,.4);border-radius:8px;background:var(--paper-2);padding:22px}
 }
+
+/* ===== hero: full-bleed wallpaper (CSS), moving light, portrait cut-out with its own shadow ===== */
+/* the wallpaper: a cool grey-mauve on the left warming to a soft pink on the right, a warmer patch top right, a pale cool
+   light low in the middle and a darker warm edge on the right. No image to load. */
+.memo-paper{background:
+    radial-gradient(30% 40% at 76% 2%, rgba(180,148,146,.5), rgba(180,148,146,0) 72%),
+    radial-gradient(26% 46% at 100% 18%, rgba(226,200,192,.6), rgba(226,200,192,0) 75%),
+    radial-gradient(22% 55% at 106% 92%, rgba(186,160,158,.5), rgba(186,160,158,0) 72%),
+    radial-gradient(30% 40% at 90% 45%, rgba(214,186,182,.45), rgba(214,186,182,0) 72%),
+    radial-gradient(48% 52% at 47% 84%, rgba(216,205,213,.85), rgba(216,205,213,0) 72%),
+    radial-gradient(110% 40% at 55% 8%, rgba(204,170,164,.75), rgba(204,170,164,0) 85%),
+    linear-gradient(90deg, #A7A3AB 0%, #B3ACB3 9%, #C0B7BD 18%, #CAC0C5 28%, #D1C6CA 40%, #D5C9CB 52%, #D5C5C5 64%, #D4C0BE 76%, #D2B9B5 88%, #CCB0AC 100%);
+  /* it reaches 7px below the hero as the notch into the journey, in its own colours */
+  bottom:-7px;clip-path:polygon(0 0,100% 0,100% calc(100% - 7px),calc(50% + 6px) calc(100% - 7px),50% 100%,calc(50% - 6px) calc(100% - 7px),0 calc(100% - 7px))}
+/* fine grain, so the soft gradients never band (inline SVG noise, no file) */
+.memo-paper::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* the moving light: a warm and a cool patch drifting behind the portrait */
+:root{--mv-dur:8s;--mv-dist:3;--mv-a:1.05;--mv-size:2.4;--mv-warm:214,170,160;--mv-wa:.42;--mv-wx:58%;--mv-wy:30%;--mv-cool:176,178,200;--mv-ca:.32;--mv-cx:30%;--mv-cy:70%}
+.memo-paper::after{content:"";position:absolute;z-index:1;inset:-20%;pointer-events:none;opacity:var(--mv-a);
+  background:radial-gradient(calc(22% * var(--mv-size)) calc(30% * var(--mv-size)) at var(--mv-wx) var(--mv-wy), rgba(var(--mv-warm),var(--mv-wa)), rgba(var(--mv-warm),0) 70%),
+             radial-gradient(calc(26% * var(--mv-size)) calc(34% * var(--mv-size)) at var(--mv-cx) var(--mv-cy), rgba(var(--mv-cool),var(--mv-ca)), rgba(var(--mv-cool),0) 70%);
+  animation:hp-drift var(--mv-dur) ease-in-out infinite alternate}
+@keyframes hp-drift{0%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(calc(4% * var(--mv-dist)),calc(-3% * var(--mv-dist))) scale(calc(1 + .06 * var(--mv-dist)))}
+  66%{transform:translate(calc(-3% * var(--mv-dist)),calc(4% * var(--mv-dist))) scale(calc(1 - .04 * var(--mv-dist)))}
+  100%{transform:translate(calc(2% * var(--mv-dist)),calc(2% * var(--mv-dist))) scale(calc(1 + .03 * var(--mv-dist)))}}
+/* the journey's hairline notch goes: the change of colour separates hero and journey */
+.path{background-image:none}
+/* the portrait: cropped to the figure and its shadow (2200 x 2000, the bottom 2000px of the right part of a 3840 x 2160
+   frame), shown at the size the full frame had: as tall as the hero (a little less on narrower windows, so it stays clear
+   of the text) times 2000/2160; its right edge on the content column's edge (wide screens) or the window's, its foot on
+   the hero's bottom line; it comes in out of a soft blur */
+.hp-full{position:absolute;z-index:2;bottom:7px;height:calc(min(calc(100% - 120px), 56vw) * .9259);width:auto;max-width:none;
+  right:max(-2vw, calc((100vw - 1280px) / 2 - 3vw));
+  animation:hp-in 1.3s cubic-bezier(.2,.7,.2,1) .9s both;
+  /* the shadow runs to the frame's right edge: fade the last strip so the edge never shows as a line */
+  -webkit-mask-image:linear-gradient(to left,transparent,#000 8.7%);mask-image:linear-gradient(to left,transparent,#000 8.7%)}
+/* phones: the figure stands under the text, centred, cropped from the same frame */
+@media (max-width:760px){
+  #top{padding-bottom:420px}
+  .hp-full{height:407px;right:calc(50% - 207px)}
+}
+@media (prefers-reduced-motion:reduce){.memo-paper::after,.hp-full{animation:none}}
+
+/* ===== soft colour patches in the journey, principles and Off my desk, drifting slowly ===== */
+:is(#path,#beliefs,#releases){position:relative;isolation:isolate}
+/* clip-path, not overflow:hidden, so the sticky inner layer still follows the window */
+.sp-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;clip-path:inset(0)}
+.sp-bg i{position:sticky;top:0;display:block;height:100vh;width:100%;overflow:hidden}
+.sp-bg i::before,.sp-bg i::after{content:"";position:absolute;inset:-25%;animation:sp-drift 26s ease-in-out infinite alternate}
+.sp-bg i::after{animation-duration:34s;animation-direction:alternate-reverse}
+@keyframes sp-drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(5%,-4%) scale(1.08)}100%{transform:translate(-4%,3%) scale(.95)}}
+/* journey: the river's blue, very faint, near the window's right edge (the layer is 150% wide, so 75% is ~88% across);
+   on wide screens it only comes in once the text has slid in beside the river */
+.sp-path i::before{background:radial-gradient(18% 28% at 75% 37%, rgba(61,127,232,.07), rgba(61,127,232,0) 70%)}
+.sp-path i::after{content:none}
+@media (min-width:1000px){.sp-path{opacity:0;transition:opacity 1.2s ease}#path.jr-split .sp-path{opacity:1;transition-delay:.4s}}
+/* and a faint cyan glow around the "Side quests" heading */
+.pgrp-side .pgrp-head{position:relative;isolation:isolate}
+.pgrp-side .pgrp-head::before{content:"";position:absolute;z-index:-1;left:-120px;top:-110px;width:460px;height:280px;pointer-events:none;
+  background:radial-gradient(closest-side, rgba(95,230,247,.08), rgba(61,127,232,.03) 55%, rgba(95,230,247,0));animation:sp-drift 15s ease-in-out infinite alternate}
+/* principles: the hero's warm and cool light behind the card stack */
+.sp-beliefs i::before{background:radial-gradient(26% 36% at 56% 42%, rgba(214,170,160,.30), rgba(214,170,160,0) 70%)}
+.sp-beliefs i::after{background:radial-gradient(24% 32% at 42% 62%, rgba(176,178,200,.30), rgba(176,178,200,0) 70%)}
+/* the heading column's paper backing would cut the patches off in a straight line; the cards float above it anyway */
+#beliefs.pr-js .split-aside{background:none;box-shadow:none}
+#beliefs.pr-js .split-aside::before{content:none}
+/* off my desk: the book's orange as a faint peach glow behind the book, with a cool counter-patch */
+.sp-releases i::before{background:radial-gradient(24% 34% at 22% 42%, rgba(242,140,90,.11), rgba(242,140,90,0) 70%)}
+.sp-releases i::after{background:radial-gradient(26% 34% at 74% 62%, rgba(176,178,200,.22), rgba(176,178,200,0) 70%)}
+@media (prefers-reduced-motion:reduce){.sp-bg i::before,.sp-bg i::after,.pgrp-side .pgrp-head::before{animation:none}}
