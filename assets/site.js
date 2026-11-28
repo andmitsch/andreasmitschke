@@ -236,7 +236,9 @@ class Component extends DCLogic {
     const fit = () => {
       if (!mq.matches || !sec.classList.contains('pr-js')) { list.style.removeProperty('--pr-x'); return; }
       list.style.setProperty('--pr-x', '0px');
-      const L = list.getBoundingClientRect().left, r = document.createRange(); r.selectNodeContents(title);
+      /* the list's place without its CSS 'translate' (it sits 65px further right while the cards are dealt), so the
+         centre and the overlap are measured for the finished pile */
+      const op = list.offsetParent, L = (op ? op.getBoundingClientRect().left + op.clientLeft : 0) + list.offsetLeft, r = document.createRange(); r.selectNodeContents(title);
       const minLeft = r.getBoundingClientRect().right - OVER;
       /* the page's centre without the scrollbar (on a Mac with a mouse, or on Windows, the scrollbar takes ~15px of innerWidth),
          the same centre the section notches use */
